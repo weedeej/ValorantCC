@@ -5,15 +5,47 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ValorantCC" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="vTools - ValorantCC" Height="360" Width="500" SizeToContent="Manual" WindowStartupLocation="Manual" WindowState="Normal" ResizeMode="NoResize" WindowStyle="SingleBorderWindow" Icon="Resources/vtools-colored.ico">
+        Title="vTools - ValorantCC" Height="282" Width="500" SizeToContent="Manual" WindowStartupLocation="Manual" WindowState="Normal" ResizeMode="NoResize" WindowStyle="None" Icon="Resources/vtools-colored.ico"
+        Background="#263238">
+    
     <UserControl>
         <UserControl.Resources>
             <ResourceDictionary>
                 <BitmapImage x:Key="crosshairBg" UriSource="Resources/crosshairBg0.png"/>
             </ResourceDictionary>
         </UserControl.Resources>
-        <StackPanel>
+        <StackPanel MouseDown="StackPanel_MouseDown">
+            <Grid Margin="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.7*"/>
+                    <ColumnDefinition Width="1*"/>
+
+                    <ColumnDefinition Width="0.9*"/>
+                    <ColumnDefinition Width="1*"/>
+
+                    <ColumnDefinition Width="0.89*"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock FontWeight="Bold" Grid.Column="0" Foreground="White">Logged In:</TextBlock>
+                <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="1" Foreground="Red"
+                  x:Name="txt_LoggedIn">
+                    ◾
+                </TextBlock>
+
+                <TextBlock FontWeight="Bold" Grid.Column="2" Foreground="White">Current Color: </TextBlock>
+                <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="3" Foreground="Red"
+                  x:Name="txt_CurrentColor">
+                    ◾
+                </TextBlock>
+                
+                <TextBlock FontWeight="Bold" Grid.Column="4" Foreground="White">Profile Count:</TextBlock>
+                <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="5" Foreground="Red"
+                  x:Name="txt_ProfileCount">
+                    0
+                </TextBlock>
+            </Grid>
             <Grid>
+                
                 <Image Source="{StaticResource crosshairBg}" Margin="3"/>
                 <Grid>
                     <Line x:Name="lineX1" X1="5" Y1="0" X2="0" Y2="0" Stroke="Black" StrokeThickness="2" Margin="250,80,-250,-80"/>
@@ -31,41 +63,21 @@
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <ComboBox x:Name="profiles" Grid.Column="0" SelectionChanged="profiles_SelectionChanged">
-                </ComboBox>
-                <xctk:ColorPicker x:Name="colorpicker" DisplayColorAndName="True" Grid.Column="1" Margin="2" SelectedColorChanged="colorpicker_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual"></xctk:ColorPicker>
-                <Button x:Name="btnSave" Grid.Column="2" Margin="2" Click="btnSave_Click">Save</Button>
-                <Button x:Name="btnLogin" Grid.Column="3" Margin="2" Click="btnLogin_Click">Login</Button>
+                <ComboBox x:Name="profiles" Grid.Column="0" SelectionChanged="profiles_SelectionChanged" SelectedIndex="0"/>
+                <xctk:ColorPicker x:Name="colorpicker" DisplayColorAndName="True" Grid.Column="1" SelectedColorChanged="colorpicker_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="2,0" Cursor="Hand"></xctk:ColorPicker>
+                <Button Style="{StaticResource SaveButtonHover}" Foreground="White" x:Name="btnSave" Grid.Column="2" Margin="2,0,0,0" Click="btnSave_Click" Cursor="Hand">Save</Button>
+                <Button Style="{StaticResource LoginButtonHover}" Foreground="White" x:Name="btnLogin" Grid.Column="3" Margin="2,0,0,0" Click="btnLogin_Click" Cursor="Hand">Login</Button>
             </Grid>
             <Grid Margin="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="2*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Margin="2" FontWeight="Bold" Grid.Column="0">Profile</TextBlock>
-                <TextBlock Margin="2" FontWeight="Bold" Grid.Column="1">Color Picker</TextBlock>
-            </Grid>
-            
-            <Grid Margin="5,20">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="*"/>
-                </Grid.ColumnDefinitions>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-                <TextBlock FontWeight="Bold" Grid.Column="0" Grid.Row="0">Logged In:</TextBlock>
-                <TextBlock x:Name="isLoggedIn"  FontWeight="Bold" Grid.Column="1" Grid.Row="0" Foreground="Red">False</TextBlock>
+                <TextBlock Margin="2" FontWeight="Bold" Grid.Column="0" Foreground="White">Profile</TextBlock>
+                <TextBlock Margin="2" FontWeight="Bold" Grid.Column="1" Foreground="White">Color Picker</TextBlock>
 
-                <TextBlock FontWeight="Bold" Grid.Column="0" Grid.Row="1">Current Color:</TextBlock>
-                <TextBlock x:Name="txt_currentColor" FontWeight="Bold" Grid.Column="1" Grid.Row="1" Foreground="Black">#000000</TextBlock>
-                
-                <TextBlock FontWeight="Bold" Grid.Column="0" Grid.Row="2">Login Method:</TextBlock>
-                <TextBlock x:Name="txt_loginMethod" FontWeight="Bold" Grid.Column="1" Grid.Row="2" Foreground="Red">N/A</TextBlock>
+                <Button Style="{StaticResource CloseButtonHover}" Foreground="White" x:Name="btnClose" Grid.Column="3" Margin="0,2" Click="btnClose_Click" Cursor="Hand">Close</Button>
             </Grid>
         </StackPanel>
     </UserControl>

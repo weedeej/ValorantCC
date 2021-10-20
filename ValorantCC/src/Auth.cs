@@ -127,9 +127,7 @@ namespace ValorantCC
             }
             catch (WebException ex)
             {
-                HttpWebResponse response = (HttpWebResponse)ex.Response;
-                Utils.Log("Error " + response.StatusCode.ToString() + " - " + response.StatusDescription);
-
+                Utils.Log("Auth Error " + ex.Message);
                 return new AuthTokens();
             }
 

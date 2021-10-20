@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using Utilities;
 namespace ValorantCC
@@ -18,6 +19,7 @@ namespace ValorantCC
             if (File.Exists(LogFile)) File.Delete(LogFile);
             Utils.Log("App Started. Deleted old logfile.");
         }
+
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
             if (!LoggedIn)
@@ -42,8 +44,7 @@ namespace ValorantCC
             lineY1.Stroke = (Brush)bc.ConvertFrom(colorpicker.SelectedColor.ToString());
             lineY2.Stroke = (Brush)bc.ConvertFrom(colorpicker.SelectedColor.ToString());
 
-            txt_currentColor.Foreground = (Brush)bc.ConvertFrom(colorpicker.SelectedColor.ToString());
-            txt_currentColor.Text = colorpicker.SelectedColor.ToString();
+            txt_CurrentColor.Foreground = (Brush)bc.ConvertFrom(colorpicker.SelectedColor.ToString());
 
             SelectedColor = (Color)colorpicker.SelectedColor;
         }
@@ -52,27 +53,39 @@ namespace ValorantCC
         {
             AuthResponse AuthResponse = DataProcessor.Login();
             LoggedIn = AuthResponse.Success;
-            //SUCCESS
             if (LoggedIn)
             {
                 profiles.ItemsSource = DataProcessor.ProfileNames;
-                txt_loginMethod.Foreground = Brushes.Lime;
-                txt_loginMethod.Text = "Lockfile"; //Username & Password auth soon.
 
-                isLoggedIn.Foreground = Brushes.Lime;
-                isLoggedIn.Text = "True";
+                txt_LoggedIn.Foreground = Brushes.Lime;
+                txt_ProfileCount.Foreground = Brushes.Lime;
+                txt_ProfileCount.Text = DataProcessor.ProfileNames.Count.ToString();
                 MessageBox.Show("Logged In! You may now close Valorant.");
             }
-            else //FAILED
+            else
             {
                 MessageBox.Show(AuthResponse.Response);
             }
             btnLogin.IsEnabled = !LoggedIn;
         }
+
         private void profiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             SelectedProfile = DataProcessor.ProfileFromIndex(profiles.SelectedIndex);
             colorpicker.SelectedColor = Color.FromRgb(SelectedProfile.Primary.Color.R, SelectedProfile.Primary.Color.G, SelectedProfile.Primary.Color.B);
+        }
+
+        private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                DragMove();
+            }
+        }
+
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
+            Close();
         }
     }
 }

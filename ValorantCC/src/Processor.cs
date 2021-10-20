@@ -20,6 +20,7 @@ namespace ValorantCC
         private bool ProfileListed;
         public List<string> ProfileNames;
         private ProfileList FetchedProfiles;
+
         public AuthResponse Login()
         {
             Utils.Log("Login started");
@@ -58,7 +59,6 @@ namespace ValorantCC
                     UserSettings.stringSettings = StringSettings;
                     SavedProfilesIndex = StringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
                 }
-                
             }
 
             FetchedProfiles = FetchProfiles(UserSettings.stringSettings[SavedProfilesIndex].value);
@@ -67,6 +67,7 @@ namespace ValorantCC
             isLoggedIn = true;
             Utils.Log("<-- Constructing Properties");
         }
+
         private bool CheckIfList (Data settings)
         {
             Utils.Log("Checking if User has multiple profiles");
@@ -82,6 +83,7 @@ namespace ValorantCC
             Data settings = Utils.Decompress(Convert.ToString(response["data"]));
             return settings;
         }
+
         private bool putUserSettings(Data newData)
         {
             Utils.Log("Saving New Data: (BACKUP) "+ JsonConvert.SerializeObject(newData));
@@ -135,7 +137,7 @@ namespace ValorantCC
 
         public bool SaveNewColor(Color Color, int Index)
         {
-            Utils.Log("Save buutton clicked. Saving...");
+            Utils.Log("Save button clicked. Saving...");
             if (ProfileListed)
             {
                 FetchedProfiles.Profiles[Index].Primary.Color = new CrosshairColor
@@ -150,14 +152,17 @@ namespace ValorantCC
                 {
                     UserSettings.stringSettings[DefaultProfileIndex].value = Utils.ColorToString(Color);
                 }
-                
-
             }
             else
             {
                 UserSettings.stringSettings[SavedProfilesIndex].value = Utils.ColorToString(Color);
             }
-            if (putUserSettings(UserSettings)) return true;
+            if (putUserSettings(UserSettings))
+            {
+                Utils.Log("Reconstructing Data");
+                Construct();
+                return true;
+            }
             return false;
         }
     }
