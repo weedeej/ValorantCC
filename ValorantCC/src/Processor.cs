@@ -16,6 +16,7 @@ namespace ValorantCC
         private RestClient client = new RestClient("https://playerpreferences.riotgames.com");
         private Data UserSettings;
         private int SavedProfilesIndex = 0;
+        private int DefaultProfileIndex = 0;
         private bool ProfileListed;
         public List<string> ProfileNames;
         private ProfileList FetchedProfiles;
@@ -41,11 +42,25 @@ namespace ValorantCC
             if (ProfileListed)
             {
                 SavedProfilesIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
+                DefaultProfileIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
             }
             else
             {
                 SavedProfilesIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
+                if (SavedProfilesIndex == -1)
+                {
+                    Utils.Log("User is new account/Using White Color");
+                    Stringsetting[] StringSettings = UserSettings.stringSettings.Append(new Stringsetting
+                    {
+                        settingEnum = "EAresStringSettingName::CrosshairColor",
+                        value = "(R=0,G=0,B=0,A=255)"
+                    }).ToArray();
+                    UserSettings.stringSettings = StringSettings;
+                    SavedProfilesIndex = StringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
+                }
+                
             }
+
             FetchedProfiles = FetchProfiles(UserSettings.stringSettings[SavedProfilesIndex].value);
             ProfileNames = FetchProfileNames(FetchedProfiles);
 
@@ -131,6 +146,11 @@ namespace ValorantCC
                     A = 255
                 };
                 UserSettings.stringSettings[SavedProfilesIndex].value = JsonConvert.SerializeObject(FetchedProfiles);
+                if (Index == 0)
+                {
+                    UserSettings.stringSettings[DefaultProfileIndex].value = Utils.ColorToString(Color);
+                }
+                
 
             }
             else
