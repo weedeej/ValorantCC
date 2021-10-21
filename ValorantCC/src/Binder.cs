@@ -39,13 +39,38 @@ namespace ValorantCC
 
     public partial class CrosshairProfile
     {
-        public Primary Primary { get; set; }
+        public ProfileSettings Primary { get; set; }
+        public ProfileSettings aDS { get; set; }
+        public SniperSettings Sniper { get; set; }
+        public bool bUsePrimaryCrosshairForADS { get; set; }
+        public bool bUseCustomCrosshairOnAllPrimary { get; set; }
+        public bool bUseAdvancedOptions { get; set; }
+
         public string ProfileName { get; set; }
     }
 
-    public partial class Primary
+    public partial class ProfileSettings
     {
         public CrosshairColor Color { get; set; }
+        public bool bHasOutline { get; set; }
+        public int OutlineThickness { get; set; }
+        public CrosshairColor OutlineColor { get; set; }
+        public float OutlineOpacity { get; set; }
+        public int CenterDotSize { get; set; }
+        public float CenterDotOpacity { get; set; }
+        public bool bDisplayCenterDot { get; set; }
+        public bool bFixMinErrorAcrossWeapons { get; set; }
+        public LineSettings InnerLines { get; set; }
+        public LineSettings OuterLines { get; set; }
+
+    }
+
+    public partial class SniperSettings
+    {
+        public CrosshairColor CenterDotColor { get; set; }
+        public int CenterDotSize { get; set; }
+        public float CenterDotOpacity { get; set; }
+        public bool bDisplayCenterDot { get; set; }
     }
     public partial class CrosshairColor
     {
@@ -53,6 +78,20 @@ namespace ValorantCC
         public byte G { get; set; }
         public byte B { get; set; }
         public byte A { get; set; }
+    }
+
+    public partial class LineSettings
+    {
+        public int LineThickness { get; set; }
+        public int LineLength { get; set; }
+        public int LineOffset { get; set; }
+        public bool bShowMovementError { get; set; }
+        public bool bShowShootingError { get; set; }
+        public bool bShowMinError { get; set; }
+        public float Opacity { get; set; }
+        public bool bShowLines { get; set; }
+        public float firingErrorScale { get; set; }
+        public float movementErrorScale { get; set; }
     }
 
     public partial class ProfileList

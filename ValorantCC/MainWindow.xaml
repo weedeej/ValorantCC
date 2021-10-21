@@ -17,14 +17,17 @@
         <StackPanel MouseDown="StackPanel_MouseDown">
             <Grid Margin="3">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.7*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition MaxWidth="65"/>
+                    <ColumnDefinition Width="0.2*"/>
 
-                    <ColumnDefinition Width="0.9*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition MaxWidth="85"/>
+                    <ColumnDefinition Width="0.2*"/>
 
-                    <ColumnDefinition Width="0.89*"/>
-                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition MaxWidth="82"/>
+                    <ColumnDefinition Width="0.2*"/>
+
+                    <ColumnDefinition MaxWidth="90"/>
+                    <ColumnDefinition Width="0.2*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock FontWeight="Bold" Grid.Column="0" Foreground="White">Logged In:</TextBlock>
                 <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="1" Foreground="Red"
@@ -33,7 +36,7 @@
                 </TextBlock>
 
                 <TextBlock FontWeight="Bold" Grid.Column="2" Foreground="White">Current Color: </TextBlock>
-                <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="3" Foreground="Red"
+                <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="3" Foreground="Black"
                   x:Name="txt_CurrentColor">
                     ◾
                 </TextBlock>
@@ -43,6 +46,12 @@
                   x:Name="txt_ProfileCount">
                     0
                 </TextBlock>
+
+                <!--<TextBlock FontWeight="Bold" Grid.Column="6" Foreground="White">Current Profile:</TextBlock>
+                <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="7" Foreground="Red"
+                  x:Name="txt_CurrentProfile">
+                    N/A
+                </TextBlock>-->
             </Grid>
             <Grid>
                 
@@ -63,7 +72,7 @@
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <ComboBox x:Name="profiles" Grid.Column="0" SelectionChanged="profiles_SelectionChanged" SelectedIndex="0"/>
+                <ComboBox x:Name="profiles" Grid.Column="0" SelectionChanged="profiles_SelectionChanged" SelectedIndex="0" IsEditable="True" IsReadOnly="True" Text="Profiles" TextBoxBase.TextChanged="profiles_TextChanged"/>
                 <xctk:ColorPicker x:Name="colorpicker" DisplayColorAndName="True" Grid.Column="1" SelectedColorChanged="colorpicker_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="2,0" Cursor="Hand"></xctk:ColorPicker>
                 <Button Style="{StaticResource SaveButtonHover}" Foreground="White" x:Name="btnSave" Grid.Column="2" Margin="2,0,0,0" Click="btnSave_Click" Cursor="Hand">Save</Button>
                 <Button Style="{StaticResource LoginButtonHover}" Foreground="White" x:Name="btnLogin" Grid.Column="3" Margin="2,0,0,0" Click="btnLogin_Click" Cursor="Hand">Login</Button>
@@ -72,12 +81,13 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="2*"/>
+                    <ColumnDefinition Width="1*"/>
+                    <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
                 <TextBlock Margin="2" FontWeight="Bold" Grid.Column="0" Foreground="White">Profile</TextBlock>
                 <TextBlock Margin="2" FontWeight="Bold" Grid.Column="1" Foreground="White">Color Picker</TextBlock>
-
-                <Button Style="{StaticResource CloseButtonHover}" Foreground="White" x:Name="btnClose" Grid.Column="3" Margin="0,2" Click="btnClose_Click" Cursor="Hand">Close</Button>
+                <Button Style="{StaticResource ReloadButtonHover}" Foreground="White" x:Name="btnReload" Grid.Column="2" Margin="2,2,0,2" Click="btnReload_Click" Cursor="Hand">Reload</Button>
+                <Button Style="{StaticResource CloseButtonHover}" Foreground="White" x:Name="btnClose" Grid.Column="3" Margin="2,2,0,2" Click="btnClose_Click" Cursor="Hand">Close</Button>
             </Grid>
         </StackPanel>
     </UserControl>

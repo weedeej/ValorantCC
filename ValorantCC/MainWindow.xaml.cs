@@ -12,6 +12,7 @@ namespace ValorantCC
         bool LoggedIn;
         CrosshairProfile SelectedProfile;
         Color SelectedColor;
+        int SelectedIndex;
         public MainWindow()
         {
             InitializeComponent();
@@ -27,7 +28,7 @@ namespace ValorantCC
                 MessageBox.Show("You are not logged in!");
                 return;
             }
-            if (DataProcessor.SaveNewColor(SelectedColor, profiles.SelectedIndex))
+            if (DataProcessor.SaveNewColor(SelectedColor, profiles.SelectedIndex, profiles.Text))
             {
                 MessageBox.Show("Saved! If Valorant is open, Please restart it without touching the settings.");
                 return;
@@ -60,21 +61,27 @@ namespace ValorantCC
                 txt_LoggedIn.Foreground = Brushes.Lime;
                 txt_ProfileCount.Foreground = Brushes.Lime;
                 txt_ProfileCount.Text = DataProcessor.ProfileNames.Count.ToString();
+                profiles.SelectedIndex = DataProcessor.CurrentProfile;
+                profiles.IsReadOnly = false;
                 MessageBox.Show("Logged In! You may now close Valorant.");
             }
             else
             {
                 MessageBox.Show(AuthResponse.Response);
+                return;
             }
             btnLogin.IsEnabled = !LoggedIn;
         }
 
         private void profiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            SelectedProfile = DataProcessor.ProfileFromIndex(profiles.SelectedIndex);
-            colorpicker.SelectedColor = Color.FromRgb(SelectedProfile.Primary.Color.R, SelectedProfile.Primary.Color.G, SelectedProfile.Primary.Color.B);
+            if (profiles.SelectedIndex != -1)
+            {
+                SelectedIndex = profiles.SelectedIndex;
+                SelectedProfile = DataProcessor.ProfileFromIndex(profiles.SelectedIndex);
+                colorpicker.SelectedColor = Color.FromRgb(SelectedProfile.Primary.Color.R, SelectedProfile.Primary.Color.G, SelectedProfile.Primary.Color.B);
+            }
         }
-
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -86,6 +93,23 @@ namespace ValorantCC
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
             Close();
+        }
+
+        private void btnReload_Click(object sender, RoutedEventArgs e)
+        {
+            Utils.Log("Reload Clicked > Reconstructing Processor.");
+            DataProcessor.Construct();
+            profiles.Items.Refresh();
+        }
+
+        private void profiles_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (LoggedIn)
+            {
+                DataProcessor.ProfileNames[SelectedIndex] = profiles.Text;
+                profiles.Items.Refresh();
+                profiles.SelectedIndex = SelectedIndex;
+            }
         }
     }
 }
