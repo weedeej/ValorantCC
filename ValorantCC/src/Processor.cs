@@ -158,7 +158,7 @@ namespace ValorantCC
                         int aDSCrosshairIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairADSColor");
                         
                         if (SniperCrosshairIndex != -1) DummySettings.RemoveAt(SniperCrosshairIndex);
-                        if (aDSCrosshairIndex != -1) DummySettings.RemoveAt(aDSCrosshairIndex);
+                        if (aDSCrosshairIndex != -1) DummySettings.RemoveAt(aDSCrosshairIndex-1);
                         SavedProfilesIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
                     }
                     DummySettings = DummySettings.Append(new Stringsetting { settingEnum = "EAresStringSettingName::CrosshairSniperCenterDotColor", value = Utils.ColorToString(Color) }).ToList();
@@ -167,8 +167,20 @@ namespace ValorantCC
                 }
                 FetchedProfiles.Profiles[SelectedIndex].bUseAdvancedOptions = true;
                 FetchedProfiles.Profiles[SelectedIndex].Primary.Color = NewColor;
-                FetchedProfiles.Profiles[SelectedIndex].aDS.Color = NewColor;
-                FetchedProfiles.Profiles[SelectedIndex].Sniper.CenterDotColor = NewColor;
+                FetchedProfiles.Profiles[SelectedIndex].aDS = FetchedProfiles.Profiles[SelectedIndex].Primary;
+                if (FetchedProfiles.Profiles[SelectedIndex].Sniper == null)
+                {
+                    FetchedProfiles.Profiles[SelectedIndex].Sniper = new SniperSettings
+                    {
+                        bDisplayCenterDot = true,
+                        CenterDotColor = NewColor,
+                        CenterDotOpacity = 1,
+                        CenterDotSize = 1
+                    };
+                }
+                else
+                    FetchedProfiles.Profiles[SelectedIndex].Sniper.CenterDotColor = NewColor;
+
                 FetchedProfiles.Profiles[SelectedIndex].ProfileName = ProfileName;
                 UserSettings.stringSettings[SavedProfilesIndex].value = JsonConvert.SerializeObject(FetchedProfiles);
             }

@@ -100,6 +100,9 @@ namespace ValorantCC
             Utils.Log("Reload Clicked > Reconstructing Processor.");
             DataProcessor.Construct();
             profiles.Items.Refresh();
+            profiles.SelectedIndex = DataProcessor.CurrentProfile;
+            SelectedProfile = DataProcessor.ProfileFromIndex(profiles.SelectedIndex);
+            colorpicker.SelectedColor = Color.FromRgb(SelectedProfile.Primary.Color.R, SelectedProfile.Primary.Color.G, SelectedProfile.Primary.Color.B);
         }
 
         private void profiles_TextChanged(object sender, TextChangedEventArgs e)
