@@ -101,6 +101,7 @@ namespace ValorantCC
         private ProfileList FetchProfiles(string SettingValue)
         {
             Utils.Log("Fetching/Creating Profile/s");
+            Utils.Log("Setting Value: " + SettingValue);
             if (ProfileListed) return JsonConvert.DeserializeObject<ProfileList>(SettingValue);
             CrosshairColor ParsedColor = Utils.parseCrosshairColor(UserSettings.stringSettings[SavedProfilesIndex].value);
             int NameIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName");

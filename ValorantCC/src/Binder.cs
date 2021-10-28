@@ -53,10 +53,10 @@ namespace ValorantCC
     {
         public CrosshairColor Color { get; set; }
         public bool bHasOutline { get; set; }
-        public int OutlineThickness { get; set; }
+        public float OutlineThickness { get; set; }
         public CrosshairColor OutlineColor { get; set; }
         public float OutlineOpacity { get; set; }
-        public int CenterDotSize { get; set; }
+        public float CenterDotSize { get; set; }
         public float CenterDotOpacity { get; set; }
         public bool bDisplayCenterDot { get; set; }
         public bool bFixMinErrorAcrossWeapons { get; set; }
@@ -68,7 +68,7 @@ namespace ValorantCC
     public partial class SniperSettings
     {
         public CrosshairColor CenterDotColor { get; set; }
-        public int CenterDotSize { get; set; }
+        public float CenterDotSize { get; set; }
         public float CenterDotOpacity { get; set; }
         public bool bDisplayCenterDot { get; set; }
     }
@@ -82,9 +82,9 @@ namespace ValorantCC
 
     public partial class LineSettings
     {
-        public int LineThickness { get; set; }
-        public int LineLength { get; set; }
-        public int LineOffset { get; set; }
+        public float LineThickness { get; set; }
+        public float LineLength { get; set; }
+        public float LineOffset { get; set; }
         public bool bShowMovementError { get; set; }
         public bool bShowShootingError { get; set; }
         public bool bShowMinError { get; set; }

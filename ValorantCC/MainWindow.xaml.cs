@@ -97,12 +97,18 @@ namespace ValorantCC
 
         private void btnReload_Click(object sender, RoutedEventArgs e)
         {
-            Utils.Log("Reload Clicked > Reconstructing Processor.");
-            DataProcessor.Construct();
-            profiles.Items.Refresh();
-            profiles.SelectedIndex = DataProcessor.CurrentProfile;
-            SelectedProfile = DataProcessor.ProfileFromIndex(profiles.SelectedIndex);
-            colorpicker.SelectedColor = Color.FromRgb(SelectedProfile.Primary.Color.R, SelectedProfile.Primary.Color.G, SelectedProfile.Primary.Color.B);
+            if (LoggedIn)
+            {
+                Utils.Log("Reload Clicked > Reconstructing Processor.");
+                DataProcessor.Construct();
+                profiles.Items.Refresh();
+                profiles.SelectedIndex = DataProcessor.CurrentProfile;
+                SelectedProfile = DataProcessor.ProfileFromIndex(profiles.SelectedIndex);
+                colorpicker.SelectedColor = Color.FromRgb(SelectedProfile.Primary.Color.R, SelectedProfile.Primary.Color.G, SelectedProfile.Primary.Color.B);
+                return;
+            }
+            MessageBox.Show("You are not logged in!");
+            return;
         }
 
         private void profiles_TextChanged(object sender, TextChangedEventArgs e)
