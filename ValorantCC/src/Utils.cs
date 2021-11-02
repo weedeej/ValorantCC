@@ -7,13 +7,32 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
 using Newtonsoft.Json;
+using System.Net;
+using System.Diagnostics;
 using ValorantCC;
+using System.Reflection;
 
 namespace Utilities
 {
+    struct GithubResponse
+    {
+        [JsonProperty("tag_name")]
+        public string TagName { get; set; }
+        [JsonProperty("name")]
+        public string Name { get; set; }
+        [JsonProperty("assets")]
+        public List<Asset> Assets { get; set; }
+    }
+    struct Asset
+    {
+        [JsonProperty("browser_download_url")]
+        public string BrowserDownloadUrl { get; set; }
+    }
+
     class Utils
     {
         private static StringBuilder StringBuilder = new StringBuilder();
+        private static WebClient client = new WebClient();
         public static Data Decompress(string value)
         {
             Log("Decompressing Response Data");
@@ -77,5 +96,62 @@ namespace Utilities
             File.AppendAllText(Directory.GetCurrentDirectory() + "/logs.txt", StringBuilder.ToString());
             StringBuilder.Clear();
         }
+
+        public static bool CheckLatest()
+        {
+            Log("Checking Github releases");
+            IEnumerable<string> Executables = GetAllFiles(".", "*.exe");
+            Trace.WriteLine(Executables.First());
+            foreach(string Executable in Executables)
+            {
+                Log("Executable Detected: " + Executable);
+                if (Executable != AppDomain.CurrentDomain.FriendlyName)
+                {
+                    try
+                    {
+                        File.Delete(Directory.GetCurrentDirectory() + "/" + Executable);
+                        Log("Deleted Executable: " + Executable);
+                    }catch(Exception e)
+                    {
+                        Log("Error occured: " + e.StackTrace);
+                        continue;
+                    }
+                }
+            }
+
+            client.Headers = new WebHeaderCollection(){ {"User-Agent","ValorantCC UserAgent"} };
+            string ContentString = client.DownloadString("https://api.github.com/repos/weedeej/ValorantCC/releases/latest");
+            GithubResponse ResponseObj = JsonConvert.DeserializeObject<GithubResponse>(ContentString);
+            Log("Latest Data: " + ResponseObj.Name + " | URL: " + ResponseObj.Assets[0].BrowserDownloadUrl);
+            if (new Version(ResponseObj.TagName) > Assembly.GetExecutingAssembly().GetName().Version)
+            {
+                DownloadRelease(ResponseObj.Assets[0].BrowserDownloadUrl, ResponseObj.TagName);
+                return true;
+            }
+            return false;
+        }
+
+        private static void DownloadRelease(string url, string tag)
+        {
+            client.DownloadFile(url, $"ValorantCC-{tag}.exe");
+            Log("Latest Release Downloaded!");
+        }
+
+        private static IEnumerable<string> GetAllFiles(string path, string searchPattern)
+        {
+            Log("Obtaining Executable names.");
+            return Directory.EnumerateFiles(path, searchPattern).Union(
+            Directory.EnumerateDirectories(path).SelectMany(d =>
+            {
+                try
+                {
+                    return GetAllFiles(d, searchPattern);
+                }
+                catch (Exception e)
+                {
+                    return Enumerable.Empty<string>();
+                }
+            }));
+            }
+        }
     }
-}

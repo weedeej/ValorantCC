@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ValorantCC" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         mc:Ignorable="d"
-        Title="vTools - ValorantCC" Height="282" Width="500" SizeToContent="Manual" WindowStartupLocation="Manual" WindowState="Normal" ResizeMode="NoResize" WindowStyle="None" Icon="Resources/vtools-colored.ico"
+        Title="vTools - ValorantCC" Height="400" Width="500" SizeToContent="Manual" WindowStartupLocation="Manual" WindowState="Normal" ResizeMode="NoResize" WindowStyle="None" Icon="Resources/vtools-colored.ico"
         Background="#263238">
     
     <UserControl>
@@ -35,17 +35,17 @@
                     ◾
                 </TextBlock>
 
-                <TextBlock FontWeight="Bold" Grid.Column="2" Foreground="White">Current Color: </TextBlock>
-                <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="3" Foreground="Black"
-                  x:Name="txt_CurrentColor">
-                    ◾
-                </TextBlock>
-                
+
                 <TextBlock FontWeight="Bold" Grid.Column="4" Foreground="White">Profile Count:</TextBlock>
                 <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="5" Foreground="Red"
                   x:Name="txt_ProfileCount">
                     0
                 </TextBlock>
+                <!--<TextBlock FontWeight="Bold" Grid.Column="2" Foreground="White">Current Color: </TextBlock>
+                <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="3" Foreground="Black"
+                  x:Name="txt_CurrentColor">
+                    ◾
+                </TextBlock>-->
 
                 <!--<TextBlock FontWeight="Bold" Grid.Column="6" Foreground="White">Current Profile:</TextBlock>
                 <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="7" Foreground="Red"
@@ -54,40 +54,101 @@
                 </TextBlock>-->
             </Grid>
             <Grid>
-                
-                <Image Source="{StaticResource crosshairBg}" Margin="3"/>
+                <Image Source="{StaticResource crosshairBg}" Margin="3">
+                    <Image.Effect>
+                        <BlurEffect Radius="10" KernelType="Gaussian"/>
+                    </Image.Effect>
+                </Image>
                 <Grid>
-                    <Line x:Name="lineX1" X1="5" Y1="0" X2="0" Y2="0" Stroke="Black" StrokeThickness="2" Margin="250,80,-250,-80"/>
-                    <Line x:Name="lineX2" X1="5" Y1="0" X2="0" Y2="0" Stroke="Black" StrokeThickness="2" Margin="240,80,-240,-80"/>
-                    <Line x:Name="lineY1" X1="0" Y1="5" X2="0" Y2="0" Stroke="Black" StrokeThickness="2" Margin="247.5,72,-247.5,-72"/>
-                    <Line x:Name="lineY2" X1="0" Y1="5" X2="0" Y2="0" Stroke="Black" StrokeThickness="2" Margin="247.5,82.5,-247.5,-82.5"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Grid Grid.Column="0">
+                        <Grid>
+                            <Grid.LayoutTransform>
+                                <ScaleTransform ScaleX="{Binding Path=Value, ElementName=_zoom}" ScaleY="{Binding Path=Value, ElementName=_zoom}"/>
+                            </Grid.LayoutTransform>
+                            <Rectangle x:Name="primeX1" Fill="Black" Width="5" Height="2" Stroke="White" StrokeThickness="0.5" Margin="5,0,0,38"/>
+                            <Rectangle x:Name="primeX2" Fill="Black" Width="5" Height="2" Stroke="White" StrokeThickness="0.5" Margin="0,0,15,38"/>
+                            <Rectangle x:Name="primeY1" Fill="Black" Width="2" Height="5" Stroke="White" StrokeThickness="0.5" Margin="0,0,5,28"/>
+                            <Rectangle x:Name="primeY2" Fill="Black" Width="2" Height="5" Stroke="White" StrokeThickness="0.5" Margin="0,0,5,49"/>
+                        </Grid>
+                        
+                        <TextBlock Grid.Row="1" HorizontalAlignment="Center" Foreground="White" FontWeight="Bold">Primary</TextBlock>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Grid>
+                            <Grid.LayoutTransform>
+                                <ScaleTransform ScaleX="{Binding Path=Value, ElementName=_zoom}" ScaleY="{Binding Path=Value, ElementName=_zoom}"/>
+                            </Grid.LayoutTransform>
+                            <Rectangle x:Name="aDSX1" Fill="Black" Width="5" Height="2" Stroke="White" StrokeThickness="0.5" Margin="5,0,0,38"/>
+                            <Rectangle x:Name="aDSX2" Fill="Black" Width="5" Height="2" Stroke="White" StrokeThickness="0.5" Margin="0,0,15,38"/>
+                            <Rectangle x:Name="aDSY1" Fill="Black" Width="2" Height="5" Stroke="White" StrokeThickness="0.5" Margin="0,0,5,28"/>
+                            <Rectangle x:Name="aDSY2" Fill="Black" Width="2" Height="5" Stroke="White" StrokeThickness="0.5" Margin="0,0,5,49"/>
+                        </Grid>
+                        
+                        <TextBlock HorizontalAlignment="Center" Foreground="White" FontWeight="Bold">Aim Down Sights</TextBlock>
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <Grid>
+                            <Grid.LayoutTransform>
+                                <ScaleTransform ScaleX="{Binding Path=Value, ElementName=_zoom}" ScaleY="{Binding Path=Value, ElementName=_zoom}"/>
+                            </Grid.LayoutTransform>
+                            <Ellipse Margin="0,0,0,35"  x:Name="sniperdot"  Width="5" Height="5" Fill="Black"/>
+                        </Grid>
+                        
+                        <TextBlock HorizontalAlignment="Center" Foreground="White" FontWeight="Bold">Sniper Dot</TextBlock>
+                    </Grid>
                 </Grid>
-                
             </Grid>
             
             <Grid Margin="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="1*"/>
                     <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <ComboBox x:Name="profiles" Grid.Column="0" SelectionChanged="profiles_SelectionChanged" SelectedIndex="0" IsEditable="True" IsReadOnly="True" Text="Profiles" TextBoxBase.TextChanged="profiles_TextChanged"/>
-                <xctk:ColorPicker x:Name="colorpicker" DisplayColorAndName="True" Grid.Column="1" SelectedColorChanged="colorpicker_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="2,0" Cursor="Hand"></xctk:ColorPicker>
-                <Button Style="{StaticResource SaveButtonHover}" Foreground="White" x:Name="btnSave" Grid.Column="2" Margin="2,0,0,0" Click="btnSave_Click" Cursor="Hand">Save</Button>
-                <Button Style="{StaticResource LoginButtonHover}" Foreground="White" x:Name="btnLogin" Grid.Column="3" Margin="2,0,0,0" Click="btnLogin_Click" Cursor="Hand">Login</Button>
+                <Slider Margin="0,0,0,6" Grid.Row="0" Grid.Column="0" Name="_zoom" Minimum="1" Maximum="2" />
+                <TextBlock Grid.Row="0" Grid.Column="0" VerticalAlignment="Bottom" Foreground="White" HorizontalAlignment="Right" FontSize="8">Crosshair Zoom</TextBlock>
+                <ComboBox x:Name="profiles" Grid.Row="1" Grid.Column="0" SelectionChanged="profiles_SelectionChanged" SelectedIndex="5" IsEditable="True" IsReadOnly="True" Text="Profiles" TextBoxBase.TextChanged="profiles_TextChanged" />
+                <Button Style="{StaticResource SaveButtonHover}" Foreground="White" x:Name="btnSave" Grid.Row="0" Grid.Column="1" Margin="2,0,0,0" Click="btnSave_Click" Cursor="Hand">Save</Button>
+                <Button Style="{StaticResource LoginButtonHover}" Foreground="White" x:Name="btnLogin" Grid.Row="0" Grid.Column="2" Margin="2,0,0,0" Click="btnLogin_Click" Cursor="Hand">Login</Button>
+                <Button Style="{StaticResource ReloadButtonHover}" Foreground="White" x:Name="btnReload" Grid.Row="1"  Grid.Column="1" Margin="2,2,0,0" Click="btnReload_Click" Cursor="Hand">Reload</Button>
+                <Button Style="{StaticResource CloseButtonHover}" Foreground="White" x:Name="btnClose" Grid.Row="1" Grid.Column="2" Margin="2,2,0,0" Click="btnClose_Click" Cursor="Hand">Close</Button>
             </Grid>
             <Grid Margin="3">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="2*"/>
                     <ColumnDefinition Width="2*"/>
-                    <ColumnDefinition Width="1*"/>
-                    <ColumnDefinition Width="1*"/>
                 </Grid.ColumnDefinitions>
-                <TextBlock Margin="2" FontWeight="Bold" Grid.Column="0" Foreground="White">Profile</TextBlock>
-                <TextBlock Margin="2" FontWeight="Bold" Grid.Column="1" Foreground="White">Color Picker</TextBlock>
-                <Button Style="{StaticResource ReloadButtonHover}" Foreground="White" x:Name="btnReload" Grid.Column="2" Margin="2,2,0,2" Click="btnReload_Click" Cursor="Hand">Reload</Button>
-                <Button Style="{StaticResource CloseButtonHover}" Foreground="White" x:Name="btnClose" Grid.Column="3" Margin="2,2,0,2" Click="btnClose_Click" Cursor="Hand">Close</Button>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                    <RowDefinition Height="1*"/>
+                </Grid.RowDefinitions>
+                <TextBlock Margin="2" FontWeight="Bold" Grid.Row="0"  Grid.Column="0" Foreground="White">Primary Color</TextBlock>
+                <xctk:ColorPicker x:Name="primary_color" DisplayColorAndName="True" Grid.Row="0" Grid.Column="1" SelectedColorChanged="primary_color_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="2,0,0,2" Cursor="Hand"></xctk:ColorPicker>
+                
+                <TextBlock Margin="2" FontWeight="Bold" Grid.Row="1" Grid.Column="0" Foreground="White">Aim Down Color</TextBlock>
+                <xctk:ColorPicker x:Name="ads_color" DisplayColorAndName="True" Grid.Row="1" Grid.Column="1" SelectedColorChanged="ads_color_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="2,0,0,2" Cursor="Hand"></xctk:ColorPicker>
+
+                <TextBlock Margin="2" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Foreground="White">Primary Outline Color</TextBlock>
+                <xctk:ColorPicker x:Name="prim_outline_color" DisplayColorAndName="True" Grid.Row="2" Grid.Column="1" SelectedColorChanged="prim_outline_color_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="2,0,0,2" Cursor="Hand"></xctk:ColorPicker>
+
+                <TextBlock Margin="2" FontWeight="Bold" Grid.Row="3" Grid.Column="0" Foreground="White">Aim Down Outline Color</TextBlock>
+                <xctk:ColorPicker x:Name="ads_outline_color" DisplayColorAndName="True" Grid.Row="3" Grid.Column="1" SelectedColorChanged="ads_outline_color_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="2,0,0,2" Cursor="Hand"></xctk:ColorPicker>
+
+                <TextBlock Margin="2" FontWeight="Bold" Grid.Row="4" Grid.Column="0" Foreground="White">Sniper Dot Color</TextBlock>
+                <xctk:ColorPicker x:Name="sniper_dot_color" DisplayColorAndName="True" Grid.Row="4" Grid.Column="1" SelectedColorChanged="sniper_dot_color_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="2,0,0,2" Cursor="Hand"></xctk:ColorPicker>
             </Grid>
         </StackPanel>
     </UserControl>

@@ -4,13 +4,14 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <Version>1.2.2</Version>
+    <Version>2.2.2</Version>
     <Authors>Weedeej</Authors>
     <Company>N/A</Company>
     <ApplicationIcon>Resources\vtools-colored.ico</ApplicationIcon>
     <PackageIcon></PackageIcon>
     <PackageIconUrl />
     <StartupObject />
+    <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
 
   <ItemGroup>
@@ -27,7 +28,8 @@
   <ItemGroup>
     <PackageReference Include="Extended.Wpf.Toolkit" Version="4.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RestSharp" Version="106.12.0" />
+    <PackageReference Include="Nito.AsyncEx.Context" Version="5.1.2" />
+    <PackageReference Include="RestSharp" Version="106.13.0" />
     <PackageReference Include="SharpZipLib" Version="1.3.3" />
   </ItemGroup>
 

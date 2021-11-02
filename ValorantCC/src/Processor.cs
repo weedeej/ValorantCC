@@ -16,7 +16,7 @@ namespace ValorantCC
         private RestClient client = new RestClient("https://playerpreferences.riotgames.com");
         private Data UserSettings;
         private int SavedProfilesIndex = 0;
-        private bool ProfileListed;
+        public bool ProfileListed;
         public List<string> ProfileNames;
         private ProfileList FetchedProfiles;
         public int CurrentProfile;
@@ -101,7 +101,7 @@ namespace ValorantCC
         private ProfileList FetchProfiles(string SettingValue)
         {
             Utils.Log("Fetching/Creating Profile/s");
-            Utils.Log("Setting Value: " + SettingValue);
+            Utils.Log("Setting Value: " + JsonConvert.SerializeObject(UserSettings));
             if (ProfileListed) return JsonConvert.DeserializeObject<ProfileList>(SettingValue);
             CrosshairColor ParsedColor = Utils.parseCrosshairColor(UserSettings.stringSettings[SavedProfilesIndex].value);
             int NameIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName");
@@ -132,63 +132,72 @@ namespace ValorantCC
 
         public CrosshairProfile ProfileFromIndex(int Index)
         {
-            Utils.Log("Obtained Profile from index: "+ FetchedProfiles.Profiles[Index].ProfileName);
+            Utils.Log("Obtained Profile from index: " + FetchedProfiles.Profiles[Index].ProfileName);
             return FetchedProfiles.Profiles[Index];
         }
 
-        public bool SaveNewColor(Color Color, int SelectedIndex, string ProfileName)
+        private void ChangeActiveProfile(List<Color> Colors, int SelectedIndex)
+        {
+            Utils.Log("Updating active color");
+            int DefaultProfileIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
+            UserSettings.stringSettings[DefaultProfileIndex].value = Utils.ColorToString(Colors[0]);
+            List<Stringsetting> DummySettings = UserSettings.stringSettings.ToList();
+            if (FetchedProfiles.Profiles[SelectedIndex].bUseAdvancedOptions)
+            {
+                Utils.Log("Removing Old colors.");
+                int SniperCrosshairIndex = DummySettings.FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairSniperCenterDotColor");
+                if (SniperCrosshairIndex != -1) DummySettings.RemoveAt(SniperCrosshairIndex);
+                int aDSCrosshairIndex = DummySettings.FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairADSColor");
+                if (aDSCrosshairIndex != -1) DummySettings.RemoveAt(aDSCrosshairIndex);
+            }
+            Utils.Log("Appending new colors.");
+            DummySettings.Add(new Stringsetting { settingEnum = "EAresStringSettingName::CrosshairSniperCenterDotColor", value = Utils.ColorToString(Colors[4]) });
+            DummySettings.Add(new Stringsetting { settingEnum = "EAresStringSettingName::CrosshairADSColor", value = Utils.ColorToString(Colors[2]) });
+            UserSettings.stringSettings = DummySettings.ToArray();
+        }
+        private void SaveListedSettings(List<Color> Colors, int SelectedIndex)
+        {
+            if (SelectedIndex == FetchedProfiles.CurrentProfile)
+            {
+                ChangeActiveProfile(Colors, SelectedIndex);
+            }
+            Utils.Log("Modifying Selected Profile.");
+            FetchedProfiles.Profiles[SelectedIndex].bUseAdvancedOptions = true;
+            FetchedProfiles.Profiles[SelectedIndex].bUsePrimaryCrosshairForADS = false;
+            FetchedProfiles.Profiles[SelectedIndex].Primary.Color = new CrosshairColor { R = Colors[0].R, G = Colors[0].G, B = Colors[0].B, A = 255 };
+            FetchedProfiles.Profiles[SelectedIndex].Primary.OutlineColor = new CrosshairColor { R = Colors[1].R, G = Colors[1].G, B = Colors[1].B, A = 255 };
+            FetchedProfiles.Profiles[SelectedIndex].aDS.Color = new CrosshairColor { R = Colors[2].R, G = Colors[2].G, B = Colors[2].B, A = 255 };
+            FetchedProfiles.Profiles[SelectedIndex].aDS.OutlineColor = new CrosshairColor { R = Colors[3].R, G = Colors[3].G, B = Colors[3].B, A = 255 };
+
+            if (FetchedProfiles.Profiles[SelectedIndex].Sniper == null)
+            {
+                FetchedProfiles.Profiles[SelectedIndex].Sniper = new SniperSettings
+                {
+                    bDisplayCenterDot = true,
+                    CenterDotColor = new CrosshairColor { R = Colors[4].R, G = Colors[4].G, B = Colors[4].B, A = 255 },
+                    CenterDotOpacity = 1,
+                    CenterDotSize = 1
+                };
+            }
+            else
+                FetchedProfiles.Profiles[SelectedIndex].Sniper.CenterDotColor = new CrosshairColor { R = Colors[4].R, G = Colors[4].G, B = Colors[4].B, A = 255 };
+        }
+        public bool SaveNewColor(List<Color> Colors, int SelectedIndex, string ProfileName)
         {
             Utils.Log("Save button clicked. Saving...");
             if (ProfileListed)
             {
-                CrosshairColor NewColor = new CrosshairColor
-                {
-                    R = Color.R,
-                    G = Color.G,
-                    B = Color.B,
-                    A = 255
-                };
-                if (SelectedIndex == FetchedProfiles.CurrentProfile)
-                {
-                    int DefaultProfileIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
-                    UserSettings.stringSettings[DefaultProfileIndex].value = Utils.ColorToString(Color);
-                    List<Stringsetting> DummySettings = UserSettings.stringSettings.ToList();
-                    if (FetchedProfiles.Profiles[SelectedIndex].bUseAdvancedOptions)
-                    {
-                        int SniperCrosshairIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairSniperCenterDotColor");
-                        int aDSCrosshairIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairADSColor");
-                        
-                        if (SniperCrosshairIndex != -1) DummySettings.RemoveAt(SniperCrosshairIndex);
-                        if (aDSCrosshairIndex != -1) DummySettings.RemoveAt(aDSCrosshairIndex-1);
-                        SavedProfilesIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
-                    }
-                    DummySettings = DummySettings.Append(new Stringsetting { settingEnum = "EAresStringSettingName::CrosshairSniperCenterDotColor", value = Utils.ColorToString(Color) }).ToList();
-                    DummySettings = DummySettings.Append(new Stringsetting { settingEnum = "EAresStringSettingName::CrosshairADSColor", value = Utils.ColorToString(Color) }).ToList();
-                    UserSettings.stringSettings = DummySettings.ToArray();
-                }
-                FetchedProfiles.Profiles[SelectedIndex].bUseAdvancedOptions = true;
-                FetchedProfiles.Profiles[SelectedIndex].Primary.Color = NewColor;
-                FetchedProfiles.Profiles[SelectedIndex].aDS = FetchedProfiles.Profiles[SelectedIndex].Primary;
-                if (FetchedProfiles.Profiles[SelectedIndex].Sniper == null)
-                {
-                    FetchedProfiles.Profiles[SelectedIndex].Sniper = new SniperSettings
-                    {
-                        bDisplayCenterDot = true,
-                        CenterDotColor = NewColor,
-                        CenterDotOpacity = 1,
-                        CenterDotSize = 1
-                    };
-                }
-                else
-                    FetchedProfiles.Profiles[SelectedIndex].Sniper.CenterDotColor = NewColor;
-
+                Utils.Log("Profile type: List");
+                SaveListedSettings(Colors, SelectedIndex);
                 FetchedProfiles.Profiles[SelectedIndex].ProfileName = ProfileName;
+                SavedProfilesIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
                 UserSettings.stringSettings[SavedProfilesIndex].value = JsonConvert.SerializeObject(FetchedProfiles);
             }
             else
             {
+                Utils.Log("Profile type: Enum");
                 int NameIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName");
-                UserSettings.stringSettings[SavedProfilesIndex].value = Utils.ColorToString(Color);
+                UserSettings.stringSettings[SavedProfilesIndex].value = Utils.ColorToString(Colors[0]);
                 UserSettings.stringSettings[NameIndex].value = ProfileName;
             }
             if (putUserSettings(UserSettings))
