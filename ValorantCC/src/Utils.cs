@@ -100,12 +100,14 @@ namespace Utilities
         public static bool CheckLatest()
         {
             Log("Checking Github releases");
+            Log("Obtaining Executable names.");
             IEnumerable<string> Executables = GetAllFiles(".", "*.exe");
             Trace.WriteLine(Executables.First());
             foreach(string Executable in Executables)
             {
-                Log("Executable Detected: " + Executable);
-                if (Executable != AppDomain.CurrentDomain.FriendlyName)
+                string PrettyName = Executable.Substring(2);
+                Log("Executable Detected: "+ PrettyName);
+                if (PrettyName != AppDomain.CurrentDomain.FriendlyName+".exe")
                 {
                     try
                     {
@@ -113,7 +115,7 @@ namespace Utilities
                         Log("Deleted Executable: " + Executable);
                     }catch(Exception e)
                     {
-                        Log("Error occured: " + e.StackTrace);
+                        Log("Error occured: " + e.Message);
                         continue;
                     }
                 }
@@ -122,7 +124,7 @@ namespace Utilities
             client.Headers = new WebHeaderCollection(){ {"User-Agent","ValorantCC UserAgent"} };
             string ContentString = client.DownloadString("https://api.github.com/repos/weedeej/ValorantCC/releases/latest");
             GithubResponse ResponseObj = JsonConvert.DeserializeObject<GithubResponse>(ContentString);
-            Log("Latest Data: " + ResponseObj.Name + " | URL: " + ResponseObj.Assets[0].BrowserDownloadUrl);
+            Log("Latest Release: " + ResponseObj.Name + " | URL: " + ResponseObj.Assets[0].BrowserDownloadUrl);
             if (new Version(ResponseObj.TagName) > Assembly.GetExecutingAssembly().GetName().Version)
             {
                 DownloadRelease(ResponseObj.Assets[0].BrowserDownloadUrl, ResponseObj.TagName);
@@ -139,7 +141,6 @@ namespace Utilities
 
         private static IEnumerable<string> GetAllFiles(string path, string searchPattern)
         {
-            Log("Obtaining Executable names.");
             return Directory.EnumerateFiles(path, searchPattern).Union(
             Directory.EnumerateDirectories(path).SelectMany(d =>
             {

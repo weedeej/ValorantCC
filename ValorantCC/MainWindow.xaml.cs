@@ -20,13 +20,13 @@ namespace ValorantCC
         public MainWindow()
         {
             InitializeComponent();
+            string LogFile = Directory.GetCurrentDirectory() + "/logs.txt";
+            if (File.Exists(LogFile)) File.Delete(LogFile);
+            Utils.Log("App Started. Deleted old logfile.");
             if (Utils.CheckLatest())
             {
                 MessageBox.Show("New version has been downloaded!");
             }
-            string LogFile = Directory.GetCurrentDirectory() + "/logs.txt";
-            if (File.Exists(LogFile)) File.Delete(LogFile);
-            Utils.Log("App Started. Deleted old logfile.");
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
