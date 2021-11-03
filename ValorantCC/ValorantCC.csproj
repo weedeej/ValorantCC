@@ -4,14 +4,18 @@
     <OutputType>WinExe</OutputType>
     <TargetFramework>net5.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
-    <Version>2.2.2</Version>
     <Authors>Weedeej</Authors>
     <Company>N/A</Company>
     <ApplicationIcon>Resources\vtools-colored.ico</ApplicationIcon>
     <PackageIcon></PackageIcon>
     <PackageIconUrl />
-    <StartupObject />
+    <StartupObject>ValorantCC.App</StartupObject>
     <ApplicationManifest>app.manifest</ApplicationManifest>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <AssemblyVersion>2.2.4.0</AssemblyVersion>
+    <FileVersion>2.2.4.0</FileVersion>
+    <Version>2.2.4</Version>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
