@@ -33,7 +33,7 @@
                                 <ColumnDefinition Width="24*"/>
                             </Grid.ColumnDefinitions>
                             <Image Source="{StaticResource close}" Margin="7,3,7,6" Cursor="Hand" MouseUp="ExitClick" MouseDown="ExitClick" Grid.Column="3" Stretch="Uniform" OpacityMask="#FFFDFDFD"/>
-                            <Image Source="/Resources/vtools-colored.ico" Margin="5,3,3,6" Cursor="Hand" MouseUp="ExitClick" MouseDown="ExitClick"/>
+                            <Image Source="/Resources/vtools-colored.ico" Margin="5,3,3,6" Cursor="Hand"/>
                         </Grid>
                     </Border>
                 </Grid>
