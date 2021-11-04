@@ -64,8 +64,6 @@ namespace ValorantCC
                 profiles.ItemsSource = DataProcessor.ProfileNames;
 
                 txt_LoggedIn.Foreground = Brushes.Lime;
-                txt_ProfileCount.Foreground = Brushes.Lime;
-                txt_ProfileCount.Text = (DataProcessor.ProfileNames.Count).ToString();
                 profiles.SelectedIndex = DataProcessor.CurrentProfile;
                 profiles.IsReadOnly = false;
                 if (DataProcessor.ProfileListed)
