@@ -115,11 +115,6 @@ namespace ValorantCC
             }
         }
 
-        private void btnClose_Click(object sender, RoutedEventArgs e)
-        {
-             Environment.Exit(0);
-        }
-
         private void btnReload_Click(object sender, RoutedEventArgs e)
         {
             if (!LoggedIn)
@@ -185,6 +180,11 @@ namespace ValorantCC
             
             sniperdot.Fill = (Brush)bc.ConvertFrom(sniper_dot_color.SelectedColor.ToString());
 
+        }
+        
+        private void ExitClick(object sender, MouseButtonEventArgs e)
+        {
+            Environment.Exit(0);
         }
     }
 }
