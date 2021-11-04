@@ -12,25 +12,28 @@
     <StartupObject>ValorantCC.App</StartupObject>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>2.2.4.0</AssemblyVersion>
-    <FileVersion>2.2.4.0</FileVersion>
-    <Version>2.2.4</Version>
+    <AssemblyVersion>2.3.4.0</AssemblyVersion>
+    <FileVersion>2.3.4.0</FileVersion>
+    <Version>2.3.4</Version>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="crosshairBg0.png" />
     <None Remove="Resources\vtools-colored.ico" />
+	<None Remove="Resources\exit.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\crosshairBg0.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+	  <Resource Include="Resources\exit.png">
+		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </Resource>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Extended.Wpf.Toolkit" Version="4.1.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
     <PackageReference Include="RestSharp" Version="106.13.0" />
     <PackageReference Include="SharpZipLib" Version="1.3.3" />
@@ -38,6 +41,18 @@
 
   <ItemGroup>
     <_DeploymentManifestIconFile Remove="Resources\vtools-colored.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Xceed.Wpf.AvalonDock">
+      <HintPath>References\Xceed.Wpf.AvalonDock.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
+      <HintPath>References\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
+    </Reference>
+    <Reference Include="Xceed.Wpf.Toolkit">
+      <HintPath>References\Xceed.Wpf.Toolkit.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\vtools-colored.ico" />

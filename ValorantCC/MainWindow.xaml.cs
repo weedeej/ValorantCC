@@ -184,7 +184,7 @@ namespace ValorantCC
         
         private void ExitClick(object sender, MouseButtonEventArgs e)
         {
-            Environment.Exit(0);
+            Application.Current.Shutdown();
         }
     }
 }

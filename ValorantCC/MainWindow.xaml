@@ -32,7 +32,7 @@
                                 <ColumnDefinition Width="18*"/>
                                 <ColumnDefinition Width="24*"/>
                             </Grid.ColumnDefinitions>
-                            <Image Source="{StaticResource close}" Margin="7,3,7,6" Cursor="Hand" MouseUp="ExitClick" MouseDown="ExitClick" Grid.Column="3" Stretch="Uniform" OpacityMask="#FFFDFDFD"/>
+                            <Image Source="{StaticResource close}" Margin="7,3,7,6" Cursor= "Hand" MouseUp="ExitClick" MouseDown="ExitClick" Grid.Column="3" Stretch="Uniform" OpacityMask="#FFFDFDFD"/>
                             <Image Source="/Resources/vtools-colored.ico" Margin="5,3,3,6" Cursor="Hand"/>
                         </Grid>
                     </Border>
@@ -137,8 +137,8 @@
                         <ColumnDefinition Width="160*"/>
                     </Grid.ColumnDefinitions>
                     <Button Style="{DynamicResource RoundButton}" Content="Relogin" Height="25" Click="btnReload_Click" Cursor="Hand" VerticalAlignment="Center" Background="#FF295FFE" FontFamily="Quicksand" FontWeight="DemiBold" FontSize="11" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Grid.Column="1" Margin="24,0,28,0" Grid.ColumnSpan="2" Width="120"/>
-                    <Button Style="{DynamicResource RoundButton}" Content="Save" Height="25" Click="btnSave_Click" Cursor="Hand" VerticalAlignment="Center" Background="#FF295FFE" FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" Grid.Column="3" Margin="30,0,10,0" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Width="120.2"/>
-                    <Button x:Name="btnLogin" Style="{DynamicResource RoundButton}"  Content="Login" HorizontalContentAlignment="Left" Click="btnLogin_Click" Cursor="Hand" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Left" VerticalAlignment="Center" Width="120" Background="#FF295FFE" FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Margin="10,0,0,0"/>
+                    <Button Style="{DynamicResource RoundButton}" Content="Save" Height="25" Click="btnSave_Click" Cursor="Hand" VerticalAlignment="Center" Background="#FF295FFE" FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" Grid.Column="3" Margin="28.2,0,0,0" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Width="124"/>
+                    <Button x:Name="btnLogin" Style="{DynamicResource RoundButton}"  Content="Login" HorizontalContentAlignment="Left" Click="btnLogin_Click" Cursor="Hand" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Left" VerticalAlignment="Center" Width="124" Background="#FF295FFE" FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Margin="0,0,0,0"/>
 
                 </Grid>
                 <Grid Width="495">
