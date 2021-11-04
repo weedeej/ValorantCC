@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-
+using System;
 using Utilities;
 
 namespace ValorantCC
@@ -119,7 +119,7 @@ namespace ValorantCC
 
         private void btnClose_Click(object sender, RoutedEventArgs e)
         {
-            Close();
+             Environment.Exit(0);
         }
 
         private void btnReload_Click(object sender, RoutedEventArgs e)
