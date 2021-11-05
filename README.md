@@ -8,7 +8,7 @@
 # ValorantCC (Valorant Crosshair Changer)
 Change your Crosshair's color to **ANY** color you want for style and/or visiblity.
 
-<img src="https://i.imgur.com/hGV6lr4.png">
+<img src="https://i.imgur.com/0Yi49J0.png">
 
 ## Usage
 - Either Open this first or Riot client or Valorant it doesn't matter.
