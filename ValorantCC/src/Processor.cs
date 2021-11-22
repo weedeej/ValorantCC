@@ -139,9 +139,14 @@ namespace ValorantCC
         private void ChangeActiveProfile(List<Color> Colors, int SelectedIndex)
         {
             Utils.Log("Updating active color");
-            int DefaultProfileIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
-            UserSettings.stringSettings[DefaultProfileIndex].value = Utils.ColorToString(Colors[0]);
             List<Stringsetting> DummySettings = UserSettings.stringSettings.ToList();
+            int DefaultProfileIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
+            if (DefaultProfileIndex == -1)
+            {
+                DummySettings.Add(new Stringsetting { settingEnum = "EAresStringSettingName::CrosshairColor", value = Utils.ColorToString(Colors[0]) });
+                DefaultProfileIndex = DummySettings.FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
+            }
+            DummySettings[DefaultProfileIndex].value = Utils.ColorToString(Colors[0]);
             if (FetchedProfiles.Profiles[SelectedIndex].bUseAdvancedOptions)
             {
                 Utils.Log("Removing Old colors.");
@@ -159,7 +164,14 @@ namespace ValorantCC
         {
             if (SelectedIndex == FetchedProfiles.CurrentProfile)
             {
-                ChangeActiveProfile(Colors, SelectedIndex);
+                try
+                {
+                    ChangeActiveProfile(Colors, SelectedIndex);
+                }catch (Exception e)
+                {
+                    Utils.Log(e.ToString());
+                }
+                
             }
             Utils.Log("Modifying Selected Profile.");
             FetchedProfiles.Profiles[SelectedIndex].bUseAdvancedOptions = true;
