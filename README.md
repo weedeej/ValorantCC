@@ -17,7 +17,6 @@ Change your Crosshair's color to **ANY** color you want for style and/or visibli
 - Change to color.
 - Save.
 - Restart Valorant \*(**IMPORTANT**)\*.
-**IMPORTANT NOTE**: You should place the app into an isolated folder as this deletes executables within the same folder beside itself. I'm looking for a better auto updater solution.
 
 Also don't forget to enjoy.
 
