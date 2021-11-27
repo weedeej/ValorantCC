@@ -99,12 +99,11 @@ namespace Utilities
             StringBuilder.Clear();
         }
 
-        public static bool CheckLatest(Version ProgramFileVersion)
+        public static void CheckLatest(Version ProgramFileVersion)
         {
             Log("Checking Github releases");
             Log("Obtaining Executable name.");
 
-            bool BoolReturn = false;
             try
             {
                 string ProgramFile = AppDomain.CurrentDomain.FriendlyName + ".exe";
@@ -123,16 +122,12 @@ namespace Utilities
                     File.Move(ProgramFile, ProgramFileBak);
 
                     DownloadRelease(ResponseObj.Assets[0].BrowserDownloadUrl, ProgramFileVersion.ToString(), ResponseObj.TagName);
-                    BoolReturn = true;
                 }
-                BoolReturn = false;
             }
             catch (Exception e)
             {
                 Log($"Error occured: {e}");
             }
-
-            return BoolReturn;
         }
 
         private static void DownloadRelease(string url, string OldVersion,string TargetTag)
