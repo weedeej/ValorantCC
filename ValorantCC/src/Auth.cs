@@ -95,7 +95,7 @@ namespace ValorantCC
             catch (FileNotFoundException)
             {
                 Utils.Log("Lockfile not found");
-                LockfileRaw = "x:0:0:x:x";
+                return new LockfileData();
             }
 
             object[] LockfileData = LockfileRaw.Split(":");
@@ -127,7 +127,7 @@ namespace ValorantCC
             }
             catch (WebException ex)
             {
-                Utils.Log("Auth Error " + ex.Message);
+                Utils.Log($"Auth Error {ex}");
                 return new AuthTokens();
             }
 
@@ -143,7 +143,6 @@ namespace ValorantCC
             request.Method = "GET";
             HttpWebResponse response = (HttpWebResponse)request.GetResponse();
             StreamReader sr = new StreamReader(response.GetResponseStream());
-            Console.WriteLine();
             VersionResponse RespData = JsonConvert.DeserializeObject<VersionResponse>(sr.ReadToEnd());
             return RespData.Data.RiotClientVersion;
         }

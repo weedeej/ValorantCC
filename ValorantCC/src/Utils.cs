@@ -85,7 +85,7 @@ namespace Utilities
         {
             Log("Constructing Headers");
             Dictionary<string, string> headers = new Dictionary<string, string>();
-            headers.Add("Authorization", "Bearer " + auth.AuthTokens.AccessToken);
+            headers.Add("Authorization", $"Bearer {auth.AuthTokens.AccessToken}");
             headers.Add("X-Riot-Entitlements-JWT", auth.AuthTokens.Token);
             headers.Add("X-Riot-ClientVersion", auth.Version);
             headers.Add("X-Riot-ClientPlatform", "ew0KCSJwbGF0Zm9ybVR5cGUiOiAiUEMiLA0KCSJwbGF0Zm9ybU9TIjogIldpbmRvd3MiLA0KCSJwbGF0Zm9ybU9TVmVyc2lvbiI6ICIxMC4wLjE5MDQyLjEuMjU2LjY0Yml0IiwNCgkicGxhdGZvcm1DaGlwc2V0IjogIlVua25vd24iDQp9");
@@ -99,18 +99,17 @@ namespace Utilities
             StringBuilder.Clear();
         }
 
-        public static bool CheckLatest()
+        public static bool CheckLatest(Version ProgramFileVersion)
         {
             Log("Checking Github releases");
             Log("Obtaining Executable name.");
 
-            bool valreturn = false;
+            bool BoolReturn = false;
             try
             {
                 string ProgramFile = AppDomain.CurrentDomain.FriendlyName + ".exe";
                 string ProgramFileBak = AppDomain.CurrentDomain.FriendlyName + ".bak";
-                Version ProgramFileVersion = Assembly.GetExecutingAssembly().GetName().Version;
-                Log("Executable Detected: " + ProgramFile + " | v" + ProgramFileVersion.ToString());
+                Log($"Executable Detected: {ProgramFile} | v{ProgramFileVersion}");
 
                 if (File.Exists(ProgramFileBak))
                     File.Delete(ProgramFileBak);
@@ -118,29 +117,32 @@ namespace Utilities
                 client.Headers = new WebHeaderCollection() { { "User-Agent", "ValorantCC UserAgent" } };
                 string ContentString = client.DownloadString("https://api.github.com/repos/weedeej/ValorantCC/releases/latest");
                 GithubResponse ResponseObj = JsonConvert.DeserializeObject<GithubResponse>(ContentString);
-                Log("Latest Release: " + ResponseObj.Name + " | URL: " + ResponseObj.Assets[0].BrowserDownloadUrl);
+                Log($"Latest Release: {ResponseObj.Name} | URL: {ResponseObj.Assets[0].BrowserDownloadUrl}");
                 if (new Version(ResponseObj.TagName) > ProgramFileVersion)
                 {
                     File.Move(ProgramFile, ProgramFileBak);
 
-                    DownloadRelease(ResponseObj.Assets[0].BrowserDownloadUrl, ResponseObj.TagName);
-                    valreturn = true;
+                    DownloadRelease(ResponseObj.Assets[0].BrowserDownloadUrl, ProgramFileVersion.ToString(), ResponseObj.TagName);
+                    BoolReturn = true;
                 }
-                valreturn = false;
+                BoolReturn = false;
             }
             catch (Exception e)
             {
-                Log("Error occured: " + e.Message);
+                Log($"Error occured: {e}");
             }
 
-            return valreturn;
+            return BoolReturn;
         }
 
-        private static void DownloadRelease(string url, string tag)
+        private static void DownloadRelease(string url, string OldVersion,string TargetTag)
         {
-            Task.Run(() => { MessageBox.Show("Downloading new version, please wait"); });
+            Log($"Downloading new version | v{OldVersion} -> v{TargetTag}");
+            Task.Run(() => 
+                {
+                    MessageBox.Show("Downloading new version, please wait");
+                });
             client.DownloadFile(url, $"ValorantCC.exe");
-            Log("Latest Release Downloaded!");
             Process.Start(Process.GetCurrentProcess().MainModule.FileName);
             Application.Current.Shutdown();
         }
@@ -152,11 +154,11 @@ namespace Utilities
             {
                 try
                 {
-                    return GetAllFiles(d, searchPattern);
+                    return GetAllFiles(d, searchPattern); //Get
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    return Enumerable.Empty<string>();
+                    return Enumerable.Empty<string>(); //Empty
                 }
             }));
             }
