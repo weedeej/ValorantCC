@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System;
 using Utilities;
 
 namespace ValorantCC
@@ -21,10 +22,11 @@ namespace ValorantCC
         {
             InitializeComponent();
             string LogFile = Directory.GetCurrentDirectory() + "/logs.txt";
-            if (File.Exists(LogFile)) File.Delete(LogFile);
-            Utils.Log("App Started. Deleted old logfile.");
+            if (File.Exists(LogFile)) File.Move(LogFile, LogFile + ".old", true);
+            Version ProgramFileVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            Utils.Log("App Started | v"+ProgramFileVersion.ToString()+". Replaced old logfile.");
 
-            Utils.CheckLatest();
+            Utils.CheckLatest(ProgramFileVersion);
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)

@@ -39,7 +39,7 @@ namespace ValorantCC
             client.AddDefaultHeaders(Utils.ConstructHeaders(AuthResponse));
             UserSettings = FetchUserSettings();
             ProfileListed = CheckIfList(UserSettings);
-            Utils.Log("Multiple Profiles: " + ProfileListed.ToString());
+            Utils.Log($"Multiple Profiles: {ProfileListed}");
             if (ProfileListed)
             {
                 SavedProfilesIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
@@ -100,8 +100,9 @@ namespace ValorantCC
 
         private ProfileList FetchProfiles(string SettingValue)
         {
+            string DefaultUserSettings = JsonConvert.SerializeObject(UserSettings);
             Utils.Log("Fetching/Creating Profile/s");
-            Utils.Log("Setting Value: " + JsonConvert.SerializeObject(UserSettings));
+            Utils.Log($"Setting Value: {DefaultUserSettings}");
             if (ProfileListed) return JsonConvert.DeserializeObject<ProfileList>(SettingValue);
             CrosshairColor ParsedColor = Utils.parseCrosshairColor(UserSettings.stringSettings[SavedProfilesIndex].value);
             int NameIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName");
@@ -132,7 +133,7 @@ namespace ValorantCC
 
         public CrosshairProfile ProfileFromIndex(int Index)
         {
-            Utils.Log("Obtained Profile from index: " + FetchedProfiles.Profiles[Index].ProfileName);
+            Utils.Log($"Obtained Profile from index: {FetchedProfiles.Profiles[Index].ProfileName}");
             return FetchedProfiles.Profiles[Index];
         }
 
@@ -169,7 +170,7 @@ namespace ValorantCC
                     ChangeActiveProfile(Colors, SelectedIndex);
                 }catch (Exception e)
                 {
-                    Utils.Log(e.ToString());
+                    Utils.Log($"Error occured: {e}");
                 }
                 
             }
