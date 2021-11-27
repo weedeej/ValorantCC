@@ -11,6 +11,8 @@ using System.Net;
 using System.Diagnostics;
 using ValorantCC;
 using System.Reflection;
+using System.Windows;
+using System.Threading.Tasks;
 
 namespace Utilities
 {
@@ -100,43 +102,47 @@ namespace Utilities
         public static bool CheckLatest()
         {
             Log("Checking Github releases");
-            Log("Obtaining Executable names.");
-            IEnumerable<string> Executables = GetAllFiles(".", "*.exe");
-            Trace.WriteLine(Executables.First());
-            foreach(string Executable in Executables)
+            Log("Obtaining Executable name.");
+
+            bool valreturn = false;
+            try
             {
-                string PrettyName = Executable.Substring(2);
-                Log("Executable Detected: "+ PrettyName);
-                if (PrettyName != AppDomain.CurrentDomain.FriendlyName+".exe")
+                string ProgramFile = AppDomain.CurrentDomain.FriendlyName + ".exe";
+                string ProgramFileBak = AppDomain.CurrentDomain.FriendlyName + ".bak";
+                Version ProgramFileVersion = Assembly.GetExecutingAssembly().GetName().Version;
+                Log("Executable Detected: " + ProgramFile + " | v" + ProgramFileVersion.ToString());
+
+                if (File.Exists(ProgramFileBak))
+                    File.Delete(ProgramFileBak);
+
+                client.Headers = new WebHeaderCollection() { { "User-Agent", "ValorantCC UserAgent" } };
+                string ContentString = client.DownloadString("https://api.github.com/repos/weedeej/ValorantCC/releases/latest");
+                GithubResponse ResponseObj = JsonConvert.DeserializeObject<GithubResponse>(ContentString);
+                Log("Latest Release: " + ResponseObj.Name + " | URL: " + ResponseObj.Assets[0].BrowserDownloadUrl);
+                if (new Version(ResponseObj.TagName) > ProgramFileVersion)
                 {
-                    try
-                    {
-                        File.Delete(Directory.GetCurrentDirectory() + "/" + Executable);
-                        Log("Deleted Executable: " + Executable);
-                    }catch(Exception e)
-                    {
-                        Log("Error occured: " + e.Message);
-                        continue;
-                    }
+                    File.Move(ProgramFile, ProgramFileBak);
+
+                    DownloadRelease(ResponseObj.Assets[0].BrowserDownloadUrl, ResponseObj.TagName);
+                    valreturn = true;
                 }
+                valreturn = false;
+            }
+            catch (Exception e)
+            {
+                Log("Error occured: " + e.Message);
             }
 
-            client.Headers = new WebHeaderCollection(){ {"User-Agent","ValorantCC UserAgent"} };
-            string ContentString = client.DownloadString("https://api.github.com/repos/weedeej/ValorantCC/releases/latest");
-            GithubResponse ResponseObj = JsonConvert.DeserializeObject<GithubResponse>(ContentString);
-            Log("Latest Release: " + ResponseObj.Name + " | URL: " + ResponseObj.Assets[0].BrowserDownloadUrl);
-            if (new Version(ResponseObj.TagName) > Assembly.GetExecutingAssembly().GetName().Version)
-            {
-                DownloadRelease(ResponseObj.Assets[0].BrowserDownloadUrl, ResponseObj.TagName);
-                return true;
-            }
-            return false;
+            return valreturn;
         }
 
         private static void DownloadRelease(string url, string tag)
         {
-            client.DownloadFile(url, $"ValorantCC-{tag}.exe");
+            Task.Run(() => { MessageBox.Show("Downloading new version, please wait"); });
+            client.DownloadFile(url, $"ValorantCC.exe");
             Log("Latest Release Downloaded!");
+            Process.Start(Process.GetCurrentProcess().MainModule.FileName);
+            Application.Current.Shutdown();
         }
 
         private static IEnumerable<string> GetAllFiles(string path, string searchPattern)

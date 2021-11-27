@@ -23,10 +23,8 @@ namespace ValorantCC
             string LogFile = Directory.GetCurrentDirectory() + "/logs.txt";
             if (File.Exists(LogFile)) File.Delete(LogFile);
             Utils.Log("App Started. Deleted old logfile.");
-            if (Utils.CheckLatest())
-            {
-                MessageBox.Show("New version has been downloaded!");
-            }
+
+            Utils.CheckLatest();
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)

@@ -12,8 +12,8 @@
     <StartupObject>ValorantCC.App</StartupObject>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>2.3.5.0</AssemblyVersion>
-    <FileVersion>2.3.5.0</FileVersion>
+    <AssemblyVersion>2.3.5</AssemblyVersion>
+    <FileVersion>2.3.5</FileVersion>
     <Version>2.3.5</Version>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
