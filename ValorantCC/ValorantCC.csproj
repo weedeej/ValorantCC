@@ -12,9 +12,9 @@
     <StartupObject>ValorantCC.App</StartupObject>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <AssemblyVersion>2.4.5</AssemblyVersion>
-    <FileVersion>2.4.5</FileVersion>
-    <Version>2.4.5</Version>
+    <AssemblyVersion>2.4.6</AssemblyVersion>
+    <FileVersion>2.4.6</FileVersion>
+    <Version>2.4.6</Version>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 

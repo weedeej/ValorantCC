@@ -24,14 +24,22 @@ namespace ValorantCC
             // Replace old logs 
             string LogFile = Directory.GetCurrentDirectory() + "/logs.txt";
             if (File.Exists(LogFile)) File.Move(LogFile, LogFile + ".old", true);
-            // Start Updater
             Version ProgramFileVersion = new Version(FileVersionInfo.GetVersionInfo(Process.GetCurrentProcess().MainModule.FileName).ProductVersion);
-            Utils.CheckLatest(ProgramFileVersion);
 
             InitializeComponent();
             Utils.Log("App Started | v"+ProgramFileVersion.ToString()+". Replaced old logfile.");
+        }
 
-            
+        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        {
+            EZ_Updater.CheckUpdate(this);
+        }
+
+        public void UpdateMessage()
+        {
+            var update = new UpdateWindow();
+            update.Owner = this;
+            update.ShowDialog();
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
