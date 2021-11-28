@@ -1,8 +1,8 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.IO;
-using System.Text;
-using Newtonsoft.Json;
 using System.Net;
+using System.Text;
 using Utilities;
 namespace ValorantCC
 {
@@ -58,7 +58,7 @@ namespace ValorantCC
             if (wait)
             {
                 Utils.Log("Waiting for Lockfile");
-                
+
                 bool LockfileExists = CheckLockFile(LockfilePath);
                 while (!LockfileExists)
                 {
@@ -114,7 +114,7 @@ namespace ValorantCC
         private AuthTokens ObtainAuthTokens(string Basic, int port)
         {
             Utils.Log("Creating Auth Request");
-            
+
             HttpWebRequest request = HttpWebRequest.CreateHttp($"https://127.0.0.1:{port}/entitlements/v1/token");
             request.Method = "GET";
             request.Headers.Add("Authorization", $"Basic {Basic}");

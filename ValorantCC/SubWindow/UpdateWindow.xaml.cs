@@ -1,25 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using EZ_Updater;
+using System;
 using System.Diagnostics;
-using System.Linq;
 using System.Net;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace ValorantCC
 {
     public partial class UpdateWindow : Window
     {
+        int test = 1;
         string OriginalContent = null;
+
         public UpdateWindow()
         {
             InitializeComponent();
@@ -39,7 +30,7 @@ namespace ValorantCC
             progressBar1.Value = int.Parse(Math.Truncate(percentage).ToString());
             test = 1;
         }
-        int test = 1;
+
         private void RetryDownload()
         {
             Messagelbl.Content = "Retrying download... " + test++ + "/4";
