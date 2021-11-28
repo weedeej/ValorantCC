@@ -1,18 +1,14 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Windows.Media;
-using Newtonsoft.Json;
-using System.Net;
-using System.Diagnostics;
 using ValorantCC;
-using System.Reflection;
-using System.Windows;
-using System.Threading.Tasks;
 
 namespace Utilities
 {

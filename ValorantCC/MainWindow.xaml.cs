@@ -1,8 +1,8 @@
-﻿using System;
+﻿using EZ_Updater;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
-using System.Reflection;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -88,7 +88,7 @@ namespace ValorantCC
                 {
                     MessageBox.Show("Logged In! You may now close Valorant. NOTE: You only have 1 Profile. To use the other features, Please create an extra profile.");
                 }
-                
+
             }
             else
             {
@@ -104,7 +104,7 @@ namespace ValorantCC
             {
                 SelectedIndex = profiles.SelectedIndex;
                 SelectedProfile = DataProcessor.ProfileFromIndex(profiles.SelectedIndex);
-                
+
                 primary_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.Color.R, SelectedProfile.Primary.Color.G, SelectedProfile.Primary.Color.B);
                 if (!DataProcessor.ProfileListed)
                 {
@@ -155,7 +155,7 @@ namespace ValorantCC
 
         private void primary_color_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            
+
             primeX1.Fill = (Brush)bc.ConvertFrom(primary_color.SelectedColor.ToString());
             primeX2.Fill = (Brush)bc.ConvertFrom(primary_color.SelectedColor.ToString());
             primeY1.Fill = (Brush)bc.ConvertFrom(primary_color.SelectedColor.ToString());
@@ -164,7 +164,7 @@ namespace ValorantCC
 
         private void prim_outline_color_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            
+
             primeX1.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
             primeX2.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
             primeY1.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
@@ -173,7 +173,7 @@ namespace ValorantCC
 
         private void ads_color_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            
+
             aDSX1.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
             aDSX2.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
             aDSY1.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
@@ -182,7 +182,7 @@ namespace ValorantCC
 
         private void ads_outline_color_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            
+
             aDSX1.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
             aDSX2.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
             aDSY1.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
@@ -191,11 +191,11 @@ namespace ValorantCC
 
         private void sniper_dot_color_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-            
+
             sniperdot.Fill = (Brush)bc.ConvertFrom(sniper_dot_color.SelectedColor.ToString());
 
         }
-        
+
         private void ExitClick(object sender, MouseButtonEventArgs e)
         {
             Application.Current.Shutdown();

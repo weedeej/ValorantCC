@@ -1,10 +1,9 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using RestSharp;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
-
-using RestSharp;
-using Newtonsoft.Json;
 using Utilities;
 
 namespace ValorantCC
@@ -68,7 +67,7 @@ namespace ValorantCC
             Utils.Log("<-- Constructing Properties");
         }
 
-        private bool CheckIfList (Data settings)
+        private bool CheckIfList(Data settings)
         {
             Utils.Log("Checking if User has multiple profiles");
             return settings.stringSettings.Any(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
@@ -86,8 +85,8 @@ namespace ValorantCC
 
         private bool putUserSettings(Data newData)
         {
-            Utils.Log("Saving New Data: (BACKUP) "+ JsonConvert.SerializeObject(newData));
-            
+            Utils.Log("Saving New Data: (BACKUP) " + JsonConvert.SerializeObject(newData));
+
             IRestRequest request = new RestRequest("/playerPref/v3/savePreference");
             request.AddJsonBody(new { type = "Ares.PlayerSettings", data = Utils.Compress(newData) });
             IRestResponse response = client.Put(request);
@@ -121,11 +120,11 @@ namespace ValorantCC
             };
         }
 
-        private List<string> FetchProfileNames (ProfileList ProfileList)
+        private List<string> FetchProfileNames(ProfileList ProfileList)
         {
             Utils.Log("Fetching Profile names");
             if (ProfileListed) return (from profile in ProfileList.Profiles
-                        select profile.ProfileName).ToList();
+                                       select profile.ProfileName).ToList();
 
             int NameIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName");
             return new List<string> { UserSettings.stringSettings[NameIndex].value };
@@ -168,11 +167,12 @@ namespace ValorantCC
                 try
                 {
                     ChangeActiveProfile(Colors, SelectedIndex);
-                }catch (Exception e)
+                }
+                catch (Exception e)
                 {
                     Utils.Log($"Error occured: {e}");
                 }
-                
+
             }
             Utils.Log("Modifying Selected Profile.");
             FetchedProfiles.Profiles[SelectedIndex].bUseAdvancedOptions = true;

@@ -4,16 +4,13 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Net.NetworkInformation;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows;
 using System.Windows.Threading;
 using Utilities;
 
-namespace ValorantCC
+namespace EZ_Updater
 {
     struct GithubResponse
     {
@@ -52,21 +49,21 @@ namespace ValorantCC
             if (File.Exists(ProgramFileBak))
                 File.Delete(ProgramFileBak);
 
-            if(File.Exists(temppath + ProgramFileName))
+            if (File.Exists(temppath + ProgramFileName))
                 File.Delete(temppath + ProgramFileName);
 
             TimerDP.Interval = new TimeSpan(0, 0, 3);
             TimerDP.Tick += RetryDownload;
         }
 
-        public static void CheckUpdate(MainWindow owner)
+        public static void CheckUpdate(Window owner)
         {
             Thread UpdaterThread = new Thread(() =>
             {
                 if (CheckUpdate())
                     owner.Dispatcher.Invoke((Action)delegate
                     {
-                        owner.UpdateMessage();
+                        ((ValorantCC.MainWindow)owner).UpdateMessage();
                     });
             });
             UpdaterThread.Start();
@@ -137,13 +134,13 @@ namespace ValorantCC
         {
             RetryCount = 0;
             TimerDP.Stop();
-            TimerDP.Interval = new TimeSpan(0,0,3);
+            TimerDP.Interval = new TimeSpan(0, 0, 3);
             TimerDP.Start();
         }
 
         private static void RetryDownload(object sender, EventArgs e)
         {
-            TimerDP.Interval = new TimeSpan(0,0,5);
+            TimerDP.Interval = new TimeSpan(0, 0, 5);
             client.CancelAsync();
             client.Dispose();
             client = new WebClient();
@@ -151,7 +148,7 @@ namespace ValorantCC
             {
                 TimerDP.Tick -= RetryDownload;
                 TimerDP.Tick += Canceled;
-                TimerDP.Interval = new TimeSpan(0,0,2);
+                TimerDP.Interval = new TimeSpan(0, 0, 2);
                 return;
             }
             RetryCount++;
@@ -180,7 +177,7 @@ namespace ValorantCC
             {
                 DispatcherTimer TimerSC = new DispatcherTimer
                 {
-                    Interval = new TimeSpan(0,0,1),
+                    Interval = new TimeSpan(0, 0, 1),
                 };
                 TimerSC.Tick += Restart;
                 TimerSC.Start();
