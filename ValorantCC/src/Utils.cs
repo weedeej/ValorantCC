@@ -102,16 +102,14 @@ namespace Utilities
         public static void CheckLatest(Version ProgramFileVersion)
         {
             Log("Checking Github releases");
-            Log("Obtaining Executable name.");
+            Log($"Current Version: {ProgramFileVersion}");
 
             try
             {
                 string ProgramFile = AppDomain.CurrentDomain.FriendlyName + ".exe";
                 string ProgramFileBak = AppDomain.CurrentDomain.FriendlyName + ".bak";
-                Log($"Executable Detected: {ProgramFile} | v{ProgramFileVersion}");
 
-                if (File.Exists(ProgramFileBak))
-                    File.Delete(ProgramFileBak);
+                if (File.Exists(ProgramFileBak)) File.Delete(ProgramFileBak);
 
                 client.Headers = new WebHeaderCollection() { { "User-Agent", "ValorantCC UserAgent" } };
                 string ContentString = client.DownloadString("https://api.github.com/repos/weedeej/ValorantCC/releases/latest");
@@ -120,7 +118,6 @@ namespace Utilities
                 if (new Version(ResponseObj.TagName) > ProgramFileVersion)
                 {
                     File.Move(ProgramFile, ProgramFileBak);
-
                     DownloadRelease(ResponseObj.Assets[0].BrowserDownloadUrl, ProgramFileVersion.ToString(), ResponseObj.TagName);
                 }
             }
@@ -130,32 +127,13 @@ namespace Utilities
             }
         }
 
-        private static void DownloadRelease(string url, string OldVersion,string TargetTag)
+        private static void DownloadRelease(string url, string OldVersion, string TargetTag)
         {
             Log($"Downloading new version | v{OldVersion} -> v{TargetTag}");
-            Task.Run(() => 
-                {
-                    MessageBox.Show("Downloading new version, please wait");
-                });
+            Task.Run(() => { MessageBox.Show("Downloading new version, please wait"); });
             client.DownloadFile(url, $"ValorantCC.exe");
             Process.Start(Process.GetCurrentProcess().MainModule.FileName);
             Application.Current.Shutdown();
         }
-
-        private static IEnumerable<string> GetAllFiles(string path, string searchPattern)
-        {
-            return Directory.EnumerateFiles(path, searchPattern).Union(
-            Directory.EnumerateDirectories(path).SelectMany(d =>
-            {
-                try
-                {
-                    return GetAllFiles(d, searchPattern); //Get
-                }
-                catch (Exception)
-                {
-                    return Enumerable.Empty<string>(); //Empty
-                }
-            }));
-            }
-        }
     }
+}

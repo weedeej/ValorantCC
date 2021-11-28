@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Reflection;
 using System.Windows;
@@ -20,13 +21,17 @@ namespace ValorantCC
         BrushConverter bc = new BrushConverter();
         public MainWindow()
         {
-            InitializeComponent();
+            // Replace old logs 
             string LogFile = Directory.GetCurrentDirectory() + "/logs.txt";
             if (File.Exists(LogFile)) File.Move(LogFile, LogFile + ".old", true);
-            Version ProgramFileVersion = Assembly.GetExecutingAssembly().GetName().Version;
+            // Start Updater
+            Version ProgramFileVersion = new Version(FileVersionInfo.GetVersionInfo(Process.GetCurrentProcess().MainModule.FileName).ProductVersion);
+            Utils.CheckLatest(ProgramFileVersion);
+
+            InitializeComponent();
             Utils.Log("App Started | v"+ProgramFileVersion.ToString()+". Replaced old logfile.");
 
-            Utils.CheckLatest(ProgramFileVersion);
+            
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
