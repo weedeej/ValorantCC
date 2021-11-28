@@ -18,7 +18,7 @@
                     <BitmapImage x:Key="close" UriSource="Resources/exit.png"/>
                 </ResourceDictionary>
             </UserControl.Resources>
-            <StackPanel MouseDown="StackPanel_MouseDown" Background="Black">
+            <StackPanel MouseDown="StackPanel_MouseDown">
                 <Grid Loaded="Grid_Loaded">
 
                     <Grid.Background>
@@ -28,12 +28,14 @@
                         <Grid Height="Auto" Width="Auto" Margin="0,0,0,-2" OpacityMask="#FFA42727">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="19*"/>
-                                <ColumnDefinition Width="439*"/>
+                                <ColumnDefinition Width="139*"/>
+                                <ColumnDefinition Width="300*"/>
                                 <ColumnDefinition Width="18*"/>
                                 <ColumnDefinition Width="24*"/>
                             </Grid.ColumnDefinitions>
-                            <Image Source="{StaticResource close}" Margin="7,3,7,6" Cursor= "Hand" MouseUp="ExitClick" MouseDown="ExitClick" Grid.Column="3" Stretch="Uniform" OpacityMask="#FFFDFDFD"/>
-                            <Image Source="/Resources/vtools-colored.ico" Margin="5,3,3,6"/>
+                            <Image Source="/Resources/vtools-colored.ico" Grid.Column="0" Margin="2,0"/>
+                            <Label x:Name="Txt_CurrVer" Foreground="White" Grid.Column="1"/>
+                            <Image Source="{StaticResource close}" Margin="7,3,7,6" Cursor= "Hand" MouseUp="ExitClick" MouseDown="ExitClick" Grid.Column="4" Stretch="Uniform" OpacityMask="#FFFDFDFD"/>
                         </Grid>
                     </Border>
                 </Grid>
@@ -46,12 +48,11 @@
                         <ColumnDefinition Width="68*"/>
 
                         <ColumnDefinition MaxWidth="82" Width="82*"/>
-                        <ColumnDefinition Width="158*"/>
+                        <ColumnDefinition Width="128*"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock FontWeight="Bold" Grid.Column="0" Margin="5,0,0,0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Logged In:"/></TextBlock>
-                    <TextBlock Margin="2,-3,26,4" FontWeight="Bold" Foreground="#FFF90C0C"
-                  x:Name="txt_LoggedIn" FontSize="16" Grid.Column="1"><Run Text="•"/></TextBlock>
-                    <ComboBox x:Name="profiles" Grid.Column="5" SelectionChanged="profiles_SelectionChanged" SelectedIndex="0" IsEditable="True" IsReadOnly="True" Text="Profiles" TextBoxBase.TextChanged="profiles_TextChanged" Background="#FF232429" Foreground="White" Margin="38,-1,1,1" FontFamily="Quicksand" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold"/>
+                    <TextBlock FontWeight="Bold" Grid.Column="0" Margin="5,0,43,0" Foreground="White" FontFamily="Segoe UI Semibold" VerticalAlignment="Top" Grid.ColumnSpan="2"><Run Text="Logged In:"/></TextBlock>
+                    <TextBlock Margin="2,-5,0,0" FontWeight="Bold" Foreground="#FFF90C0C" x:Name="txt_LoggedIn" FontSize="18" Grid.Column="1"  VerticalAlignment="Top" HorizontalAlignment="Left"><Run Text="•"/></TextBlock>
+                    <ComboBox x:Name="profiles" Grid.Column="5" SelectionChanged="profiles_SelectionChanged" SelectedIndex="0" IsEditable="True" IsReadOnly="True" Text="Profiles" TextBoxBase.TextChanged="profiles_TextChanged" Background="#FF232429" Foreground="White" Margin="0,-1,2,1" FontFamily="Quicksand" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold"/>
 
                     <!--<TextBlock FontWeight="Bold" Grid.Column="2" Foreground="White">Current Color: </TextBlock>
                 <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="3" Foreground="Black"
@@ -66,11 +67,7 @@
                 </TextBlock>-->
                 </Grid>
                 <Grid>
-                    <Image Source="{StaticResource crosshairBg}" Margin="1,3,-1,3">
-                        <Image.Effect>
-                            <BlurEffect Radius="7" KernelType="Gaussian"/>
-                        </Image.Effect>
-                    </Image>
+                    <Image Source="{StaticResource crosshairBg}" Margin="1,3,-1,3"/>
                     <Grid>
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="1*"/>
@@ -116,7 +113,7 @@
                         </Grid>
                     </Grid>
                 </Grid>
-                <Path Data="M28,378 L573,378" Fill="#16171B" Margin="-1,-1,0,0" Height="1" Stretch="Fill" Stroke="#16171B" Width="538"/>
+                <Path Data="M28,378 L573,378" Fill="#16171B" Height="1" Stretch="Fill" Stroke="White" Width="538"/>
 
                 <Grid Margin="3" Height="26" RenderTransformOrigin="0.5,0.5" Width="494">
                     <Grid.RenderTransform>
@@ -159,7 +156,7 @@
                     <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="1" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Aim Down Color"/></TextBlock>
                     <xctk:ColorPicker x:Name="ads_color" Grid.Row="1" Grid.Column="1" SelectedColorChanged="ads_color_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="10,1,4,1" Cursor="Hand" BorderBrush="White" Background="{x:Null}" Foreground="White" HeaderBackground="#FF252526" HeaderForeground="White" TabBackground="#FF252526" TabForeground="#FFFBF9F9" DropDownBorderBrush="#FF252526" DropDownBackground="#FF252526" DisplayColorAndName="True"/>
 
-                    <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold" Background="Black"><Run Text="Primary Outline Color"/></TextBlock>
+                    <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Primary Outline Color"/></TextBlock>
                     <xctk:ColorPicker x:Name="prim_outline_color" Grid.Row="2" Grid.Column="1" SelectedColorChanged="prim_outline_color_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="10,1,4,1" Cursor="Hand" DisplayColorAndName="True" BorderBrush="#FFDADADA" Background="{x:Null}" Foreground="White" HeaderBackground="#FF252526" HeaderForeground="White" TabBackground="#FF252526" TabForeground="#FFFBF9F9" DropDownBorderBrush="#FF252526" DropDownBackground="#FF252526"/>
 
                     <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="3" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Aim Down Outline Color"/></TextBlock>
