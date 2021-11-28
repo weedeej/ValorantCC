@@ -1,0 +1,16 @@
+﻿<Window x:Class="ValorantCC.UpdateWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ValorantCC"
+        mc:Ignorable="d"
+        Title="UpdateWindow" Height="126" Width="395" Background="#FF232429" WindowStyle="None" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" ShowInTaskbar="False">
+    <Border BorderBrush="White" BorderThickness="1">
+        <StackPanel VerticalAlignment="Center">
+            <Label x:Name="Messagelbl" Content="Downloading Update..." Foreground="White" FontSize="18" HorizontalContentAlignment="Center"/>
+            <ProgressBar x:Name="progressBar1" Height="21" Margin="0,0,0,5"  Width="368"/>
+            <Button x:Name="OKbtn" Style="{DynamicResource RoundButton}"  Content="Confirm" Click="OKbtn_Click" Cursor="Hand" Height="22"  Width="84" Background="#FF295FFE" FontFamily="Quicksand" FontSize="14" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Margin="0,0,0,0"/>
+        </StackPanel>
+    </Border>
+</Window>

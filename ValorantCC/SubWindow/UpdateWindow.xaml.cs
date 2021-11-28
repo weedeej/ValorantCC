@@ -17,9 +17,6 @@ using System.Windows.Shapes;
 
 namespace ValorantCC
 {
-    /// <summary>
-    /// Lógica de interacción para UpdateWindow.xaml
-    /// </summary>
     public partial class UpdateWindow : Window
     {
         string OriginalContent = null;
@@ -28,7 +25,7 @@ namespace ValorantCC
             InitializeComponent();
             OKbtn.Visibility = Visibility.Hidden;
             OriginalContent = (string)Messagelbl.Content;
-            EZ_Updater.Update(CanceledDownload, RetryDownload, DownloadProgress, Restart);
+            Updater.Update(CanceledDownload, RetryDownload, DownloadProgress, Restart);
         }
 
         private void DownloadProgress(object sender, DownloadProgressChangedEventArgs e)

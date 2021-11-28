@@ -27,12 +27,13 @@ namespace ValorantCC
             Version ProgramFileVersion = new Version(FileVersionInfo.GetVersionInfo(Process.GetCurrentProcess().MainModule.FileName).ProductVersion);
 
             InitializeComponent();
-            Utils.Log("App Started | v"+ProgramFileVersion.ToString()+". Replaced old logfile.");
+            Utils.Log($"App Started | v{ProgramFileVersion}. Replaced old logfile.");
+            Txt_CurrVer.Content = $"v{ProgramFileVersion}";
         }
 
         private void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            EZ_Updater.CheckUpdate(this);
+            Updater.CheckUpdate(this);
         }
 
         public void UpdateMessage()
