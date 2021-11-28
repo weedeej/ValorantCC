@@ -16,20 +16,6 @@ using System.Threading.Tasks;
 
 namespace Utilities
 {
-    struct GithubResponse
-    {
-        [JsonProperty("tag_name")]
-        public string TagName { get; set; }
-        [JsonProperty("name")]
-        public string Name { get; set; }
-        [JsonProperty("assets")]
-        public List<Asset> Assets { get; set; }
-    }
-    struct Asset
-    {
-        [JsonProperty("browser_download_url")]
-        public string BrowserDownloadUrl { get; set; }
-    }
 
     class Utils
     {
@@ -97,43 +83,6 @@ namespace Utilities
             StringBuilder.Append($"{DateTimeOffset.UtcNow} | {Text}\n");
             File.AppendAllText(Directory.GetCurrentDirectory() + "/logs.txt", StringBuilder.ToString());
             StringBuilder.Clear();
-        }
-
-        public static void CheckLatest(Version ProgramFileVersion)
-        {
-            Log("Checking Github releases");
-            Log($"Current Version: {ProgramFileVersion}");
-
-            try
-            {
-                string ProgramFile = AppDomain.CurrentDomain.FriendlyName + ".exe";
-                string ProgramFileBak = AppDomain.CurrentDomain.FriendlyName + ".bak";
-
-                if (File.Exists(ProgramFileBak)) File.Delete(ProgramFileBak);
-
-                client.Headers = new WebHeaderCollection() { { "User-Agent", "ValorantCC UserAgent" } };
-                string ContentString = client.DownloadString("https://api.github.com/repos/weedeej/ValorantCC/releases/latest");
-                GithubResponse ResponseObj = JsonConvert.DeserializeObject<GithubResponse>(ContentString);
-                Log($"Latest Release: {ResponseObj.Name} | URL: {ResponseObj.Assets[0].BrowserDownloadUrl}");
-                if (new Version(ResponseObj.TagName) > ProgramFileVersion)
-                {
-                    File.Move(ProgramFile, ProgramFileBak);
-                    DownloadRelease(ResponseObj.Assets[0].BrowserDownloadUrl, ProgramFileVersion.ToString(), ResponseObj.TagName);
-                }
-            }
-            catch (Exception e)
-            {
-                Log($"Error occured: {e}");
-            }
-        }
-
-        private static void DownloadRelease(string url, string OldVersion, string TargetTag)
-        {
-            Log($"Downloading new version | v{OldVersion} -> v{TargetTag}");
-            Task.Run(() => { MessageBox.Show("Downloading new version, please wait"); });
-            client.DownloadFile(url, $"ValorantCC.exe");
-            Process.Start(Process.GetCurrentProcess().MainModule.FileName);
-            Application.Current.Shutdown();
         }
     }
 }

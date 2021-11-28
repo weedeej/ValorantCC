@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ValorantCC" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:Controls="clr-namespace:Xceed.Wpf.AvalonDock.Themes.Controls;assembly=Xceed.Wpf.AvalonDock.Themes.Aero" x:Class="ValorantCC.MainWindow"
         mc:Ignorable="d"
-        Title="vTools - ValorantCC" Height="411" Width="500" SizeToContent="Manual" AllowsTransparency="True" WindowStartupLocation="Manual" WindowState="Normal" ResizeMode="CanMinimize" WindowStyle="None" Icon="Resources/vtools-colored.ico"
+        Title="vTools - ValorantCC" Height="411" Width="500" SizeToContent="Manual" AllowsTransparency="True" WindowStartupLocation="CenterScreen" WindowState="Normal" ResizeMode="CanMinimize" WindowStyle="None" Icon="Resources/vtools-colored.ico"
         Background="Transparent"
         RenderOptions.BitmapScalingMode="Fant">
     <Border Background="#232429"
@@ -18,8 +18,8 @@
                     <BitmapImage x:Key="close" UriSource="Resources/exit.png"/>
                 </ResourceDictionary>
             </UserControl.Resources>
-            <StackPanel MouseDown="StackPanel_MouseDown">
-                <Grid>
+            <StackPanel MouseDown="StackPanel_MouseDown" Background="Black">
+                <Grid Loaded="Grid_Loaded">
 
                     <Grid.Background>
                         <ImageBrush/>
@@ -159,7 +159,7 @@
                     <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="1" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Aim Down Color"/></TextBlock>
                     <xctk:ColorPicker x:Name="ads_color" Grid.Row="1" Grid.Column="1" SelectedColorChanged="ads_color_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="10,1,4,1" Cursor="Hand" BorderBrush="White" Background="{x:Null}" Foreground="White" HeaderBackground="#FF252526" HeaderForeground="White" TabBackground="#FF252526" TabForeground="#FFFBF9F9" DropDownBorderBrush="#FF252526" DropDownBackground="#FF252526" DisplayColorAndName="True"/>
 
-                    <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Primary Outline Color"/></TextBlock>
+                    <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold" Background="Black"><Run Text="Primary Outline Color"/></TextBlock>
                     <xctk:ColorPicker x:Name="prim_outline_color" Grid.Row="2" Grid.Column="1" SelectedColorChanged="prim_outline_color_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="10,1,4,1" Cursor="Hand" DisplayColorAndName="True" BorderBrush="#FFDADADA" Background="{x:Null}" Foreground="White" HeaderBackground="#FF252526" HeaderForeground="White" TabBackground="#FF252526" TabForeground="#FFFBF9F9" DropDownBorderBrush="#FF252526" DropDownBackground="#FF252526"/>
 
                     <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="3" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Aim Down Outline Color"/></TextBlock>
