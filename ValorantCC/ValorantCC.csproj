@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
@@ -21,16 +21,12 @@
   <ItemGroup>
     <None Remove="crosshairBg0.png" />
     <None Remove="Resources\vtools-colored.ico" />
-	<None Remove="Resources\exit.png" />
   </ItemGroup>
 
   <ItemGroup>
     <Resource Include="Resources\crosshairBg0.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-	  <Resource Include="Resources\exit.png">
-		  <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </Resource>
   </ItemGroup>
 
   <ItemGroup>
