@@ -196,9 +196,33 @@ namespace ValorantCC
 
         }
 
-        private void ExitClick(object sender, MouseButtonEventArgs e)
+        private void ExitClick(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
+        }
+        private void MinimizeClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void minusButtonMouseEnter(object sender, MouseEventArgs e)
+        {
+            minusButton.Foreground = new SolidColorBrush(Colors.Gray);
+        }
+
+        private void minusButtonMouseLeave(object sender, MouseEventArgs e)
+        {
+            minusButton.Foreground = new SolidColorBrush(Colors.White);
+        }
+
+        private void exitButtonMouseEnter(object sender, MouseEventArgs e)
+        {
+            exitButton.Foreground = new SolidColorBrush(Colors.Gray);
+        }
+
+        private void exitButtonMouseLeave(object sender, MouseEventArgs e)
+        {
+            exitButton.Foreground = new SolidColorBrush(Colors.White);
         }
     }
 }
