@@ -8,46 +8,29 @@ namespace ValorantCC
 {
     public partial class UpdateWindow : Window
     {
-        int test = 1;
-        string OriginalContent = null;
-
         public UpdateWindow()
         {
             InitializeComponent();
             OKbtn.Visibility = Visibility.Hidden;
-            OriginalContent = (string)Messagelbl.Content;
-            Updater.Update(CanceledDownload, RetryDownload, DownloadProgress, Restart);
+            Updater.Update(UIChange);
         }
 
-        private void DownloadProgress(object sender, DownloadProgressChangedEventArgs e)
+        private void UIChange(object sender, EventArgs e)
         {
-            Messagelbl.Content = OriginalContent;
+            Messagelbl.Content = Updater.Message;
+            progressBar1.Value = Updater.ProgressPercentage;
 
-            double bytesIn = double.Parse(e.BytesReceived.ToString());
-            double totalBytes = double.Parse(e.TotalBytesToReceive.ToString());
-            double percentage = bytesIn / totalBytes * 100;
-
-            progressBar1.Value = int.Parse(Math.Truncate(percentage).ToString());
-            test = 1;
-        }
-
-        private void RetryDownload()
-        {
-            Messagelbl.Content = "Retrying download... " + test++ + "/4";
-            return;
-        }
-
-        private void CanceledDownload()
-        {
-            Messagelbl.Content = "Download canceled";
-            progressBar1.Value = 0;
-            OKbtn.Visibility = Visibility.Visible;
-        }
-
-        private void Restart()
-        {
-            Process.Start(Process.GetCurrentProcess().MainModule.FileName);
-            Application.Current.Shutdown();
+            switch (Updater.State)
+            {
+                case UpdaterState.Canceled:
+                case UpdaterState.InstallFailed:
+                    OKbtn.Visibility = Visibility.Visible;
+                    break;
+                case UpdaterState.Installed:
+                    Process.Start(Updater.ProgramFileName);
+                    Application.Current.Shutdown();
+                    break;
+            }
         }
 
         private void OKbtn_Click(object sender, RoutedEventArgs e)
