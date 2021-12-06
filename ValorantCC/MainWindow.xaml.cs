@@ -31,16 +31,16 @@ namespace ValorantCC
             Txt_CurrVer.Content = $"v{ProgramFileVersion}";
         }
 
-        private void Grid_Loaded(object sender, RoutedEventArgs e)
+        private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
-            Updater.CheckUpdate(this);
-        }
+            Updater.CustomLogger = Utils.Log;
 
-        public void UpdateMessage()
-        {
-            var update = new UpdateWindow();
-            update.Owner = this;
-            update.ShowDialog();
+            if (await Updater.CheckUpdateAsync("weedeej", "ValorantCC"))
+            {
+                var update = new UpdateWindow();
+                update.Owner = this;
+                update.ShowDialog();
+            }
         }
 
         private void btnSave_Click(object sender, RoutedEventArgs e)
