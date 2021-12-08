@@ -15,7 +15,6 @@
             <UserControl.Resources>
                 <ResourceDictionary>
                     <BitmapImage x:Key="crosshairBg" UriSource="Resources/crosshairBg0.png"/>
-                    <BitmapImage x:Key="close" UriSource="Resources/exit.png"/>
                 </ResourceDictionary>
             </UserControl.Resources>
             <StackPanel MouseDown="StackPanel_MouseDown">
