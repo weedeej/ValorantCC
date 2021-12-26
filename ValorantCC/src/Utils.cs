@@ -33,12 +33,21 @@ namespace Utilities
             Log("Compressing New Data");
             string jsonString = JsonConvert.SerializeObject(data);
             byte[] byteArray = Encoding.UTF8.GetBytes(jsonString);
-            //Create stream from bytes of the json data and copy it to deflateStream as it only has write access
-            MemoryStream memoryStream = new MemoryStream(byteArray);
             MemoryStream output = new MemoryStream();
-            DeflateStream deflateStream = new DeflateStream(output, CompressionMode.Compress);
-            memoryStream.CopyTo(deflateStream);
-            deflateStream.Close();
+            //Create stream from bytes of the json data and copy it to deflateStream as it only has write access
+            try
+            {
+                using (MemoryStream memoryStream = new MemoryStream(byteArray))
+                {
+                    DeflateStream deflateStream = new DeflateStream(output, CompressionMode.Compress);
+                    memoryStream.CopyTo(deflateStream);
+                    deflateStream.Close();
+                }
+            }
+            catch (Exception e)
+            {
+                Log(e.ToString());
+            }
             return Convert.ToBase64String(output.ToArray());
         }
 
@@ -76,9 +85,14 @@ namespace Utilities
 
         public static void Log(string Text)
         {
-            StringBuilder.Append($"{DateTimeOffset.UtcNow} | {Text}\n");
-            File.AppendAllText(Directory.GetCurrentDirectory() + "/logs.txt", StringBuilder.ToString());
+            StringBuilder.Append($"{DateTimeOffset.Now} | {Text}\n");
+            File.AppendAllText(Environment.GetEnvironmentVariable("LocalAppData") + "\\VTools\\Logs\\logs.txt", StringBuilder.ToString());
             StringBuilder.Clear();
+        }
+        public static string LoginResponse(Processor processor)
+        {
+            if (processor.ProfileListed) return "Logged In! You may now close Valorant.";
+            return "Logged In! You may now close Valorant. NOTE: You only have 1 Profile. To use the other features, Please create an extra profile.";
         }
     }
 }

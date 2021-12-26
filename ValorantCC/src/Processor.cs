@@ -150,10 +150,8 @@ namespace ValorantCC
             if (FetchedProfiles.Profiles[SelectedIndex].bUseAdvancedOptions)
             {
                 Utils.Log("Removing Old colors.");
-                int SniperCrosshairIndex = DummySettings.FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairSniperCenterDotColor");
-                if (SniperCrosshairIndex != -1) DummySettings.RemoveAt(SniperCrosshairIndex);
-                int aDSCrosshairIndex = DummySettings.FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairADSColor");
-                if (aDSCrosshairIndex != -1) DummySettings.RemoveAt(aDSCrosshairIndex);
+                DummySettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairSnipersCenterDotColor");
+                DummySettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshasirADSColor");
             }
             Utils.Log("Appending new colors.");
             DummySettings.Add(new Stringsetting { settingEnum = "EAresStringSettingName::CrosshairSniperCenterDotColor", value = Utils.ColorToString(Colors[4]) });

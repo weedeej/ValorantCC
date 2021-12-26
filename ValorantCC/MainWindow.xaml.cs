@@ -1,8 +1,10 @@
 ﻿using EZ_Updater;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
+using System.IO.Compression;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -19,10 +21,14 @@ namespace ValorantCC
         List<Color> SelectedColors;
         int SelectedIndex;
         BrushConverter bc = new BrushConverter();
+        string LoggingDir;
         public MainWindow()
         {
+            // Create logging dir
+            LoggingDir = Environment.GetEnvironmentVariable("LocalAppData") + "\\VTools\\Logs\\";
+            if (!Directory.Exists(LoggingDir)) Directory.CreateDirectory(LoggingDir);
             // Replace old logs 
-            string LogFile = Directory.GetCurrentDirectory() + "/logs.txt";
+            string LogFile = LoggingDir + "/logs.txt";
             if (File.Exists(LogFile)) File.Move(LogFile, LogFile + ".old", true);
             Version ProgramFileVersion = new Version(FileVersionInfo.GetVersionInfo(Process.GetCurrentProcess().MainModule.FileName).ProductVersion);
 
@@ -73,60 +79,46 @@ namespace ValorantCC
         {
             AuthResponse AuthResponse = DataProcessor.Login();
             LoggedIn = AuthResponse.Success;
-            if (LoggedIn)
-            {
-                profiles.ItemsSource = DataProcessor.ProfileNames;
-
-                txt_LoggedIn.Foreground = Brushes.Lime;
-                profiles.SelectedIndex = DataProcessor.CurrentProfile;
-                profiles.IsReadOnly = false;
-                if (DataProcessor.ProfileListed)
-                {
-                    MessageBox.Show("Logged In! You may now close Valorant.");
-                }
-                else
-                {
-                    MessageBox.Show("Logged In! You may now close Valorant. NOTE: You only have 1 Profile. To use the other features, Please create an extra profile.");
-                }
-
-            }
-            else
+            if (!LoggedIn)
             {
                 MessageBox.Show(AuthResponse.Response);
                 return;
             }
-            btnLogin.IsEnabled = !LoggedIn;
+
+            profiles.ItemsSource = DataProcessor.ProfileNames;
+            txt_LoggedIn.Foreground = Brushes.Lime;
+            profiles.SelectedIndex = DataProcessor.CurrentProfile;
+            profiles.IsReadOnly = false;
+            MessageBox.Show(Utils.LoginResponse(DataProcessor));
+            btnLogin.IsEnabled = true;
         }
 
         private void profiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (profiles.SelectedIndex != -1)
-            {
-                SelectedIndex = profiles.SelectedIndex;
-                SelectedProfile = DataProcessor.ProfileFromIndex(profiles.SelectedIndex);
+            if (profiles.SelectedIndex == -1) return;
 
-                primary_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.Color.R, SelectedProfile.Primary.Color.G, SelectedProfile.Primary.Color.B);
-                if (!DataProcessor.ProfileListed)
-                {
-                    prim_outline_color.IsEnabled = false;
-                    ads_color.IsEnabled = false;
-                    ads_outline_color.IsEnabled = false;
-                    sniper_dot_color.IsEnabled = false;
-                    return;
-                }
-                prim_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.OutlineColor.R, SelectedProfile.Primary.OutlineColor.G, SelectedProfile.Primary.OutlineColor.B);
-                if (SelectedProfile.aDS == null) SelectedProfile.aDS = SelectedProfile.Primary;
-                ads_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.Color.R, SelectedProfile.aDS.Color.G, SelectedProfile.aDS.Color.B);
-                ads_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.OutlineColor.R, SelectedProfile.aDS.OutlineColor.G, SelectedProfile.aDS.OutlineColor.B);
-                sniper_dot_color.SelectedColor = Color.FromRgb(SelectedProfile.Sniper.CenterDotColor.R, SelectedProfile.Sniper.CenterDotColor.G, SelectedProfile.Sniper.CenterDotColor.B);
+            SelectedIndex = profiles.SelectedIndex;
+            SelectedProfile = DataProcessor.ProfileFromIndex(SelectedIndex);
+
+            primary_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.Color.R, SelectedProfile.Primary.Color.G, SelectedProfile.Primary.Color.B);
+            if (!DataProcessor.ProfileListed)
+            {
+                prim_outline_color.IsEnabled = false;
+                ads_color.IsEnabled = false;
+                ads_outline_color.IsEnabled = false;
+                sniper_dot_color.IsEnabled = false;
+                return;
             }
+            prim_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.OutlineColor.R, SelectedProfile.Primary.OutlineColor.G, SelectedProfile.Primary.OutlineColor.B);
+            if (SelectedProfile.aDS == null) SelectedProfile.aDS = SelectedProfile.Primary;
+            ads_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.Color.R, SelectedProfile.aDS.Color.G, SelectedProfile.aDS.Color.B);
+            ads_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.OutlineColor.R, SelectedProfile.aDS.OutlineColor.G, SelectedProfile.aDS.OutlineColor.B);
+            sniper_dot_color.SelectedColor = Color.FromRgb(SelectedProfile.Sniper.CenterDotColor.R, SelectedProfile.Sniper.CenterDotColor.G, SelectedProfile.Sniper.CenterDotColor.B);
         }
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                DragMove();
-            }
+            if (e.LeftButton == MouseButtonState.Pressed) DragMove();
+            
         }
 
         private void btnReload_Click(object sender, RoutedEventArgs e)
@@ -145,12 +137,10 @@ namespace ValorantCC
 
         private void profiles_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (LoggedIn)
-            {
-                DataProcessor.ProfileNames[SelectedIndex] = profiles.Text;
-                profiles.Items.Refresh();
-                profiles.SelectedIndex = SelectedIndex;
-            }
+            if (!LoggedIn) return;
+            DataProcessor.ProfileNames[SelectedIndex] = profiles.Text;
+            profiles.Items.Refresh();
+            profiles.SelectedIndex = SelectedIndex;
         }
 
         private void primary_color_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
@@ -205,24 +195,31 @@ namespace ValorantCC
             WindowState = WindowState.Minimized;
         }
 
-        private void minusButtonMouseEnter(object sender, MouseEventArgs e)
+        private void TabButtonEnter(object sender, MouseEventArgs e)
         {
-            minusButton.Foreground = new SolidColorBrush(Colors.Gray);
+            ((Button)sender).Foreground = new SolidColorBrush(Colors.Gray);
         }
 
-        private void minusButtonMouseLeave(object sender, MouseEventArgs e)
+        private void TabButtonLeave(object sender, MouseEventArgs e)
         {
-            minusButton.Foreground = new SolidColorBrush(Colors.White);
+            ((Button)sender).Foreground = new SolidColorBrush(Colors.White);
         }
 
-        private void exitButtonMouseEnter(object sender, MouseEventArgs e)
+        private void ClipboardButtonEnter(object sender, MouseEventArgs e)
         {
-            exitButton.Foreground = new SolidColorBrush(Colors.Gray);
+            CopyButtonLabel.FontSize += 1;
+        }
+        private void ClipboardButtonLeave(object sender, MouseEventArgs e)
+        {
+            CopyButtonLabel.FontSize -= 1;
         }
 
-        private void exitButtonMouseLeave(object sender, MouseEventArgs e)
+        private void btnOpenLogs_Click(object sender, RoutedEventArgs e)
         {
-            exitButton.Foreground = new SolidColorBrush(Colors.White);
+            Process p = new Process();
+            p.StartInfo = new ProcessStartInfo() { FileName = LoggingDir, UseShellExecute = true };
+            p.Start();
+            MessageBox.Show("Log folder opened. Please include the OLD file on your report as this helps us recreate the bug/error you will report.");
         }
     }
 }

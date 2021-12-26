@@ -14,7 +14,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <AssemblyVersion></AssemblyVersion>
     <FileVersion></FileVersion>
-    <Version>2.5.5</Version>
+    <Version>2.5.6</Version>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
@@ -28,6 +28,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
+	
+	<ItemGroup>
+		<Resource Include="Resources\folder.png">
+			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+		</Resource>
+	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="EZ_Updater" Version="0.5.0.1" />

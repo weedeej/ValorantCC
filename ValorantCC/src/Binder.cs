@@ -109,6 +109,7 @@ namespace ValorantCC
         public Intsetting[] intSettings { get; set; }
         public int roamingSetttingsVersion { get; set; }
         public Stringsetting[] stringSettings { get; set; }
+        public string[] settingsProfiles { get; set; }
     }
 
 }
