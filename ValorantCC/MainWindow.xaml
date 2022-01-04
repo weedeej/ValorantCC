@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ValorantCC" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:Controls="clr-namespace:Xceed.Wpf.AvalonDock.Themes.Controls;assembly=Xceed.Wpf.AvalonDock.Themes.Aero" x:Class="ValorantCC.MainWindow"
         mc:Ignorable="d"
-        Title="vTools - ValorantCC" Height="411" Width="500" SizeToContent="Manual" AllowsTransparency="True" WindowStartupLocation="CenterScreen" WindowState="Normal" ResizeMode="CanMinimize" WindowStyle="None" Icon="Resources/vtools-colored.ico"
+        Title="vTools - ValorantCC" Height="411 " Width="500" SizeToContent="Manual" AllowsTransparency="True" WindowStartupLocation="CenterScreen" WindowState="Normal" ResizeMode="CanMinimize" WindowStyle="None" Icon="Resources/vtools-colored.ico"
         Background="Transparent"
         RenderOptions.BitmapScalingMode="Fant">
     <Window.Resources>
@@ -17,7 +17,7 @@
         <BitmapImage x:Key="crosshairBG4" UriSource="Resources/CrosshairBG4.png"/>
         <BitmapImage x:Key="crosshairBG5" UriSource="Resources/CrosshairBG5.png"/>
     </Window.Resources>
-    <Border Background="#232429"
+    <Border Background="#232429" 
             CornerRadius="7">
         <UserControl Foreground="{x:Null}" OpacityMask="#FFA42727">
             <UserControl.Resources>
@@ -32,9 +32,8 @@
                     </Style>
                 </ResourceDictionary>
             </UserControl.Resources>
-            <StackPanel MouseDown="StackPanel_MouseDown">
+            <StackPanel MouseDown="StackPanel_MouseDown" HorizontalAlignment="Left">
                 <Grid Loaded="Grid_Loaded">
-
                     <Grid.Background>
                         <ImageBrush/>
                     </Grid.Background>
@@ -54,7 +53,7 @@
                         </Grid>
                     </Border>
                 </Grid>
-                <Grid Margin="0,3,0,0" MouseDown="StackPanel_MouseDown">
+                <Grid Margin="0,3,0,0" MouseDown="StackPanel_MouseDown" MaxWidth="500" MaxHeight="411">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition MaxWidth="65" Width="65*"/>
                         <ColumnDefinition Width="43*"/>
@@ -68,29 +67,25 @@
                     <TextBlock FontWeight="Bold" Grid.Column="0" Margin="5,0,43,0" Foreground="White" FontFamily="Segoe UI Semibold" VerticalAlignment="Top" Grid.ColumnSpan="2"><Run Text="Logged In:"/></TextBlock>
                     <TextBlock Margin="2,-5,0,0" FontWeight="Bold" Foreground="#FFF90C0C" x:Name="txt_LoggedIn" FontSize="18" Grid.Column="1"  VerticalAlignment="Top" HorizontalAlignment="Left"><Run Text="•"/></TextBlock>
                     <ComboBox x:Name="profiles" Grid.Column="5" SelectionChanged="profiles_SelectionChanged" SelectedIndex="0" IsEditable="True" IsReadOnly="True" Text="Profiles" TextBoxBase.TextChanged="profiles_TextChanged" Background="#FF232429" Foreground="White" Margin="0,-1,2,1" FontFamily="Quicksand" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold"/>
-
-                    <!--<TextBlock FontWeight="Bold" Grid.Column="2" Foreground="White">Current Color: </TextBlock>
-                <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="3" Foreground="Black"
-                  x:Name="txt_CurrentColor">
-                    ◾
-                </TextBlock>-->
-
-                    <!--<TextBlock FontWeight="Bold" Grid.Column="6" Foreground="White">Current Profile:</TextBlock>
-                <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="7" Foreground="Red"
-                  x:Name="txt_CurrentProfile">
-                    N/A
-                </TextBlock>-->
                 </Grid>
-                <Grid>
+                <Grid MaxWidth="500" MaxHeight="411">
                     <Image x:Name="CrosshairBG" Source="{StaticResource crosshairBG0}" Margin="1,3,-1,3"/>
 
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                        <CheckBox Name="chkbxShareable" Content="Shareable?" VerticalAlignment="Center" FontWeight="Bold" Foreground="White" Margin="0,0,25,0" FlowDirection="LeftToRight" Click="chkbxShareable_Click"/>
+                        <Button Name="btnCommunityProfiles" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Style="{DynamicResource RightButtonStyle}" Cursor="Hand" MouseEnter="ClipboardButtonEnter" MouseLeave="ClipboardButtonLeave" Click="btnCommunityProfiles_Click" Margin="0,0,10,0">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Name="communitylist_label" Content="Community Profiles" Foreground="White" FontWeight="Bold" VerticalContentAlignment="Center"/>
+                                <Image Source="Resources/menu.png" Width="24"/>
+                            </StackPanel>
+                        </Button>
                         <Button Name="btnCopyLogs" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Style="{DynamicResource RightButtonStyle}" Cursor="Hand" MouseEnter="ClipboardButtonEnter" MouseLeave="ClipboardButtonLeave" Click="btnOpenLogs_Click">
                             <StackPanel Orientation="Horizontal">
                                 <Label Name="CopyButtonLabel" Content="Logs Folder" Foreground="White" FontWeight="Bold" VerticalContentAlignment="Center"/>
                                 <Image Source="Resources/folder.png" Stretch="None"/>
                             </StackPanel>
                         </Button>
+                        
                     </StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -184,9 +179,9 @@
                     </Button>
                 </Grid>
 
-                <Path Data="M28,378 L573,378" Fill="#16171B" Height="1" Stretch="Fill" Stroke="White" Width="538"/>
+                <Path Data="M28,378 L573,378" MaxWidth="500" MaxHeight="411" Fill="#16171B" Height="1" Stretch="Fill" Stroke="White" Width="500"/>
 
-                <Grid Margin="3" Height="26" RenderTransformOrigin="0.5,0.5" Width="494">
+                <Grid Margin="3" Height="26" RenderTransformOrigin="0.5,0.5" Width="494" MaxWidth="500" MaxHeight="411">
                     <Grid.RenderTransform>
                         <TransformGroup>
                             <ScaleTransform ScaleY="1"/>
@@ -209,7 +204,7 @@
                     <Button x:Name="btnLogin" Style="{DynamicResource RoundButton}"  Content="Login" HorizontalContentAlignment="Left" Click="btnLogin_Click" Cursor="Hand" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Left" VerticalAlignment="Center" Width="124" Background="#FF295FFE" FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Margin="0,0,0,0"/>
 
                 </Grid>
-                <Grid Width="495">
+                <Grid Width="495" MaxWidth="495" MaxHeight="411">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="119*"/>
                         <ColumnDefinition Width="46*"/>

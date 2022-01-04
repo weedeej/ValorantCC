@@ -21,6 +21,8 @@
   <ItemGroup>
     <None Remove="Resources\chevron-left.png" />
     <None Remove="Resources\chevron-right.png" />
+    <None Remove="Resources\chevron-up.png" />
+    <None Remove="Resources\menu.png" />
     <None Remove="Resources\CrosshairBG0.png" />
     <None Remove="Resources\CrosshairBG1.png" />
     <None Remove="Resources\CrosshairBG2.png" />
@@ -36,6 +38,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\chevron-right.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+	<Resource Include="Resources\chevron-up.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\menu.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\CrosshairBG0.png">

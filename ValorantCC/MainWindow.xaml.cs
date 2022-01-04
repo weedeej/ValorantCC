@@ -7,6 +7,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Linq;
 using System.Windows.Shapes;
 using Utilities;
 using ValorantCC.src;
@@ -15,13 +16,16 @@ namespace ValorantCC
 {
     public partial class MainWindow : Window
     {
+        readonly string LoggingDir = Environment.GetEnvironmentVariable("LocalAppData") + @"\VTools\Logs\";
         Processor DataProcessor = new Processor();
-        bool LoggedIn;
+        BrushConverter bc = new BrushConverter();
+        public AuthResponse AuthResponse;
         CrosshairProfile SelectedProfile;
         List<Color> SelectedColors;
+        private API ValCCAPI;
         int SelectedIndex;
-        BrushConverter bc = new BrushConverter();
-        readonly string LoggingDir = Environment.GetEnvironmentVariable("LocalAppData") + @"\VTools\Logs\";
+        bool LoggedIn;
+
         public MainWindow()
         {
             // Create logging dir
@@ -39,7 +43,6 @@ namespace ValorantCC
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             Updater.CustomLogger = Utils.Log;
-
             if (await Updater.CheckUpdateAsync("weedeej", "ValorantCC"))
             {
                 var update = new UpdateWindow();
@@ -89,7 +92,8 @@ namespace ValorantCC
             profiles.SelectedIndex = DataProcessor.CurrentProfile;
             profiles.IsReadOnly = false;
             MessageBox.Show(Utils.LoginResponse(DataProcessor));
-            btnLogin.IsEnabled = true;
+            btnLogin.IsEnabled = false;
+            ValCCAPI = new API(AuthResponse.AuthTokens, SelectedProfile, 2, (bool)chkbxShareable.IsChecked);
         }
 
         private void profiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -98,6 +102,7 @@ namespace ValorantCC
 
             SelectedIndex = profiles.SelectedIndex;
             SelectedProfile = DataProcessor.ProfileFromIndex(SelectedIndex);
+            ValCCAPI.profile = SelectedProfile;
 
             primary_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.Color.R, SelectedProfile.Primary.Color.G, SelectedProfile.Primary.Color.B);
             if (!DataProcessor.ProfileListed)
@@ -260,11 +265,15 @@ namespace ValorantCC
 
         private void ClipboardButtonEnter(object sender, MouseEventArgs e)
         {
-            CopyButtonLabel.FontSize += 1;
+            Button button = (Button)sender;
+            if (button.Name == "btnCopyLogs") CopyButtonLabel.FontSize += 1;
+            else communitylist_label.FontSize += 1;
         }
         private void ClipboardButtonLeave(object sender, MouseEventArgs e)
         {
-            CopyButtonLabel.FontSize -= 1;
+            Button button = (Button)sender;
+            if (button.Name == "btnCopyLogs") CopyButtonLabel.FontSize -= 1;
+            else communitylist_label.FontSize -= 1;
         }
 
         private void btnOpenLogs_Click(object sender, RoutedEventArgs e)
@@ -295,6 +304,29 @@ namespace ValorantCC
                 number = Resources.Count - 1;
 
             return (ImageSource)FindResource("crosshairBG" + number);
+        }
+
+        private void btnCommunityProfiles_Click(object sender, RoutedEventArgs e)
+        {
+            if (!LoggedIn)
+            {
+                MessageBox.Show("You are not logged in!");
+                return;
+            }
+            try
+            {
+                Window publicProfiles = Application.Current.Windows.Cast<Window>().Single(window => window.GetType().ToString() == "ValorantCC.ProfilesWindow");
+                publicProfiles.Activate();
+            }catch(Exception ex)
+            {
+                ProfilesWindow publicProfiles = new ProfilesWindow(SelectedProfile, ValCCAPI);
+                publicProfiles.Show();
+            }
+        }
+
+        private void chkbxShareable_Click(object sender, RoutedEventArgs e)
+        {
+            if (LoggedIn) ValCCAPI.Shareable = (bool)chkbxShareable.IsChecked;
         }
     }
 }
