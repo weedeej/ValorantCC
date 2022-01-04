@@ -19,21 +19,44 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="crosshairBg0.png" />
+    <None Remove="Resources\chevron-left.png" />
+    <None Remove="Resources\chevron-right.png" />
+    <None Remove="Resources\CrosshairBG0.png" />
+    <None Remove="Resources\CrosshairBG1.png" />
+    <None Remove="Resources\CrosshairBG2.png" />
+    <None Remove="Resources\CrosshairBG3.png" />
+    <None Remove="Resources\CrosshairBG4.png" />
+    <None Remove="Resources\CrosshairBG5.png" />
+    <None Remove="Resources\folder.png" />
     <None Remove="Resources\vtools-colored.ico" />
   </ItemGroup>
 
   <ItemGroup>
-    <Resource Include="Resources\crosshairBg0.png">
+    <Resource Include="Resources\chevron-left.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\chevron-right.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\CrosshairBG0.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\CrosshairBG1.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\CrosshairBG2.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\CrosshairBG3.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\CrosshairBG4.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\CrosshairBG5.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
   </ItemGroup>
-	
-	<ItemGroup>
-		<Resource Include="Resources\folder.png">
-			<CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-		</Resource>
-	</ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="EZ_Updater" Version="0.5.0.1" />
@@ -57,7 +80,15 @@
       <HintPath>References\Xceed.Wpf.Toolkit.dll</HintPath>
     </Reference>
   </ItemGroup>
+
   <ItemGroup>
+    <_DeploymentManifestIconFile Remove="Resources\vtools-colored.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\folder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <Resource Include="Resources\vtools-colored.ico" />
   </ItemGroup>
 

@@ -1,7 +1,6 @@
 ﻿using EZ_Updater;
 using System;
 using System.Diagnostics;
-using System.Net;
 using System.Windows;
 
 namespace ValorantCC
