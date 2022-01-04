@@ -1,15 +1,15 @@
 ﻿using EZ_Updater;
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Diagnostics;
 using System.IO;
-using System.IO.Compression;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Shapes;
 using Utilities;
+using ValorantCC.src;
 
 namespace ValorantCC
 {
@@ -21,11 +21,10 @@ namespace ValorantCC
         List<Color> SelectedColors;
         int SelectedIndex;
         BrushConverter bc = new BrushConverter();
-        string LoggingDir;
+        readonly string LoggingDir = Environment.GetEnvironmentVariable("LocalAppData") + @"\VTools\Logs\";
         public MainWindow()
         {
             // Create logging dir
-            LoggingDir = Environment.GetEnvironmentVariable("LocalAppData") + "\\VTools\\Logs\\";
             if (!Directory.Exists(LoggingDir)) Directory.CreateDirectory(LoggingDir);
             // Replace old logs 
             string LogFile = LoggingDir + "/logs.txt";
@@ -111,14 +110,16 @@ namespace ValorantCC
             }
             prim_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.OutlineColor.R, SelectedProfile.Primary.OutlineColor.G, SelectedProfile.Primary.OutlineColor.B);
             if (SelectedProfile.aDS == null) SelectedProfile.aDS = SelectedProfile.Primary;
+            if(SelectedProfile.bUsePrimaryCrosshairForADS) SelectedProfile.aDS.Color = SelectedProfile.Primary.Color;
             ads_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.Color.R, SelectedProfile.aDS.Color.G, SelectedProfile.aDS.Color.B);
             ads_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.OutlineColor.R, SelectedProfile.aDS.OutlineColor.G, SelectedProfile.aDS.OutlineColor.B);
             sniper_dot_color.SelectedColor = Color.FromRgb(SelectedProfile.Sniper.CenterDotColor.R, SelectedProfile.Sniper.CenterDotColor.G, SelectedProfile.Sniper.CenterDotColor.B);
+
+            Crosshair_load();
         }
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed) DragMove();
-            
         }
 
         private void btnReload_Click(object sender, RoutedEventArgs e)
@@ -143,47 +144,99 @@ namespace ValorantCC
             profiles.SelectedIndex = SelectedIndex;
         }
 
+        private void Crosshair_load()
+        {
+            //Primary
+            Crosshair_Parser.dot_redraw(primeDOT, primeDOTOT, SelectedProfile.Primary);
+            Crosshair_Parser.rectangle_redraw(primeX1, primeX1OT, Crosshair_Parser.Position.East, SelectedProfile.Primary);
+            Crosshair_Parser.rectangle_redraw(primeX2, primeX2OT, Crosshair_Parser.Position.West, SelectedProfile.Primary);
+            Crosshair_Parser.rectangle_redraw(primeY1, primeY1OT, Crosshair_Parser.Position.North, SelectedProfile.Primary);
+            Crosshair_Parser.rectangle_redraw(primeY2, primeY2OT, Crosshair_Parser.Position.South, SelectedProfile.Primary);
+
+            Crosshair_Parser.rectangle_redraw(primeOLX1, primeOLX1OT, Crosshair_Parser.Position.East, SelectedProfile.Primary);
+            Crosshair_Parser.rectangle_redraw(primeOLX2, primeOLX2OT, Crosshair_Parser.Position.West, SelectedProfile.Primary);
+            Crosshair_Parser.rectangle_redraw(primeOLY1, primeOLY1OT, Crosshair_Parser.Position.North, SelectedProfile.Primary);
+            Crosshair_Parser.rectangle_redraw(primeOLY2, primeOLY2OT, Crosshair_Parser.Position.South, SelectedProfile.Primary);
+
+            //ADS
+            var cross = SelectedProfile.Primary;
+            if (!SelectedProfile.bUsePrimaryCrosshairForADS)
+                cross = SelectedProfile.aDS;
+
+            Crosshair_Parser.dot_redraw(adsDOT, adsDOTOT, cross);
+            Crosshair_Parser.rectangle_redraw(adsX1, adsX1OT, Crosshair_Parser.Position.East, cross);
+            Crosshair_Parser.rectangle_redraw(adsX2, adsX2OT, Crosshair_Parser.Position.West, cross);
+            Crosshair_Parser.rectangle_redraw(adsY1, adsY1OT, Crosshair_Parser.Position.North, cross);
+            Crosshair_Parser.rectangle_redraw(adsY2, adsY2OT, Crosshair_Parser.Position.South, cross);
+
+            Crosshair_Parser.rectangle_redraw(adsOLX1, adsOLX1OT, Crosshair_Parser.Position.East, cross);
+            Crosshair_Parser.rectangle_redraw(adsOLX2, adsOLX2OT, Crosshair_Parser.Position.West, cross);
+            Crosshair_Parser.rectangle_redraw(adsOLY1, adsOLY1OT, Crosshair_Parser.Position.North, cross);
+            Crosshair_Parser.rectangle_redraw(adsOLY2, adsOLY2OT, Crosshair_Parser.Position.South, cross);
+
+            //Sniper
+            Crosshair_Parser.dot_redraw(sniperdot, SelectedProfile.Sniper);
+        }
+
         private void primary_color_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-
+            primeDOT.Fill = (Brush)bc.ConvertFrom(primary_color.SelectedColor.ToString());
             primeX1.Fill = (Brush)bc.ConvertFrom(primary_color.SelectedColor.ToString());
             primeX2.Fill = (Brush)bc.ConvertFrom(primary_color.SelectedColor.ToString());
             primeY1.Fill = (Brush)bc.ConvertFrom(primary_color.SelectedColor.ToString());
             primeY2.Fill = (Brush)bc.ConvertFrom(primary_color.SelectedColor.ToString());
+
+            primeOLX1.Fill = (Brush)bc.ConvertFrom(primary_color.SelectedColor.ToString());
+            primeOLX2.Fill = (Brush)bc.ConvertFrom(primary_color.SelectedColor.ToString());
+            primeOLY1.Fill = (Brush)bc.ConvertFrom(primary_color.SelectedColor.ToString());
+            primeOLY2.Fill = (Brush)bc.ConvertFrom(primary_color.SelectedColor.ToString());
         }
 
         private void prim_outline_color_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
+            primeDOTOT.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
+            primeX1OT.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
+            primeX2OT.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
+            primeY1OT.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
+            primeY2OT.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
 
-            primeX1.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
-            primeX2.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
-            primeY1.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
-            primeY2.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
+            primeOLX1OT.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
+            primeOLX2OT.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
+            primeOLY1OT.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
+            primeOLY2OT.Stroke = (Brush)bc.ConvertFrom(prim_outline_color.SelectedColor.ToString());
         }
 
         private void ads_color_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
+            adsDOT.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
+            adsX1.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
+            adsX2.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
+            adsY1.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
+            adsY2.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
 
-            aDSX1.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
-            aDSX2.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
-            aDSY1.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
-            aDSY2.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
+            adsOLX1.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
+            adsOLX2.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
+            adsOLY1.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
+            adsOLY2.Fill = (Brush)bc.ConvertFrom(ads_color.SelectedColor.ToString());
         }
 
         private void ads_outline_color_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
+            adsDOTOT.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
+            adsX1OT.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
+            adsX2OT.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
+            adsY1OT.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
+            adsY2OT.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
 
-            aDSX1.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
-            aDSX2.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
-            aDSY1.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
-            aDSY2.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
+            adsOLX1OT.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
+            adsOLX2OT.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
+            adsOLY1OT.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
+            adsOLY2OT.Stroke = (Brush)bc.ConvertFrom(ads_outline_color.SelectedColor.ToString());
         }
 
         private void sniper_dot_color_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<Color?> e)
         {
-
             sniperdot.Fill = (Brush)bc.ConvertFrom(sniper_dot_color.SelectedColor.ToString());
-
         }
 
         private void ExitClick(object sender, RoutedEventArgs e)
@@ -220,6 +273,28 @@ namespace ValorantCC
             p.StartInfo = new ProcessStartInfo() { FileName = LoggingDir, UseShellExecute = true };
             p.Start();
             MessageBox.Show("Log folder opened. Please include the OLD file on your report as this helps us recreate the bug/error you will report.");
+        }
+
+        private void next_Click(object sender, RoutedEventArgs e)
+        {
+            CrosshairBG.Source = Get_CrosshairBG();
+        }
+
+        private void previos_Click(object sender, RoutedEventArgs e)
+        {
+            CrosshairBG.Source = Get_CrosshairBG(false);
+        }
+
+        private ImageSource Get_CrosshairBG(bool next = true)
+        {
+            int number = int.Parse(System.IO.Path.GetFileNameWithoutExtension(CrosshairBG.Source.ToString()).Replace("CrosshairBG", "")) + (next ? 1 : -1);
+
+            if (next && number > Resources.Count - 1)
+                number = 0;
+            else if (number < 0)
+                number = Resources.Count - 1;
+
+            return (ImageSource)FindResource("crosshairBG" + number);
         }
     }
 }

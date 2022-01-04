@@ -12,7 +12,6 @@ using ValorantCC;
 
 namespace Utilities
 {
-
     class Utils
     {
         private static StringBuilder StringBuilder = new StringBuilder();
