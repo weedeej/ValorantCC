@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using RestSharp;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
+using System.Diagnostics;
 
 namespace ValorantCC
 {
@@ -17,15 +19,15 @@ namespace ValorantCC
     public struct FetchResponse
     {
         public bool success { get; set; }
-        public List<ShareableProfile> data {get; set; }
+        public List<ShareableProfile> data { get; set; }
     }
 
     public struct ShareableProfile
     {
-        public String shareCode { get; }
-        public String settings { get; }
-        public bool shareable { get; }
-        public String displayName { get; }
+        public String shareCode { get; set; }
+        public String settings { get; set; }
+        public bool shareable { get; set; }
+        public String displayName { get; set; }
     }
 
     public partial class PostPayload
@@ -67,10 +69,10 @@ namespace ValorantCC
                 payload.action = Action;
             }
             RestRequest request = new RestRequest() { Method = Method.POST};
-            request.AddParameter("application/json", payload, ParameterType.RequestBody);
+            request.AddJsonBody(payload);
             RestResponse response = (RestResponse)client.Execute(request);
             if (response.StatusCode != System.Net.HttpStatusCode.OK) return new FetchResponse() { success = false };
-            return JsonConvert.DeserializeObject<FetchResponse>(response.Content);
+            return JsonConvert.DeserializeObject<FetchResponse>(Regex.Unescape(response.Content));
         }
 
         public VoidCallResponse Set()
@@ -83,11 +85,11 @@ namespace ValorantCC
                 action = Action
             };
             RestRequest request = new RestRequest() { Method = Method.POST };
-            request.AddParameter("application/json", payload, ParameterType.RequestBody);
+            request.AddJsonBody(payload);
             request.AddHeader("Authorization", $"Bearer {AuthTokens.AccessToken}"); // Pass to server so nobody can set somebody's saved profile.
             RestResponse response = (RestResponse)client.Execute(request);
             if (response.StatusCode != System.Net.HttpStatusCode.OK) return new VoidCallResponse() { success = false };
-            return JsonConvert.DeserializeObject<VoidCallResponse>(response.Content);
+            return JsonConvert.DeserializeObject<VoidCallResponse>(Regex.Unescape(response.Content));
         }
 
     }

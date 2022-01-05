@@ -102,7 +102,6 @@ namespace ValorantCC
 
             SelectedIndex = profiles.SelectedIndex;
             SelectedProfile = DataProcessor.ProfileFromIndex(SelectedIndex);
-            ValCCAPI.profile = SelectedProfile;
 
             primary_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.Color.R, SelectedProfile.Primary.Color.G, SelectedProfile.Primary.Color.B);
             if (!DataProcessor.ProfileListed)
@@ -120,6 +119,7 @@ namespace ValorantCC
             ads_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.OutlineColor.R, SelectedProfile.aDS.OutlineColor.G, SelectedProfile.aDS.OutlineColor.B);
             sniper_dot_color.SelectedColor = Color.FromRgb(SelectedProfile.Sniper.CenterDotColor.R, SelectedProfile.Sniper.CenterDotColor.G, SelectedProfile.Sniper.CenterDotColor.B);
 
+            if (ValCCAPI != null) ValCCAPI.profile = SelectedProfile;
             Crosshair_load();
         }
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)

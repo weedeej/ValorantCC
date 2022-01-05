@@ -45,7 +45,7 @@
                             <ColumnDefinition Width="1*"/>
                             <ColumnDefinition Width="1*"/>
                         </Grid.ColumnDefinitions>
-
+        
                         <Image Source="../Resources/CrosshairBG1.png" Grid.ColumnSpan="3" Grid.Row="0" Stretch="Fill" Margin="2,0,2,2"/>
                         <Label Grid.Column="2" Grid.Row="0" Content="Haruki's Profile" Foreground="White" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
 
@@ -55,7 +55,6 @@
                         <Button Style="{DynamicResource RoundButton}" Margin="5,0" Grid.Row="1" Grid.Column="2" Content="Apply" FontWeight="Bold" FontSize="12"/>
                     </Grid>
                 </Border>
-                <Border Background="#FF393B44" MinHeight="95" MaxHeight="95" MinWidth="330" MaxWidth="330" Margin="0,5"/>
                 <Border Background="#FF393B44" MinHeight="95" MaxHeight="95" MinWidth="330" MaxWidth="330" Margin="0,5"/>
             </StackPanel>
         </StackPanel>
