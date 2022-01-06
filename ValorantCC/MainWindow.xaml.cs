@@ -28,6 +28,10 @@ namespace ValorantCC
 
         public MainWindow()
         {
+            /**
+             * Note to myself, You were sleepy when you made this commit. Just test the app and see what you messed with.
+             * You probably messed with something here in main relating to the checkbox. goodluck debugging!
+             */
             // Create logging dir
             if (!Directory.Exists(LoggingDir)) Directory.CreateDirectory(LoggingDir);
             // Replace old logs 
@@ -120,6 +124,7 @@ namespace ValorantCC
             sniper_dot_color.SelectedColor = Color.FromRgb(SelectedProfile.Sniper.CenterDotColor.R, SelectedProfile.Sniper.CenterDotColor.G, SelectedProfile.Sniper.CenterDotColor.B);
 
             if (ValCCAPI != null) ValCCAPI.profile = SelectedProfile;
+            if (ValCCAPI != null && chkbxShareable.IsChecked) ValCCAPI.Set();
             Crosshair_load();
         }
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
@@ -326,7 +331,13 @@ namespace ValorantCC
 
         private void chkbxShareable_Click(object sender, RoutedEventArgs e)
         {
-            if (LoggedIn) ValCCAPI.Shareable = (bool)chkbxShareable.IsChecked;
+            if (!LoggedIn)
+            {
+                MessageBox.Show("You are not logged in!");
+                return;
+            }
+            ValCCAPI.Shareable = (bool)chkbxShareable.IsChecked;
+            ValCCAPI.Set();
         }
     }
 }
