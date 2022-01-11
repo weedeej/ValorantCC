@@ -1,4 +1,7 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace ValorantCC.src
@@ -11,6 +14,111 @@ namespace ValorantCC.src
             South = 1,
             West = 2,
             East = 3,
+        }
+
+        public static void Generate(int column, Grid grid, ProfileSettings settings)
+        {
+            Rectangle[] rectangles = new Rectangle[16];
+            int recindex = 0;
+            /*for (int i = 1; i <= 4; i++)
+            {
+                string name = $"prime{}";
+                switch (i)
+                {
+                    case 0:
+                        name += "X";
+                        break;
+                    case 1:
+                        name += "Y";
+                        break;
+                    case 2:
+                        name += "OLX";
+                        break;
+                    case 3:
+                        name += "OLY";
+                        break;
+                }
+
+                for (int j = 1; j <= 4; j++)
+                {
+                    string subname = name;
+                    if (j % 2 != 0)
+                        subname += "OT";
+
+                    Rectangle rectangle = new Rectangle()
+                    {
+                        Name = subname,
+                        Width = 3,
+                        Height = 3
+                    };
+                    rectangles[recindex] = rectangle;
+                    recindex++;
+                }
+            }*/
+
+            for (int i = 0; i < rectangles.Length; i++)
+            {
+                Rectangle rectangle = new Rectangle()
+                {
+                    Width = 3,
+                    Height = 3
+                };
+                rectangles[recindex] = rectangle;
+                recindex++;
+            }
+
+            recindex = 1;
+            for (int i = 0; i < rectangles.Length; i+=2)
+            {
+                var pos = Position.East;
+                switch (recindex % 4)
+                {
+                    case 1:
+                        pos = Position.East;
+                        break;
+                    case 2:
+                        pos = Position.West;
+                        break;
+                    case 3:
+                        pos = Position.North;
+                        break;
+                    case 0:
+                        pos = Position.South;
+                        break;
+                }
+                recindex++;
+                if(recindex == 4)
+                    recindex = 0;
+
+                rectangle_redraw(rectangles[i], rectangles[i + 1], pos, settings);
+                rectangles[i].Fill = new SolidColorBrush(Color.FromRgb(settings.Color.R, settings.Color.G, settings.Color.B));
+                rectangles[i + 1].Stroke = new SolidColorBrush(Color.FromRgb(settings.OutlineColor.R, settings.OutlineColor.G, settings.OutlineColor.B));
+                Grid.SetColumn(rectangles[i], column);
+                Grid.SetRow(rectangles[i], 0);
+                Grid.SetColumn(rectangles[i + 1], column);
+                Grid.SetRow(rectangles[i + 1], 0);
+
+                grid.Children.Add(rectangles[i]);
+                grid.Children.Add(rectangles[i + 1]);
+            }
+
+            Rectangle dot = new Rectangle()
+            {
+                Margin = new Thickness(0, 0, 0, 0)
+            };
+            Rectangle dotOT = new Rectangle()
+            {
+                Margin = new Thickness(0, 0, 0, 0)
+            };
+
+            dot_redraw(dot, dotOT, settings);
+            Grid.SetColumn(dot, column);
+            Grid.SetRow(dot, 0);
+            Grid.SetColumn(dotOT, column);
+            Grid.SetColumn(dotOT, 0);
+
+            grid.Children.Add(dot);
+            grid.Children.Add(dotOT);
         }
 
         public static void dot_redraw(Rectangle Rect, Rectangle RectOT, ProfileSettings settings)
