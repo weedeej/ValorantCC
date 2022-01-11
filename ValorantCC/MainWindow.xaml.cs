@@ -124,7 +124,7 @@ namespace ValorantCC
             sniper_dot_color.SelectedColor = Color.FromRgb(SelectedProfile.Sniper.CenterDotColor.R, SelectedProfile.Sniper.CenterDotColor.G, SelectedProfile.Sniper.CenterDotColor.B);
 
             if (ValCCAPI != null) ValCCAPI.profile = SelectedProfile;
-            if (ValCCAPI != null && chkbxShareable.IsChecked) ValCCAPI.Set();
+            if (ValCCAPI != null && (chkbxShareable.IsChecked ?? false)) ValCCAPI.Set();
             Crosshair_load();
         }
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,6 +15,8 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Newtonsoft.Json;
+using ValorantCC.src;
+
 namespace ValorantCC
 {
     /// <summary>
@@ -39,15 +42,19 @@ namespace ValorantCC
             main = (MainWindow) Application.Current.MainWindow;
             ValCCApi = ValCCAPI;
             bc = new BrushConverter();
-            InitialFetch();
-            RenderProfiles();
+        }
+
+        private async void Border_Loaded(object sender, RoutedEventArgs e)
+        {
+            await InitialFetch();
+            await RenderProfiles();
         }
 
         /// <summary>
         /// Returns the searched sharecode or the list of shareables depending if sharecode is provided or not.
         /// </summary>
         /// <param name="sharecode">Nullable. Searched Code</param>
-        private static void InitialFetch(String sharecode = null)
+        private static async Task<bool> InitialFetch(String sharecode = null)
         {
             List<ShareableProfile> Shareables;
             if (sharecode != null)
@@ -57,7 +64,7 @@ namespace ValorantCC
             }
             else Shareables = ValCCApi.Fetch().data;
 
-            if (Shareables.Count == 0) return;
+            if (Shareables.Count == 0) return true;
             for (int i = 0; i < Shareables.Count; i++)
             {
                 ShareableProfile currentShareable = Shareables[i];
@@ -72,31 +79,36 @@ namespace ValorantCC
                 }
                 PublicProfiles.Add(new PublicProfile() { owner = currentShareable.displayName, settings = profile });
             }
+
+            //Change this delay for the async backend
+            await Task.Delay(1);
+            return true;
         }
 
         /// <summary>
         /// Render the PublicProfiles var into frontend.
         /// </summary>
-        private void RenderProfiles()
+        private async Task<bool> RenderProfiles()
         {
             UIElementCollection shareablesElement = ShareablesContainer.Children;
-            if (PublicProfiles.Count == 0) return;
+            if (PublicProfiles.Count == 0) return true;
             
             for (int i = 0; i < PublicProfiles.Count; i++)
             {
                 PublicProfile profile = PublicProfiles[i];
-                shareablesElement.Add(CreateRender(profile));
+                shareablesElement.Add(await CreateRender(profile));
             }
-
+            await Task.Delay(1);
+            return true;
         }
-        private void btnSearchCode_Click(object sender, RoutedEventArgs e)
+        private async void btnSearchCode_Click(object sender, RoutedEventArgs e)
         {
             if (SearchCode.Text == null || SearchCode.Text == "") return;
-            InitialFetch(SearchCode.Text);
-            RenderProfiles();
+            await InitialFetch(SearchCode.Text);
+            await RenderProfiles();
         }
 
-        private UIElement CreateRender(PublicProfile profile)
+        private async Task<UIElement> CreateRender(PublicProfile profile)
         {
             // This will be changed and will be replaced with more efficient method of rendering multiple settings.
 
@@ -194,7 +206,11 @@ namespace ValorantCC
             Grid0.Children.Add(shareButton);
             Grid0.Children.Add(detailsButton);
             Grid0.Children.Add(applyButton);
+
+            Crosshair_Parser.Generate(0, Grid0, profile.settings.Primary);
+
             template.Child = Grid0;
+            await Task.Delay(1);
             return template;
         }
     }
