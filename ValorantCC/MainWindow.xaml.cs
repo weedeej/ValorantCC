@@ -22,7 +22,7 @@ namespace ValorantCC
         Processor DataProcessor = new Processor();
         BrushConverter bc = new BrushConverter();
         public AuthResponse AuthResponse;
-        CrosshairProfile SelectedProfile;
+        public CrosshairProfile SelectedProfile;
         List<Color> SelectedColors;
         private API ValCCAPI;
         int SelectedIndex;
@@ -156,7 +156,7 @@ namespace ValorantCC
             profiles.SelectedIndex = SelectedIndex;
         }
 
-        private void Crosshair_load()
+        public void Crosshair_load()
         {
             //Primary
             Crosshair_Parser.dot_redraw(primeDOT, primeDOTOT, SelectedProfile.Primary);

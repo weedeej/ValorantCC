@@ -26,7 +26,9 @@ namespace ValorantCC
     public struct PublicProfile
     {
         public String owner { get; set; }
+        public String sharecode { get; set; }
         public CrosshairProfile settings { get; set; }
+        public int ID { get; set; }
     }
 
     public partial class ProfilesWindow : Window
@@ -40,13 +42,16 @@ namespace ValorantCC
         {
             InitializeComponent();
             main = (MainWindow) Application.Current.MainWindow;
+            selected = current;
             ValCCApi = ValCCAPI;
             bc = new BrushConverter();
         }
 
         private async void Border_Loaded(object sender, RoutedEventArgs e)
         {
+            LoadingTxt.Visibility = Visibility.Visible;
             await InitialFetch();
+            LoadingTxt.Visibility = Visibility.Collapsed;
             await RenderProfiles();
         }
 
@@ -83,7 +88,7 @@ namespace ValorantCC
                 {
                     continue;
                 }
-                PublicProfiles.Add(new PublicProfile() { owner = currentShareable.displayName, settings = profile });
+                PublicProfiles.Add(new PublicProfile() { owner = currentShareable.displayName, settings = profile, sharecode = currentShareable.shareCode, ID = i });
             }
 
             //Change this delay for the async backend
@@ -112,6 +117,42 @@ namespace ValorantCC
             if (SearchCode.Text == null || SearchCode.Text == "") return;
             await InitialFetch(SearchCode.Text);
             await RenderProfiles();
+        }
+
+        public void shareBtnClicked(object sender, RoutedEventArgs e)
+        {
+            String shareCode = ((Button)sender).Name.Split('_')[1];
+            Clipboard.SetText(shareCode);
+            MessageBox.Show("\"" + shareCode + "\" has been copied to clipboard!");
+        }
+
+        public void detailsBtnClicked(object sender, RoutedEventArgs e)
+        {
+            PublicProfile pressedPubProfile = PublicProfiles[Int32.Parse(((Button)sender).Name.Split('_')[1])];
+            CrosshairProfile pressedProfile = pressedPubProfile.settings;
+            MessageBox.Show($"{pressedPubProfile.owner}'s Profile: {pressedProfile.ProfileName}\nPrimary:\n\tInner Lines: {pressedProfile.Primary.InnerLines.Opacity}, {pressedProfile.Primary.InnerLines.LineLength}, {pressedProfile.Primary.InnerLines.LineThickness}, {pressedProfile.Primary.InnerLines.LineOffset}\n\tOuter Lines: {pressedProfile.Primary.OuterLines.Opacity}, {pressedProfile.Primary.OuterLines.LineLength}, {pressedProfile.Primary.OuterLines.LineThickness}, {pressedProfile.Primary.OuterLines.LineOffset}\n\nADS:\n\tInner Lines: {pressedProfile.aDS.InnerLines.Opacity}, {pressedProfile.aDS.InnerLines.LineLength}, {pressedProfile.aDS.InnerLines.LineThickness}, {pressedProfile.aDS.InnerLines.LineOffset}\n\tOuter Lines: {pressedProfile.aDS.OuterLines.Opacity}, {pressedProfile.aDS.OuterLines.LineLength}, {pressedProfile.aDS.OuterLines.LineThickness}, {pressedProfile.aDS.OuterLines.LineOffset}");
+        }
+
+        public void applyBtnClicked(object sender, RoutedEventArgs e)
+        {
+            PublicProfile pressedPubProfile = PublicProfiles[Int32.Parse(((Button)sender).Name.Split('_')[1])];
+            CrosshairProfile pressedProfile = pressedPubProfile.settings;
+            selected.aDS = pressedProfile.aDS;
+            selected.Primary = pressedProfile.Primary;
+            selected.Sniper = pressedProfile.Sniper;
+            selected.bUseAdvancedOptions = pressedProfile.bUseAdvancedOptions;
+            selected.bUseCustomCrosshairOnAllPrimary = pressedProfile.bUseCustomCrosshairOnAllPrimary;
+            selected.bUsePrimaryCrosshairForADS = pressedProfile.bUsePrimaryCrosshairForADS;
+
+            main.primary_color.SelectedColor = new Color() { R = selected.Primary.Color.R, G = selected.Primary.Color.G, B = selected.Primary.Color.B, A = selected.Primary.Color.A };
+            main.ads_color.SelectedColor = new Color() { R = selected.aDS.Color.R, G = selected.aDS.Color.G, B = selected.aDS.Color.B, A = selected.aDS.Color.A };
+
+            main.prim_outline_color.SelectedColor = new Color() { R = selected.Primary.OutlineColor.R, G = selected.Primary.OutlineColor.G, B = selected.Primary.OutlineColor.B, A = selected.Primary.OutlineColor.A };
+            main.ads_outline_color.SelectedColor = new Color() { R = selected.aDS.OutlineColor.R, G = selected.aDS.OutlineColor.G, B = selected.aDS.OutlineColor.B, A = selected.aDS.OutlineColor.A };
+
+            main.sniper_dot_color.SelectedColor = new Color() { R = selected.Sniper.CenterDotColor.R, G = selected.Sniper.CenterDotColor.G, B = selected.Sniper.CenterDotColor.B, A = selected.Sniper.CenterDotColor.A };
+            main.SelectedProfile = selected;
+            main.Crosshair_load();
         }
 
         private async Task<UIElement> CreateRender(PublicProfile profile)
@@ -180,25 +221,37 @@ namespace ValorantCC
                 Margin = new Thickness() { Bottom = 0, Top = 0, Left = 5, Right = 5 },
                 FontSize = 12,
                 FontWeight = FontWeights.Bold,
-                Content = "Share"
+                Content = "Share",
+                Cursor = Cursors.Hand,
+                Name = "A_"+profile.sharecode+"_shareBtn",
             };
+            shareButton.Click += shareBtnClicked;
+
             Button detailsButton = new Button()
             {
                 Style = (Style)FindResource("RoundButton"),
                 Margin = new Thickness() { Bottom = 0, Top = 0, Left = 5, Right = 5 },
                 FontSize = 12,
                 FontWeight = FontWeights.Bold,
-                Content = "Details"
+                Content = "Details",
+                Cursor = Cursors.Hand,
+                Name = "A_" + profile.ID.ToString() + "_detailsBtn"
 
             };
+            detailsButton.Click += detailsBtnClicked;
+
             Button applyButton = new Button()
             {
                 Style = (Style)FindResource("RoundButton"),
                 Margin = new Thickness() { Bottom = 0, Top = 0, Left = 5, Right = 5 },
                 FontSize = 12,
                 FontWeight = FontWeights.Bold,
-                Content = "Apply"
+                Content = "Apply",
+                Cursor = Cursors.Hand,
+                Name = "A_" + profile.ID.ToString() + "_applyBtn"
             };
+            applyButton.Click += applyBtnClicked;
+
             Grid.SetColumn(shareButton, 0);
             Grid.SetRow(shareButton, 1);
             Grid.SetColumn(detailsButton, 1);

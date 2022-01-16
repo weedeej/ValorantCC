@@ -14,6 +14,7 @@
             </StackPanel>
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Height="420">
                 <StackPanel Name="ShareablesContainer" HorizontalAlignment="Center">
+                    <TextBlock Name="LoadingTxt" FontSize="32" Foreground="White" >L o a d i n g . . . :D</TextBlock>
                 </StackPanel>
             </ScrollViewer>
         </StackPanel>
