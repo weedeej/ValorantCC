@@ -11,6 +11,8 @@ using System.Linq;
 using System.Windows.Shapes;
 using Utilities;
 using ValorantCC.src;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace ValorantCC
 {
@@ -97,7 +99,7 @@ namespace ValorantCC
             profiles.IsReadOnly = false;
             MessageBox.Show(Utils.LoginResponse(DataProcessor));
             btnLogin.IsEnabled = false;
-            ValCCAPI = new API(AuthResponse.AuthTokens, SelectedProfile, 2, (bool)chkbxShareable.IsChecked);
+            ValCCAPI = new API(AuthResponse.AuthTokens, SelectedProfile, 2, (chkbxShareable.IsChecked ?? false));
         }
 
         private void profiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -334,10 +336,11 @@ namespace ValorantCC
             if (!LoggedIn)
             {
                 MessageBox.Show("You are not logged in!");
+                ((CheckBox)sender).IsChecked = !((CheckBox)sender).IsChecked;
                 return;
             }
             ValCCAPI.Shareable = (bool)chkbxShareable.IsChecked;
-            ValCCAPI.Set();
+            _ = ValCCAPI.Set();
         }
     }
 }

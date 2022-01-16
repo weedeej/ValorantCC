@@ -20,42 +20,6 @@ namespace ValorantCC.src
         {
             Rectangle[] rectangles = new Rectangle[16];
             int recindex = 0;
-            /*for (int i = 1; i <= 4; i++)
-            {
-                string name = $"prime{}";
-                switch (i)
-                {
-                    case 0:
-                        name += "X";
-                        break;
-                    case 1:
-                        name += "Y";
-                        break;
-                    case 2:
-                        name += "OLX";
-                        break;
-                    case 3:
-                        name += "OLY";
-                        break;
-                }
-
-                for (int j = 1; j <= 4; j++)
-                {
-                    string subname = name;
-                    if (j % 2 != 0)
-                        subname += "OT";
-
-                    Rectangle rectangle = new Rectangle()
-                    {
-                        Name = subname,
-                        Width = 3,
-                        Height = 3
-                    };
-                    rectangles[recindex] = rectangle;
-                    recindex++;
-                }
-            }*/
-
             for (int i = 0; i < rectangles.Length; i++)
             {
                 Rectangle rectangle = new Rectangle()

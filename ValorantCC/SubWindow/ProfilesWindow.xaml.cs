@@ -60,9 +60,14 @@ namespace ValorantCC
             if (sharecode != null)
             {
                 ValCCApi.Action = 3;
-                Shareables = ValCCApi.Fetch(sharecode).data;
+                Shareables = (await ValCCApi.Fetch(sharecode)).data;
             }
-            else Shareables = ValCCApi.Fetch().data;
+            else
+            {
+                ValCCApi.Action = 2;
+                Shareables = (await ValCCApi.Fetch()).data;
+
+            }
 
             if (Shareables.Count == 0) return true;
             for (int i = 0; i < Shareables.Count; i++)
@@ -208,7 +213,7 @@ namespace ValorantCC
             Grid0.Children.Add(applyButton);
 
             Crosshair_Parser.Generate(0, Grid0, profile.settings.Primary);
-
+            Crosshair_Parser.Generate(2, Grid0, profile.settings.aDS);
             template.Child = Grid0;
             await Task.Delay(1);
             return template;

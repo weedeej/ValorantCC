@@ -7,6 +7,7 @@ using RestSharp;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using System.Diagnostics;
+using RestSharp.Authenticators;
 
 namespace ValorantCC
 {
@@ -54,7 +55,7 @@ namespace ValorantCC
             Shareable = isShareable;
         }
 
-        public FetchResponse Fetch(String sharecode = null)
+        public async Task<FetchResponse> Fetch(String sharecode = null)
         {
             PostPayload payload = new PostPayload()
             {
@@ -70,26 +71,29 @@ namespace ValorantCC
             }
             RestRequest request = new RestRequest() { Method = Method.POST};
             request.AddJsonBody(payload);
-            RestResponse response = (RestResponse)client.Execute(request);
+            RestResponse response = (RestResponse)await client.ExecuteAsync(request);
+
             if (response.StatusCode != System.Net.HttpStatusCode.OK) return new FetchResponse() { success = false };
-            return JsonConvert.DeserializeObject<FetchResponse>(Regex.Unescape(response.Content));
+            return JsonConvert.DeserializeObject<FetchResponse>(response.Content);
         }
 
-        public VoidCallResponse Set()
+        public async Task<VoidCallResponse> Set()
         {
             PostPayload payload = new PostPayload()
             {
                 subject = AuthTokens.Subject,
                 settings = JsonConvert.SerializeObject(profile),
                 shareable = Shareable,
-                action = Action
+                action = 1
             };
             RestRequest request = new RestRequest() { Method = Method.POST };
+            //client.Authenticator = new JwtAuthenticator(AuthTokens.AccessToken);
+            request.RequestFormat = DataFormat.Json;
             request.AddJsonBody(payload);
-            request.AddHeader("Authorization", $"Bearer {AuthTokens.AccessToken}"); // Pass to server so nobody can set somebody's saved profile.
-            RestResponse response = (RestResponse)client.Execute(request);
+            request.AddOrUpdateHeader("Authorization", $"Bearer {AuthTokens.AccessToken}"); // Pass to server so nobody can set somebody's saved profile.
+            RestResponse response = (RestResponse)await client.ExecuteAsync(request);
             if (response.StatusCode != System.Net.HttpStatusCode.OK) return new VoidCallResponse() { success = false };
-            return JsonConvert.DeserializeObject<VoidCallResponse>(Regex.Unescape(response.Content));
+            return JsonConvert.DeserializeObject<VoidCallResponse>(response.Content);
         }
 
     }
