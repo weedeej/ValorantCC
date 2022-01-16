@@ -12,77 +12,10 @@
                 <TextBox Name="SearchCode" MinWidth="165" MaxWidth="165" Background="#FF393B44" Margin="0,0,5,0" Foreground="White"/>
                 <Button Name="btnSearchCode" Content="Search Code" MinWidth="85" Background="#FF393B44" Foreground="White" Click="btnSearchCode_Click"/>
             </StackPanel>
-            <StackPanel Name="ShareablesContainer" HorizontalAlignment="Center">
-                <Border Background="#FF393B44" MinHeight="95" MaxHeight="95" MinWidth="330" MaxWidth="330" Margin="0,5">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="2.5*"/>
-                            <RowDefinition Height="1*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
-                        </Grid.ColumnDefinitions>
-                        <Image Source="../Resources/CrosshairBG5.png" Grid.ColumnSpan="3" Grid.Row="0" Stretch="Fill" Margin="2,0,2,2"/>
-                        <Label Grid.Column="2" Grid.Row="0" Content="Deeej's Profile" Foreground="White" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
-
-                        <Rectangle Fill="#FF404661" Height="auto" Grid.Row="1" Grid.ColumnSpan="3"/>
-                        <Button Style="{DynamicResource RoundButton}" Margin="5,0" Grid.Row="1" Grid.Column="0" Content="Share"  FontWeight="Bold" FontSize="12"/>
-                        <Button Style="{DynamicResource RoundButton}" Margin="5,0" Grid.Row="1" Grid.Column="1" Content="Details" FontWeight="Bold" FontSize="12"/>
-                        <Button Style="{DynamicResource RoundButton}" Margin="5,0" Grid.Row="1" Grid.Column="2" Content="Apply" FontWeight="Bold" FontSize="12"/>
-
-                        <Grid x:Name="CH0_grid" Grid.Column="0">
-                            <Grid>
-                                <Rectangle x:Name="primeX1OT" Stroke="Black" StrokeThickness="1" Width="7" Height="3" Margin="20,0,0,0"/>
-                                <Rectangle x:Name="primeX1" Fill="White" Width="6" Height="2" Margin="20,0,0,0"/>
-                                <Rectangle x:Name="primeX2OT" Stroke="Black" StrokeThickness="1" Width="7" Height="3" Margin="0,0,20,0"/>
-                                <Rectangle x:Name="primeX2" Fill="White" Width="6" Height="2" Margin="0,0,20,0"/>
-
-                                <Rectangle x:Name="primeY1OT" Stroke="Black" StrokeThickness="1" Width="3" Height="7" Margin="0,0,0,20"/>
-                                <Rectangle x:Name="primeY1" Fill="White" Width="2" Height="6" Margin="0,0,0,20"/>
-                                <Rectangle x:Name="primeY2OT" Stroke="Black" StrokeThickness="1" Width="3" Height="7" Margin="0,20,0,0"/>
-                                <Rectangle x:Name="primeY2" Fill="White" Width="2" Height="6" Margin="0,20,0,0"/>
-
-                                <Rectangle x:Name="primeOLX1OT" Stroke="Black" StrokeThickness="1" Width="3" Height="3" Margin="30,0,0,0"/>
-                                <Rectangle x:Name="primeOLX1" Fill="White" Width="2" Height="2" Margin="30,0,0,0"/>
-                                <Rectangle x:Name="primeOLX2OT" Stroke="Black" StrokeThickness="1" Width="3" Height="3" Margin="0,0,30,0"/>
-                                <Rectangle x:Name="primeOLX2" Fill="White" Width="2" Height="2" Margin="0,0,30,0"/>
-
-                                <Rectangle x:Name="primeOLY1OT" Stroke="Black" StrokeThickness="1" Width="3" Height="3" Margin="0,0,0,30"/>
-                                <Rectangle x:Name="primeOLY1" Fill="White" Width="2" Height="2" Margin="0,0,0,30"/>
-                                <Rectangle x:Name="primeOLY2OT" Stroke="Black" StrokeThickness="1" Width="3" Height="3" Margin="0,30,0,0"/>
-                                <Rectangle x:Name="primeOLY2" Fill="White" Width="2" Height="2" Margin="0,30,0,0"/>
-
-                                <Rectangle x:Name="primeDOTOT" Stroke="Black" StrokeThickness="1" Width="3" Height="3"/>
-                                <Rectangle x:Name="primeDOT" Fill="White" Width="2" Height="2"/>
-                            </Grid>
-                        </Grid>
-                    </Grid>
-                </Border>
-                <Border Background="#FF393B44" MinHeight="95" MaxHeight="95" MinWidth="330" MaxWidth="330" Margin="0,5">
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="2.5*"/>
-                            <RowDefinition Height="1*"/>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
-                        </Grid.ColumnDefinitions>
-        
-                        <Image Source="../Resources/CrosshairBG1.png" Grid.ColumnSpan="3" Grid.Row="0" Stretch="Fill" Margin="2,0,2,2"/>
-                        <Label Grid.Column="2" Grid.Row="0" Content="Haruki's Profile" Foreground="White" VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
-
-                        <Rectangle Fill="#FF404661" Height="auto" Grid.Row="1" Grid.ColumnSpan="3"/>
-                        <Button Style="{DynamicResource RoundButton}" Margin="5,0" Grid.Row="1" Grid.Column="0" Content="Share"  FontWeight="Bold" FontSize="12"/>
-                        <Button Style="{DynamicResource RoundButton}" Margin="5,0" Grid.Row="1" Grid.Column="1" Content="Details" FontWeight="Bold" FontSize="12"/>
-                        <Button Style="{DynamicResource RoundButton}" Margin="5,0" Grid.Row="1" Grid.Column="2" Content="Apply" FontWeight="Bold" FontSize="12"/>
-                    </Grid>
-                </Border>
-                <Border Background="#FF393B44" MinHeight="95" MaxHeight="95" MinWidth="330" MaxWidth="330" Margin="0,5"/>
-            </StackPanel>
+            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Height="420">
+                <StackPanel Name="ShareablesContainer" HorizontalAlignment="Center">
+                </StackPanel>
+            </ScrollViewer>
         </StackPanel>
     </Border>
 </Window>

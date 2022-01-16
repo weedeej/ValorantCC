@@ -56,6 +56,7 @@ namespace ValorantCC
         /// <param name="sharecode">Nullable. Searched Code</param>
         private static async Task<bool> InitialFetch(String sharecode = null)
         {
+            PublicProfiles.Clear();
             List<ShareableProfile> Shareables;
             if (sharecode != null)
             {
