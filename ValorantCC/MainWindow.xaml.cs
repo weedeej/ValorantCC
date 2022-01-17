@@ -327,6 +327,7 @@ namespace ValorantCC
             }catch(Exception ex)
             {
                 ProfilesWindow publicProfiles = new ProfilesWindow(SelectedProfile, ValCCAPI);
+                publicProfiles.Owner = this;
                 publicProfiles.Show();
             }
         }

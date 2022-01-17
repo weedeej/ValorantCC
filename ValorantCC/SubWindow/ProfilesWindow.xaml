@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ValorantCC"
         mc:Ignorable="d"
-        Title="ProfilesWindow" Height="Auto" Width="Auto" ResizeMode="NoResize" SizeToContent="WidthAndHeight">
+        Title="ProfilesWindow" Height="Auto" Width="Auto" ResizeMode="NoResize" SizeToContent="WidthAndHeight" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
     <Border Background="#232429" Height="450" Width="351" Loaded="Border_Loaded">
         <StackPanel Name="Container" HorizontalAlignment="Center" Margin="0,5">
             <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
