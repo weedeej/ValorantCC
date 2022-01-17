@@ -266,8 +266,12 @@ namespace ValorantCC
             Grid0.Children.Add(detailsButton);
             Grid0.Children.Add(applyButton);
 
-            Crosshair_Parser.Generate(0, Grid0, profile.settings.Primary);
-            Crosshair_Parser.Generate(2, Grid0, profile.settings.aDS);
+            var cross = profile.settings.Primary;
+            Crosshair_Parser.Generate(0, Grid0, cross);
+            if (!profile.settings.bUsePrimaryCrosshairForADS)
+                cross = profile.settings.aDS;
+            Crosshair_Parser.Generate(1, Grid0, cross);
+            Crosshair_Parser.Generate(2, Grid0, profile.settings.Sniper);
             template.Child = Grid0;
             await Task.Delay(1);
             return template;

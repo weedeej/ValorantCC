@@ -22,11 +22,13 @@ namespace ValorantCC.src
             int recindex = 0;
             for (int i = 0; i < rectangles.Length; i++)
             {
-                Rectangle rectangle = new Rectangle()
+                Rectangle rectangle = new()
                 {
                     Width = 3,
                     Height = 3
                 };
+                if (recindex > 7)
+                    rectangle.Name = "OL";
                 rectangles[recindex] = rectangle;
                 recindex++;
             }
@@ -35,7 +37,7 @@ namespace ValorantCC.src
             for (int i = 0; i < rectangles.Length; i+=2)
             {
                 var pos = Position.East;
-                switch (recindex % 4)
+                switch (recindex)
                 {
                     case 1:
                         pos = Position.East;
@@ -46,13 +48,13 @@ namespace ValorantCC.src
                     case 3:
                         pos = Position.North;
                         break;
-                    case 0:
+                    case 4:
                         pos = Position.South;
                         break;
                 }
-                recindex++;
                 if(recindex == 4)
                     recindex = 0;
+                recindex++;
 
                 rectangle_redraw(rectangles[i], rectangles[i + 1], pos, settings);
                 rectangles[i].Fill = new SolidColorBrush(Color.FromRgb(settings.Color.R, settings.Color.G, settings.Color.B));
@@ -62,8 +64,8 @@ namespace ValorantCC.src
                 Grid.SetColumn(rectangles[i + 1], column);
                 Grid.SetRow(rectangles[i + 1], 0);
 
-                grid.Children.Add(rectangles[i]);
                 grid.Children.Add(rectangles[i + 1]);
+                grid.Children.Add(rectangles[i]);
             }
 
             Rectangle dot = new Rectangle()
@@ -76,13 +78,26 @@ namespace ValorantCC.src
             };
 
             dot_redraw(dot, dotOT, settings);
+            dot.Fill = new SolidColorBrush(Color.FromRgb(settings.Color.R, settings.Color.G, settings.Color.B));
+            dotOT.Stroke = new SolidColorBrush(Color.FromRgb(settings.OutlineColor.R, settings.OutlineColor.G, settings.OutlineColor.B));
             Grid.SetColumn(dot, column);
             Grid.SetRow(dot, 0);
             Grid.SetColumn(dotOT, column);
             Grid.SetColumn(dotOT, 0);
 
-            grid.Children.Add(dot);
             grid.Children.Add(dotOT);
+            grid.Children.Add(dot);
+        }
+
+        public static void Generate(int column, Grid grid, SniperSettings settings)
+        {
+            Ellipse ellipse = new();
+            dot_redraw(ellipse, settings);
+            ellipse.Fill = new SolidColorBrush(Color.FromRgb(settings.CenterDotColor.R, settings.CenterDotColor.G, settings.CenterDotColor.B));
+            Grid.SetColumn(ellipse, column);
+            Grid.SetRow(ellipse, 0);
+
+            grid.Children.Add(ellipse);
         }
 
         public static void dot_redraw(Rectangle Rect, Rectangle RectOT, ProfileSettings settings)
