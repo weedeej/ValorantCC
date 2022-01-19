@@ -3,6 +3,8 @@ using System;
 using System.IO;
 using System.Net;
 using System.Text;
+using System.Linq;
+using System.Threading.Tasks;
 using Utilities;
 namespace ValorantCC
 {
@@ -51,36 +53,26 @@ namespace ValorantCC
     }
     public class AuthObj
     {
-        public AuthResponse StartAuth(bool wait = false)
+        LockfileData LocalCredentials;
+        public async Task<AuthResponse> StartAuth()
         {
             string LockfilePath = Environment.GetEnvironmentVariable("LocalAppData") + "\\Riot Games\\Riot Client\\Config\\lockfile";
 
-            if (wait)
-            {
-                Utils.Log("Waiting for Lockfile");
-
-                bool LockfileExists = CheckLockFile(LockfilePath);
-                while (!LockfileExists)
-                {
-                    LockfileExists = CheckLockFile(LockfilePath);
-                }
-            }
-
-            LockfileData LocalCredentials = ObtainLockfileData(LockfilePath);
+            LocalCredentials = ObtainLockfileData(LockfilePath);
             if (!LocalCredentials.Success) return new AuthResponse() { Success = false, Response = "Please login to Riot Client or Start Valorant." };
 
-            AuthTokens Tokens = ObtainAuthTokens(LocalCredentials.Basic, LocalCredentials.Port);
+            AuthTokens Tokens = await ObtainAuthTokens();
             if (!Tokens.Success) return new AuthResponse() { Success = false, Response = "Please login to Riot Client or Start Valorant." };
-            return new AuthResponse() { Success = true, AuthTokens = Tokens, LockfileData = LocalCredentials, Version = GetVersion() };
+            return new AuthResponse() { Success = true, AuthTokens = Tokens, LockfileData = LocalCredentials, Version = await GetVersion() };
 
         }
 
-        private static bool CheckLockFile(string LockfilePath)
+        public static bool CheckLockFile(string LockfilePath)
         {
             return File.Exists(LockfilePath);
         }
 
-        private static LockfileData ObtainLockfileData(string LockfilePath)
+        public static LockfileData ObtainLockfileData(string LockfilePath)
         {
             string LockfileRaw;
             try
@@ -111,19 +103,23 @@ namespace ValorantCC
             };
         }
 
-        private AuthTokens ObtainAuthTokens(string Basic, int port)
+        private async Task<AuthTokens> ObtainAuthTokens()
         {
+            await Task.Delay(1);
             Utils.Log("Creating Auth Request");
 
-            HttpWebRequest request = HttpWebRequest.CreateHttp($"https://127.0.0.1:{port}/entitlements/v1/token");
+            HttpWebRequest request = HttpWebRequest.CreateHttp($"https://127.0.0.1:{LocalCredentials.Port}/entitlements/v1/token");
             request.Method = "GET";
-            request.Headers.Add("Authorization", $"Basic {Basic}");
+            request.Headers.Add("Authorization", $"Basic {LocalCredentials.Basic}");
             request.ServerCertificateValidationCallback += (sender, certificate, chain, sslPolicyErrors) => true;
-            HttpWebResponse resp;
+            WebResponse resp;
             try
             {
                 Utils.Log("Sending Auth Request");
-                resp = (HttpWebResponse)request.GetResponse();
+                Task<WebResponse> taskResp = Task.Factory.FromAsync(
+                    request.BeginGetResponse, request.EndGetResponse,
+                    (object)null);
+                resp = await taskResp;
             }
             catch (WebException ex)
             {
@@ -137,13 +133,21 @@ namespace ValorantCC
             return tokens;
         }
 
-        private static string GetVersion()
+        private async static Task<String> GetVersion()
         {
+            await Task.Delay(1);
             HttpWebRequest request = HttpWebRequest.CreateHttp("https://valorant-api.com/v1/version");
             request.Method = "GET";
-            HttpWebResponse response = (HttpWebResponse)request.GetResponse();
-            StreamReader sr = new StreamReader(response.GetResponseStream());
-            VersionResponse RespData = JsonConvert.DeserializeObject<VersionResponse>(sr.ReadToEnd());
+            Task<WebResponse> taskResp = Task.Factory.FromAsync(
+                    request.BeginGetResponse,
+                    asyncResult => request.EndGetResponse(asyncResult),
+                    (object)null);
+            VersionResponse RespData = await taskResp.ContinueWith(r =>
+            {   
+                WebResponse response = (WebResponse)r.Result;
+                StreamReader sr = new StreamReader(response.GetResponseStream());
+                return JsonConvert.DeserializeObject<VersionResponse>(sr.ReadToEnd());
+            });
             return RespData.Data.RiotClientVersion;
         }
     }

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:ValorantCC" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:Controls="clr-namespace:Xceed.Wpf.AvalonDock.Themes.Controls;assembly=Xceed.Wpf.AvalonDock.Themes.Aero" x:Class="ValorantCC.MainWindow"
         mc:Ignorable="d"
-        Title="vTools - ValorantCC" Height="411 " Width="500" SizeToContent="Manual" AllowsTransparency="True" WindowStartupLocation="CenterScreen" WindowState="Normal" ResizeMode="CanMinimize" WindowStyle="None" Icon="Resources/vtools-colored.ico"
+        Title="vTools - ValorantCC" Height="423 " Width="500" SizeToContent="Manual" AllowsTransparency="True" WindowStartupLocation="CenterScreen" WindowState="Normal" ResizeMode="CanMinimize" WindowStyle="None" Icon="Resources/vtools-colored.ico"
         Background="Transparent"
         RenderOptions.BitmapScalingMode="Fant">
     <Window.Resources>
@@ -55,18 +55,15 @@
                 </Grid>
                 <Grid Margin="0,3,0,0" MouseDown="StackPanel_MouseDown" MaxWidth="500" MaxHeight="411">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition MaxWidth="65" Width="65*"/>
-                        <ColumnDefinition Width="43*"/>
-
-                        <ColumnDefinition MaxWidth="85" Width="85*"/>
-                        <ColumnDefinition Width="68*"/>
-
-                        <ColumnDefinition MaxWidth="82" Width="82*"/>
-                        <ColumnDefinition Width="128*"/>
+                        <ColumnDefinition Width="55*"/>
+                        <ColumnDefinition Width="120"/>
                     </Grid.ColumnDefinitions>
-                    <TextBlock FontWeight="Bold" Grid.Column="0" Margin="5,0,43,0" Foreground="White" FontFamily="Segoe UI Semibold" VerticalAlignment="Top" Grid.ColumnSpan="2"><Run Text="Logged In:"/></TextBlock>
-                    <TextBlock Margin="2,-5,0,0" FontWeight="Bold" Foreground="#FFF90C0C" x:Name="txt_LoggedIn" FontSize="18" Grid.Column="1"  VerticalAlignment="Top" HorizontalAlignment="Left"><Run Text="•"/></TextBlock>
-                    <ComboBox x:Name="profiles" Grid.Column="5" SelectionChanged="profiles_SelectionChanged" SelectedIndex="0" IsEditable="True" IsReadOnly="True" Text="Profiles" TextBoxBase.TextChanged="profiles_TextChanged" Background="#FF232429" Foreground="White" Margin="0,-1,2,1" FontFamily="Quicksand" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold"/>
+                    <TextBlock FontWeight="Bold" Grid.Column="0" Margin="5,0,43,0" Foreground="White" FontFamily="Segoe UI Semibold" Grid.ColumnSpan="2">
+                        <Run Text="Status:"/>
+                        <Run Foreground="Red" Text="•" Name="DotTxt"/>
+                        <Run Foreground="Red" Text="Waiting for lockfile. . ." FontSize="10" Name="StatusTxt"/>
+                    </TextBlock>
+                    <ComboBox x:Name="profiles" Grid.Column="2" SelectionChanged="profiles_SelectionChanged" SelectedIndex="0" IsEditable="True" IsReadOnly="True" Text="Profiles" TextBoxBase.TextChanged="profiles_TextChanged" Background="#FF232429" Foreground="White" Margin="0,-1,2,1" FontFamily="Quicksand" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold"/>
                 </Grid>
                 <Grid MaxWidth="500" MaxHeight="411">
                     <Image x:Name="CrosshairBG" Source="{StaticResource crosshairBG0}" Margin="1,3,-1,3"/>
@@ -85,7 +82,7 @@
                                 <Image Source="Resources/folder.png" Stretch="None"/>
                             </StackPanel>
                         </Button>
-                        
+
                     </StackPanel>
                     <Grid>
                         <Grid.ColumnDefinitions>
@@ -199,9 +196,9 @@
                         <ColumnDefinition Width="88*"/>
                         <ColumnDefinition Width="160*"/>
                     </Grid.ColumnDefinitions>
-                    <Button Style="{DynamicResource RoundButton}" Content="Relogin" Height="25" Click="btnReload_Click" Cursor="Hand" VerticalAlignment="Center" Background="#FF295FFE" FontFamily="Quicksand" FontWeight="DemiBold" FontSize="11" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Grid.Column="1" Margin="24,0,28,0" Grid.ColumnSpan="2" Width="120"/>
-                    <Button Style="{DynamicResource RoundButton}" Content="Save" Height="25" Click="btnSave_Click" Cursor="Hand" VerticalAlignment="Center" Background="#FF295FFE" FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" Grid.Column="3" Margin="28.2,0,0,0" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Width="124"/>
-                    <Button x:Name="btnLogin" Style="{DynamicResource RoundButton}"  Content="Login" HorizontalContentAlignment="Left" Click="btnLogin_Click" Cursor="Hand" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Left" VerticalAlignment="Center" Width="124" Background="#FF295FFE" FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Margin="0,0,0,0"/>
+                    <Button Style="{DynamicResource RoundButton}" Content="Reload" Height="25" Click="btnReload_Click" Cursor="Hand" VerticalAlignment="Center" FontFamily="Quicksand" FontWeight="DemiBold" FontSize="11" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Grid.Column="1" Margin="24,0,28,0" Grid.ColumnSpan="2" Width="120"/>
+                    <Button Style="{DynamicResource RoundButton}" Content="Save" Height="25" Click="btnSave_Click" Cursor="Hand" VerticalAlignment="Center" FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" Grid.Column="3" Margin="28.2,0,0,0" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Width="124"/>
+                    <Button x:Name="btnShare" Style="{DynamicResource RoundButton}"  Content="Share" HorizontalContentAlignment="Left" Click="btnShare_Click" Cursor="Hand" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Left" VerticalAlignment="Center" Width="124"  FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Margin="0,0,0,0"/>
 
                 </Grid>
                 <Grid Width="495" MaxWidth="495" MaxHeight="411">
@@ -215,6 +212,7 @@
                         <RowDefinition Height="12*"/>
                         <RowDefinition Height="12*"/>
                         <RowDefinition Height="17*"/>
+                        <RowDefinition Height="12*"/>
                     </Grid.RowDefinitions>
                     <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="0"  Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Primary Color"/></TextBlock>
                     <xctk:ColorPicker x:Name="primary_color" Grid.Row="0" Grid.Column="1" SelectedColorChanged="primary_color_SelectedColorChanged" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="10,1,4,1" Cursor="Hand" BorderBrush="White" DropDownBackground="#FF252526" DropDownBorderBrush="#FF252526" HeaderBackground="#FF252526" TabBackground="#FF252526" Foreground="White" HeaderForeground="White" TabForeground="#FFFBF9F9" UsingAlphaChannel="False" Background="{x:Null}" DisplayColorAndName="True"/>
@@ -230,6 +228,12 @@
 
                     <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="4" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Sniper Dot Color"/></TextBlock>
                     <xctk:ColorPicker x:Name="sniper_dot_color"  Grid.Row="4" Grid.Column="1" SelectedColorChanged="sniper_dot_color_SelectedColorChanged" UsingAlphaChannel="False" AdvancedTabHeader="Manual" Margin="10,0,4,0" Cursor="Hand" OpacityMask="#FFB82525" Height="23.96" VerticalAlignment="Center" Background="{x:Null}" DisplayColorAndName="True" BorderBrush="#FFDADADA" Foreground="White" HeaderBackground="#FF252526" HeaderForeground="White" TabBackground="#FF252526" TabForeground="#FFFBF9F9" DropDownBorderBrush="#FF252526" DropDownBackground="#FF252526" ShowStandardColors="False"/>
+
+                    <Rectangle Width="auto" Height="15" Grid.Column="0" Grid.Row="5" Fill="#FF44464F" Grid.ColumnSpan="2" Margin="-2,2,-2,2"/>
+                    <TextBlock FontWeight="Bold" Grid.Column="0" Grid.Row="5" Margin="2,0,2,2" Foreground="White" FontFamily="Segoe UI Semibold" Grid.ColumnSpan="2">
+                        <Run Text="Message:"/>
+                        <Run Foreground="Yellow" Text="Waiting for action. . ." FontSize="10" Name="MessageTxt"/>
+                    </TextBlock>
                 </Grid>
             </StackPanel>
         </UserControl>

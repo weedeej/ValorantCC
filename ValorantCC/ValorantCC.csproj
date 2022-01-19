@@ -31,6 +31,7 @@
     <None Remove="Resources\CrosshairBG5.png" />
     <None Remove="Resources\folder.png" />
     <None Remove="Resources\vtools-colored.ico" />
+    <None Remove="Resources\vtspinner.gif" />
   </ItemGroup>
 
   <ItemGroup>
@@ -64,13 +65,20 @@
     <Resource Include="Resources\CrosshairBG5.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <Resource Include="Resources\folder.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\vtools-colored.ico" />
+    <Resource Include="Resources\vtspinner.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EZ_Updater" Version="0.5.0.1" />
+    <PackageReference Include="EZ_Updater" Version="0.5.0.4" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RestSharp" Version="106.13.0" />
-    <PackageReference Include="SharpZipLib" Version="1.3.3" />
+    <PackageReference Include="RestSharp" Version="106.15.0" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
   </ItemGroup>
 
   <ItemGroup>
@@ -91,13 +99,6 @@
 
   <ItemGroup>
     <_DeploymentManifestIconFile Remove="Resources\vtools-colored.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Resources\folder.png">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Resource>
-    <Resource Include="Resources\vtools-colored.ico" />
   </ItemGroup>
 
 </Project>

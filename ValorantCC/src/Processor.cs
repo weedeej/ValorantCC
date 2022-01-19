@@ -4,11 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Media;
+using System.Threading.Tasks;
 using Utilities;
 
 namespace ValorantCC
 {
-    class Processor
+    public class Processor
     {
         private AuthResponse AuthResponse;
         public bool isLoggedIn = false;
@@ -24,7 +25,7 @@ namespace ValorantCC
         {
             Utils.Log("Login started");
             AuthObj AuthObj = new AuthObj();
-            AuthResponse = AuthObj.StartAuth(false);
+            AuthResponse = Task.Run(AuthObj.StartAuth).Result;
             if (!AuthResponse.Success) return AuthResponse;
             Utils.Log("Auth Success");
             Construct();

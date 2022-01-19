@@ -49,9 +49,9 @@ namespace ValorantCC
 
         private async void Border_Loaded(object sender, RoutedEventArgs e)
         {
-            LoadingTxt.Visibility = Visibility.Visible;
+            LoadingPlaceHolder.Visibility = Visibility.Visible;
             await InitialFetch();
-            LoadingTxt.Visibility = Visibility.Collapsed;
+            LoadingPlaceHolder.Visibility = Visibility.Collapsed;
             await RenderProfiles();
         }
 
@@ -266,7 +266,8 @@ namespace ValorantCC
             Grid0.Children.Add(detailsButton);
             Grid0.Children.Add(applyButton);
 
-            var cross = profile.settings.Primary;
+            ProfileSettings cross = profile.settings.Primary;
+
             Crosshair_Parser.Generate(0, Grid0, cross);
             if (!profile.settings.bUsePrimaryCrosshairForADS)
                 cross = profile.settings.aDS;

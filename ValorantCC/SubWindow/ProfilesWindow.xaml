@@ -4,6 +4,7 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ValorantCC"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
         Title="ProfilesWindow" Height="Auto" Width="Auto" ResizeMode="NoResize" SizeToContent="WidthAndHeight" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
     <Border Background="#232429" Height="450" Width="351" Loaded="Border_Loaded">
@@ -14,7 +15,7 @@
             </StackPanel>
             <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Height="420">
                 <StackPanel Name="ShareablesContainer" HorizontalAlignment="Center">
-                    <TextBlock Name="LoadingTxt" FontSize="32" Foreground="White" >L o a d i n g . . . :D</TextBlock>
+                    <Image gif:ImageBehavior.AnimatedSource="../Resources/vtspinner.gif" Width="50" Height="50" Name="LoadingPlaceHolder"/>
                 </StackPanel>
             </ScrollViewer>
         </StackPanel>

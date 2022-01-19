@@ -19,21 +19,17 @@ namespace ValorantCC
     public partial class MainWindow : Window
     {
         readonly string LoggingDir = Environment.GetEnvironmentVariable("LocalAppData") + @"\VTools\Logs\";
-        Processor DataProcessor = new Processor();
+        public Processor DataProcessor = new Processor();
         BrushConverter bc = new BrushConverter();
         public AuthResponse AuthResponse;
         public CrosshairProfile SelectedProfile;
         List<Color> SelectedColors;
-        private API ValCCAPI;
-        int SelectedIndex;
-        bool LoggedIn;
+        public API ValCCAPI;
+        public int SelectedIndex;
+        public bool LoggedIn;
 
         public MainWindow()
         {
-            /**
-             * Note to myself, You were sleepy when you made this commit. Just test the app and see what you messed with.
-             * You probably messed with something here in main relating to the checkbox. goodluck debugging!
-             */
             // Create logging dir
             if (!Directory.Exists(LoggingDir)) Directory.CreateDirectory(LoggingDir);
             // Replace old logs 
@@ -44,6 +40,8 @@ namespace ValorantCC
             InitializeComponent();
             Utils.Log($"App Started | v{ProgramFileVersion}. Replaced old logfile.");
             Txt_CurrVer.Content = $"v{ProgramFileVersion}";
+            BackgroundAuth auth = new BackgroundAuth(DataProcessor);
+            auth.LoopCheck();
         }
 
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
@@ -61,7 +59,7 @@ namespace ValorantCC
         {
             if (!LoggedIn)
             {
-                MessageBox.Show("You are not logged in!");
+                MessageTxt.Text = "You are not logged in!";
                 return;
             }
             if (DataProcessor.ProfileListed)
@@ -77,29 +75,13 @@ namespace ValorantCC
                 DataProcessor.Construct();
                 profiles.Items.Refresh();
                 profiles.SelectedIndex = DataProcessor.CurrentProfile;
-                MessageBox.Show("Saved! If Valorant is open, Please restart it without touching the settings.");
+                MessageTxt.Foreground = Brushes.Lime;
+                MessageTxt.Text = "Saved! Restart Valorant.";
                 return;
             }
-            MessageBox.Show("Failed. Consult the developer.");
+            MessageTxt.Foreground = Brushes.Red;
+            MessageTxt.Text = "Failed. Consult developer.";
             return;
-        }
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
-        {
-            AuthResponse AuthResponse = DataProcessor.Login();
-            LoggedIn = AuthResponse.Success;
-            if (!LoggedIn)
-            {
-                MessageBox.Show(AuthResponse.Response);
-                return;
-            }
-
-            profiles.ItemsSource = DataProcessor.ProfileNames;
-            txt_LoggedIn.Foreground = Brushes.Lime;
-            profiles.SelectedIndex = DataProcessor.CurrentProfile;
-            profiles.IsReadOnly = false;
-            MessageBox.Show(Utils.LoginResponse(DataProcessor));
-            btnLogin.IsEnabled = false;
-            ValCCAPI = new API(AuthResponse.AuthTokens, SelectedProfile, 2, (chkbxShareable.IsChecked ?? false));
         }
 
         private void profiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -124,9 +106,6 @@ namespace ValorantCC
             ads_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.Color.R, SelectedProfile.aDS.Color.G, SelectedProfile.aDS.Color.B);
             ads_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.OutlineColor.R, SelectedProfile.aDS.OutlineColor.G, SelectedProfile.aDS.OutlineColor.B);
             sniper_dot_color.SelectedColor = Color.FromRgb(SelectedProfile.Sniper.CenterDotColor.R, SelectedProfile.Sniper.CenterDotColor.G, SelectedProfile.Sniper.CenterDotColor.B);
-
-            if (ValCCAPI != null) ValCCAPI.profile = SelectedProfile;
-            if (ValCCAPI != null && (chkbxShareable.IsChecked ?? false)) ValCCAPI.Set();
             Crosshair_load();
         }
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
@@ -138,7 +117,7 @@ namespace ValorantCC
         {
             if (!LoggedIn)
             {
-                MessageBox.Show("You are not logged in!");
+                MessageTxt.Text = "You are not logged in!";
                 return;
             }
             Utils.Log("Reload Clicked > Reconstructing Processor.");
@@ -288,7 +267,8 @@ namespace ValorantCC
             Process p = new Process();
             p.StartInfo = new ProcessStartInfo() { FileName = LoggingDir, UseShellExecute = true };
             p.Start();
-            MessageBox.Show("Log folder opened. Please include the OLD file on your report as this helps us recreate the bug/error you will report.");
+            MessageTxt.Foreground = Brushes.Lime;
+            MessageTxt.Text = "Log folder opened! Please include OLD files to your report if exists.";
         }
 
         private void next_Click(object sender, RoutedEventArgs e)
@@ -317,7 +297,7 @@ namespace ValorantCC
         {
             if (!LoggedIn)
             {
-                MessageBox.Show("You are not logged in!");
+                MessageTxt.Text = "You are not logged in!";
                 return;
             }
             try
@@ -336,11 +316,22 @@ namespace ValorantCC
         {
             if (!LoggedIn)
             {
-                MessageBox.Show("You are not logged in!");
+                MessageTxt.Text = "You are not logged in!";
                 ((CheckBox)sender).IsChecked = !((CheckBox)sender).IsChecked;
                 return;
             }
+        }
+
+        private void btnShare_Click(object sender, RoutedEventArgs e)
+        {
+            if (!LoggedIn)
+            {
+                MessageTxt.Text = "You are not logged in!";
+                return;
+            }
+            MessageTxt.Text = "Your profile has been saved! Make sure you have the 'shareable' checkbox checked!";
             ValCCAPI.Shareable = (bool)chkbxShareable.IsChecked;
+            ValCCAPI.profile = SelectedProfile;
             _ = ValCCAPI.Set();
         }
     }

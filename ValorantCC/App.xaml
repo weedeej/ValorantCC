@@ -92,6 +92,14 @@
                     </ControlTemplate>
                 </Setter.Value>
             </Setter>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Background" Value="#FF6C91FF"></Setter>
+                </Trigger>
+                <Trigger Property="IsMouseOver" Value="False">
+                    <Setter Property="Background" Value="#FF295FFE" />
+                </Trigger>
+            </Style.Triggers>
         </Style>
         
         <SolidColorBrush x:Key="WindowBackgroundBrush" Color="#191B1D" />
