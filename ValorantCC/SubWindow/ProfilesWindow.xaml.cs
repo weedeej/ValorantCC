@@ -171,16 +171,20 @@ namespace ValorantCC
             };
             Random rand = new Random();
             // Main border
+            ImageBrush image = new ImageBrush();
+            image.ImageSource = imageSources[rand.Next(0, 5)];
             Border template = new Border()
             {
-                Background = (Brush)bc.ConvertFromString("#FF393B44"),
+                Background = image,
+                CornerRadius = new CornerRadius(7, 7, 25, 25),
                 MinHeight = 95,
                 MaxHeight = 95,
-                MinWidth = 330,
-                MaxWidth = 330,
-                Margin = new Thickness() { Bottom = 5, Top = 5, Left = 0, Right = 0 }
+                MinWidth = 300,
+                MaxWidth = 300,
+                Margin = new Thickness(5, 5, 0, 0)
             };
             // First Grid and defintions
+
             Grid Grid0 = new Grid();
             ColumnDefinition gridCol0 = new ColumnDefinition();
             ColumnDefinition gridCol1 = new ColumnDefinition();
@@ -192,34 +196,41 @@ namespace ValorantCC
             Grid0.ColumnDefinitions.Add(gridCol2);
             Grid0.RowDefinitions.Add(gridRow0);
             Grid0.RowDefinitions.Add(gridRow1);
-
-            // INner elements
-            Image bg = new Image()
+            // General button background
+            Rectangle rect = new()
             {
-                Source = imageSources[rand.Next(0,5)],
-                Stretch = Stretch.Fill,
-                Margin = new Thickness() { Bottom = 2, Top = 0, Left = 2, Right = 2 }
+                Fill = (Brush)bc.ConvertFromString("#282A36"),
+                MinWidth = 300,
+                MaxWidth = 300,
+                MinHeight = 81.25,
+                MaxHeight = 81.25,
             };
-
-            Grid.SetRow(bg, 0);
-            Grid.SetColumn(bg, 0);
-            Grid.SetColumnSpan(bg, 3);
+            Grid.SetColumn(rect, 0);
+            Grid.SetRow(rect, 1);
+            Grid.SetColumnSpan(rect, 3);
 
             Label ownerName = new Label()
             {
-                Content = profile.owner + "'s Profile",
+                Content = profile.owner,
                 VerticalAlignment = VerticalAlignment.Bottom,
                 HorizontalAlignment = HorizontalAlignment.Right,
                 Foreground = Brushes.White
             };
             Grid.SetColumn(ownerName, 2);
             Grid.SetRow(ownerName, 0);
+           
+
+            int buttonFont = 11;
+            int buttonHeight = 22;
+            string buttonColor = "#4648BF";
 
             Button shareButton = new Button()
             {
                 Style = (Style)FindResource("RoundButton"),
+                Background = (Brush)bc.ConvertFromString(buttonColor),
                 Margin = new Thickness() { Bottom = 0, Top = 0, Left = 5, Right = 5 },
-                FontSize = 12,
+                Height = buttonHeight,
+                FontSize = buttonFont,
                 FontWeight = FontWeights.Bold,
                 Content = "Share",
                 Cursor = Cursors.Hand,
@@ -230,8 +241,10 @@ namespace ValorantCC
             Button detailsButton = new Button()
             {
                 Style = (Style)FindResource("RoundButton"),
+                Background = (Brush)bc.ConvertFromString(buttonColor),
                 Margin = new Thickness() { Bottom = 0, Top = 0, Left = 5, Right = 5 },
-                FontSize = 12,
+                FontSize = buttonFont,
+                Height = buttonHeight,
                 FontWeight = FontWeights.Bold,
                 Content = "Details",
                 Cursor = Cursors.Hand,
@@ -243,8 +256,10 @@ namespace ValorantCC
             Button applyButton = new Button()
             {
                 Style = (Style)FindResource("RoundButton"),
+                Background = (Brush)bc.ConvertFromString(buttonColor),
                 Margin = new Thickness() { Bottom = 0, Top = 0, Left = 5, Right = 5 },
-                FontSize = 12,
+                FontSize = buttonFont,
+                Height = buttonHeight,
                 FontWeight = FontWeights.Bold,
                 Content = "Apply",
                 Cursor = Cursors.Hand,
@@ -258,14 +273,11 @@ namespace ValorantCC
             Grid.SetRow(detailsButton, 1);
             Grid.SetColumn(applyButton, 2);
             Grid.SetRow(applyButton, 1);
-
-            Grid0.Children.Add(bg);
+            Grid0.Children.Add(rect);
             Grid0.Children.Add(ownerName);
-
             Grid0.Children.Add(shareButton);
             Grid0.Children.Add(detailsButton);
             Grid0.Children.Add(applyButton);
-
             ProfileSettings cross = profile.settings.Primary;
 
             Crosshair_Parser.Generate(0, Grid0, cross);
@@ -276,6 +288,28 @@ namespace ValorantCC
             template.Child = Grid0;
             await Task.Delay(1);
             return template;
+        }
+        private void ExitClick(object sender, RoutedEventArgs e)
+        {
+           Close();
+        }
+        private void MinimizeClick(object sender, RoutedEventArgs e)
+        {
+            WindowState = WindowState.Minimized;
+        }
+
+        private void TabButtonEnter(object sender, MouseEventArgs e)
+        {
+            ((Button)sender).Foreground = new SolidColorBrush(Colors.Gray);
+        }
+        private void TabButtonLeave(object sender, MouseEventArgs e)
+        {
+            ((Button)sender).Foreground = new SolidColorBrush(Colors.White);
+        }
+
+        private void Border_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed) DragMove();
         }
     }
 }

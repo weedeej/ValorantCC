@@ -6,18 +6,36 @@
         xmlns:local="clr-namespace:ValorantCC"
         xmlns:gif="http://wpfanimatedgif.codeplex.com"
         mc:Ignorable="d"
-        Title="ProfilesWindow" Height="Auto" Width="Auto" ResizeMode="NoResize" SizeToContent="WidthAndHeight" ShowInTaskbar="False" WindowStartupLocation="CenterOwner">
-    <Border Background="#232429" Height="450" Width="351" Loaded="Border_Loaded">
-        <StackPanel Name="Container" HorizontalAlignment="Center" Margin="0,5">
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBox Name="SearchCode" MinWidth="165" MaxWidth="165" Background="#FF393B44" Margin="0,0,5,0" Foreground="White"/>
-                <Button Name="btnSearchCode" Content="Search Code" MinWidth="85" Background="#FF393B44" Foreground="White" Click="btnSearchCode_Click"/>
-            </StackPanel>
-            <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Height="420">
-                <StackPanel Name="ShareablesContainer" HorizontalAlignment="Center">
-                    <Image gif:ImageBehavior.AnimatedSource="../Resources/vtspinner.gif" Width="50" Height="50" Name="LoadingPlaceHolder"/>
+        Title="ProfilesWindow" RenderOptions.BitmapScalingMode="Fant" Background="Transparent" AllowsTransparency="True" Height="481" Width="339" ResizeMode="NoResize" SizeToContent="WidthAndHeight" ShowInTaskbar="False" WindowStartupLocation="CenterOwner" WindowStyle="None">
+   
+    <Border BorderThickness="0"  CornerRadius="7" Background="#232429" Height="450" Loaded="Border_Loaded" Margin="0,15,0,15">
+        <Grid>
+            <Border BorderThickness="0" BorderBrush="Transparent" Background ="#16171B" Margin="0,-2,-1,425" CornerRadius="7,5,0,0" MouseDown="Border_MouseDown">
+                <Grid Height="Auto" Width="Auto" Margin="0,0,1,-2" OpacityMask="#FFA42727">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="18*"/>
+                        <ColumnDefinition Width="90*"/>
+                        <ColumnDefinition Width="189*"/>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="23*"/>
+                    </Grid.ColumnDefinitions>
+                    <Image Source="/Resources/vtools-colored.ico" Grid.Column="0" Margin="2,6,2,7"/>
+                    <Button x:Name="exitButton" Content="❌" Margin="2,5,4,5" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Style="{DynamicResource RightButtonStyle}" Cursor="Hand" Grid.Column="4" Click="ExitClick" MouseEnter="TabButtonEnter" MouseLeave="TabButtonLeave"/>
+                    <Button x:Name="minusButton" Content="➖" Margin="1,4,4,4" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Style="{DynamicResource RightButtonStyle}" Cursor="Hand" Grid.Column="3" Click="MinimizeClick" MouseEnter="TabButtonEnter" MouseLeave="TabButtonLeave"/>
+                </Grid>
+            </Border>
+            <StackPanel Name="Container" HorizontalAlignment="Center" Margin="0,5">
+                <StackPanel Orientation="Horizontal" Width="350">
+                    <TextBox Style="{StaticResource LineTextBox}" Name="SearchCode" MinWidth="128" MaxWidth="128" Background="#FF393B44" Margin="65,25,5,0" Foreground="White" Height="22"/>
+                    <Button Style="{DynamicResource SearchCodeButtonStyle}" Name="btnSearchCode" Content="Search Code" MinWidth="85" Background="#FF393B44" Margin="0,25,5,0" Foreground="White" Cursor="Hand"  Click="btnSearchCode_Click" BorderBrush="#FF393B44"/>
                 </StackPanel>
-            </ScrollViewer>
-        </StackPanel>
+                <ScrollViewer  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,5,0,0" Height="388" Width="338">
+
+                    <StackPanel Name="ShareablesContainer" HorizontalAlignment="Center">
+                        <Image gif:ImageBehavior.AnimatedSource="../Resources/vtspinner.gif" Width="50" Height="52" Margin="0,155,0,0" x:Name="LoadingPlaceHolder"/>
+                    </StackPanel>
+                </ScrollViewer>
+            </StackPanel>
+        </Grid>
     </Border>
 </Window>
