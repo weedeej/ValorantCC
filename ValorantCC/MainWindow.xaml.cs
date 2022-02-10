@@ -40,8 +40,19 @@ namespace ValorantCC
         {
             Updater.CustomLogger = Utils.Log;
             Updater.OriginalFileName = "ValorantCC";
-            if (await Updater.CheckUpdateAsync("weedeej", "ValorantCC"))
+            if (await Updater.CheckUpdateAsync("Haruki1707", "ValorantCC"))
             {
+                try
+                {
+                    File.Create("./valccPermsTest.null").Close();
+                    File.Delete("./valccPermsTest.null");
+                }
+                catch(UnauthorizedAccessException)
+                {
+                    Utils.Log("User is not authorized to create a file on current valcc dir. Consider moving.");
+                    MessageBox.Show("There's an update available but you have no access to write on this folder.\nPlease consider moving the app to a folder created by you or running the app as administrator.");
+                    this.Close();
+                }
                 var update = new UpdateWindow();
                 update.Owner = this;
                 update.ShowDialog();
