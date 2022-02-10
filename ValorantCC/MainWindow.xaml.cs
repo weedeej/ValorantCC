@@ -39,7 +39,7 @@ namespace ValorantCC
         private async void Grid_Loaded(object sender, RoutedEventArgs e)
         {
             Updater.CustomLogger = Utils.Log;
-
+            Updater.OriginalFileName = "ValorantCC";
             if (await Updater.CheckUpdateAsync("weedeej", "ValorantCC"))
             {
                 var update = new UpdateWindow();
