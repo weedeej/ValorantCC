@@ -14,7 +14,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <AssemblyVersion></AssemblyVersion>
     <FileVersion></FileVersion>
-    <Version>2.6.6</Version>
+    <Version>2.6.7</Version>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
