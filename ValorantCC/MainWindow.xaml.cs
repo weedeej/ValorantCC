@@ -40,7 +40,7 @@ namespace ValorantCC
         {
             Updater.CustomLogger = Utils.Log;
             Updater.OriginalFileName = "ValorantCC";
-            if (await Updater.CheckUpdateAsync("Haruki1707", "ValorantCC"))
+            if (await Updater.CheckUpdateAsync("weedeej", "ValorantCC"))
             {
                 try
                 {
