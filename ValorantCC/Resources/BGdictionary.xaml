@@ -1,0 +1,9 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <BitmapImage x:Key="crosshairBG0" UriSource="/Resources/CrosshairBG0.png"/>
+    <BitmapImage x:Key="crosshairBG1" UriSource="/Resources/CrosshairBG1.png"/>
+    <BitmapImage x:Key="crosshairBG2" UriSource="/Resources/CrosshairBG2.png"/>
+    <BitmapImage x:Key="crosshairBG3" UriSource="/Resources/CrosshairBG3.png"/>
+    <BitmapImage x:Key="crosshairBG4" UriSource="/Resources/CrosshairBG4.png"/>
+    <BitmapImage x:Key="crosshairBG5" UriSource="/Resources/CrosshairBG5.png"/>
+</ResourceDictionary>

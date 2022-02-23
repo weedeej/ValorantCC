@@ -4,9 +4,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
-using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using ValorantCC;
 
@@ -15,16 +16,22 @@ namespace Utilities
     class Utils
     {
         private static StringBuilder StringBuilder = new StringBuilder();
-        private static WebClient client = new WebClient();
+        readonly public static string LoggingFile = Environment.GetEnvironmentVariable("LocalAppData") + @"\VTools\ValorantCC\Logs\logs.txt";
+
         public static Data Decompress(string value)
         {
             Log("Decompressing Response Data");
             byte[] byteArray = Convert.FromBase64String(value);
-            var outputStream = new MemoryStream();
-            DeflateStream deflateStream = new DeflateStream(new MemoryStream(byteArray), CompressionMode.Decompress);
-            deflateStream.CopyTo(outputStream);
-
-            return JsonConvert.DeserializeObject<Data>(Encoding.UTF8.GetString(outputStream.ToArray()));
+            byte[] decompressed;
+            using (MemoryStream outputStream = new MemoryStream())
+            {
+                using (DeflateStream deflateStream = new DeflateStream(new MemoryStream(byteArray), CompressionMode.Decompress))
+                {
+                    deflateStream.CopyTo(outputStream);
+                }
+                decompressed = (byte[])outputStream.ToArray().Clone();
+            }
+            return JsonConvert.DeserializeObject<Data>(Encoding.UTF8.GetString(decompressed));
         }
 
         public static string Compress(Object data)
@@ -32,22 +39,27 @@ namespace Utilities
             Log("Compressing New Data");
             string jsonString = JsonConvert.SerializeObject(data);
             byte[] byteArray = Encoding.UTF8.GetBytes(jsonString);
-            MemoryStream output = new MemoryStream();
-            //Create stream from bytes of the json data and copy it to deflateStream as it only has write access
-            try
+            byte[] compressed;
+            using (MemoryStream output = new MemoryStream())
             {
-                using (MemoryStream memoryStream = new MemoryStream(byteArray))
+                //Create stream from bytes of the json data and copy it to deflateStream as it only has write access
+                try
                 {
-                    DeflateStream deflateStream = new DeflateStream(output, CompressionMode.Compress);
-                    memoryStream.CopyTo(deflateStream);
-                    deflateStream.Close();
+                    using (MemoryStream memoryStream = new MemoryStream(byteArray))
+                    {
+                        using (DeflateStream deflateStream = new DeflateStream(output, CompressionMode.Compress))
+                        {
+                            memoryStream.CopyTo(deflateStream);
+                        }
+                    }
                 }
+                catch (Exception e)
+                {
+                    Log(e.ToString());
+                }
+                compressed = (byte[])output.ToArray().Clone();
             }
-            catch (Exception e)
-            {
-                Log(e.ToString());
-            }
-            return Convert.ToBase64String(output.ToArray());
+            return Convert.ToBase64String(compressed);
         }
 
         public static CrosshairColor parseCrosshairColor(string input)
@@ -85,13 +97,20 @@ namespace Utilities
         public static void Log(string Text)
         {
             StringBuilder.Append($"{DateTimeOffset.Now} | {Text}\n");
-            File.AppendAllText(Environment.GetEnvironmentVariable("LocalAppData") + "\\VTools\\Logs\\logs.txt", StringBuilder.ToString());
+            File.AppendAllText(LoggingFile, StringBuilder.ToString());
             StringBuilder.Clear();
         }
         public static string LoginResponse(Processor processor)
         {
             if (processor.ProfileListed) return "Logged In! You may now close Valorant.";
             return "Logged In! You may now close Valorant. NOTE: You only have 1 Profile. To use the other features, Please create an extra profile.";
+        }
+
+        public static void MessageText(String message, Brush color)
+        {
+            TextBlock msgtxt = ((MainWindow)Application.Current.MainWindow).MessageTxt;
+            msgtxt.Foreground = color;
+            msgtxt.Text = message;
         }
     }
 }

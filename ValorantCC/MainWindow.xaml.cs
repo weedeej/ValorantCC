@@ -1,69 +1,54 @@
 ﻿using EZ_Updater;
+using MahApps.Metro.Controls;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Shapes;
-using Utilities;
 using ValorantCC.src;
+using ValorantCC.SubWindow;
 
 namespace ValorantCC
 {
-    public partial class MainWindow : Window
+    public partial class MainWindow : MetroWindow
     {
-        Processor DataProcessor = new Processor();
-        bool LoggedIn;
-        CrosshairProfile SelectedProfile;
-        List<Color> SelectedColors;
-        int SelectedIndex;
+        public Processor DataProcessor = new Processor();
         BrushConverter bc = new BrushConverter();
-        readonly string LoggingDir = Environment.GetEnvironmentVariable("LocalAppData") + @"\VTools\Logs\";
+        public AuthResponse AuthResponse;
+        public CrosshairProfile SelectedProfile;
+        List<Color> SelectedColors;
+        public API ValCCAPI;
+        public int SelectedIndex;
+        public bool LoggedIn;
+        private string _sharecode;
+        private FetchResponse? sharedProfileResp;
         public MainWindow()
         {
             // Create logging dir
-            if (!Directory.Exists(LoggingDir)) Directory.CreateDirectory(LoggingDir);
-            // Replace old logs 
-            string LogFile = LoggingDir + "/logs.txt";
-            if (File.Exists(LogFile)) File.Move(LogFile, LogFile + ".old", true);
+            if (!Directory.Exists(Path.GetDirectoryName(Utilities.Utils.LoggingFile))) Directory.CreateDirectory(Path.GetDirectoryName(Utilities.Utils.LoggingFile));
+            // Replace old logs
+            if (File.Exists(Utilities.Utils.LoggingFile)) File.Move(Utilities.Utils.LoggingFile, Path.GetDirectoryName(Utilities.Utils.LoggingFile) + "\\" + Path.GetFileNameWithoutExtension(Utilities.Utils.LoggingFile) + "-old" + Path.GetExtension(Utilities.Utils.LoggingFile), true);
             Version ProgramFileVersion = new Version(FileVersionInfo.GetVersionInfo(Process.GetCurrentProcess().MainModule.FileName).ProductVersion);
 
             InitializeComponent();
-            Utils.Log($"App Started | v{ProgramFileVersion}. Replaced old logfile.");
-            Txt_CurrVer.Content = $"v{ProgramFileVersion}";
+            Utilities.Utils.Log($"App Started | v{ProgramFileVersion}. Replaced old logfile.");
+            this.Title = $"ValorantCC v{ProgramFileVersion}";
+            BackgroundAuth auth = new BackgroundAuth(DataProcessor);
+            auth.LoopCheck();
+            Random nClicks = new Random();
+            for (int i = 0; i < nClicks.Next(0, Resources.MergedDictionaries[0].Count - 1); i++)
+                next_Click(null, null);
         }
-
-        private async void Grid_Loaded(object sender, RoutedEventArgs e)
-        {
-            Updater.CustomLogger = Utils.Log;
-            Updater.OriginalFileName = "ValorantCC";
-            if (await Updater.CheckUpdateAsync("weedeej", "ValorantCC"))
-            {
-                try
-                {
-                    File.Create("./valccPermsTest.null").Close();
-                    File.Delete("./valccPermsTest.null");
-                }
-                catch(UnauthorizedAccessException)
-                {
-                    Utils.Log("User is not authorized to create a file on current valcc dir. Consider moving.");
-                    MessageBox.Show("There's an update available but you have no access to write on this folder.\nPlease consider moving the app to a folder created by you or running the app as administrator.");
-                    this.Close();
-                }
-                var update = new UpdateWindow();
-                update.Owner = this;
-                update.ShowDialog();
-            }
-        }
-
-        private void btnSave_Click(object sender, RoutedEventArgs e)
+        private async void btnSave_Click(object sender, RoutedEventArgs e)
         {
             if (!LoggedIn)
             {
-                MessageBox.Show("You are not logged in!");
+                Utilities.Utils.MessageText("You are not logged in!", Brushes.Red);
                 return;
             }
             if (DataProcessor.ProfileListed)
@@ -74,36 +59,20 @@ namespace ValorantCC
             {
                 SelectedColors = new List<Color> { (Color)primary_color.SelectedColor };
             }
-            if (DataProcessor.SaveNewColor(SelectedColors, profiles.SelectedIndex, profiles.Text))
+            if (await DataProcessor.SaveNewColor(SelectedColors, profiles.SelectedIndex, profiles.Text))
             {
-                DataProcessor.Construct();
+                await DataProcessor.Construct();
                 profiles.Items.Refresh();
                 profiles.SelectedIndex = DataProcessor.CurrentProfile;
-                MessageBox.Show("Saved! If Valorant is open, Please restart it without touching the settings.");
+                Utilities.Utils.MessageText("Saved! Restart Valorant.", Brushes.Lime);
                 return;
             }
-            MessageBox.Show("Failed. Consult the developer.");
+            Utilities.Utils.MessageText("Your session expired! Please restart ValorantCC/Valorant", Brushes.Red);
+
             return;
         }
-        private void btnLogin_Click(object sender, RoutedEventArgs e)
-        {
-            AuthResponse AuthResponse = DataProcessor.Login();
-            LoggedIn = AuthResponse.Success;
-            if (!LoggedIn)
-            {
-                MessageBox.Show(AuthResponse.Response);
-                return;
-            }
 
-            profiles.ItemsSource = DataProcessor.ProfileNames;
-            txt_LoggedIn.Foreground = Brushes.Lime;
-            profiles.SelectedIndex = DataProcessor.CurrentProfile;
-            profiles.IsReadOnly = false;
-            MessageBox.Show(Utils.LoginResponse(DataProcessor));
-            btnLogin.IsEnabled = true;
-        }
-
-        private void profiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private async void profiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (profiles.SelectedIndex == -1) return;
 
@@ -121,11 +90,34 @@ namespace ValorantCC
             }
             prim_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.OutlineColor.R, SelectedProfile.Primary.OutlineColor.G, SelectedProfile.Primary.OutlineColor.B);
             if (SelectedProfile.aDS == null) SelectedProfile.aDS = SelectedProfile.Primary;
-            if(SelectedProfile.bUsePrimaryCrosshairForADS) SelectedProfile.aDS.Color = SelectedProfile.Primary.Color;
+            if (SelectedProfile.bUsePrimaryCrosshairForADS) SelectedProfile.aDS.Color = SelectedProfile.Primary.Color;
             ads_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.Color.R, SelectedProfile.aDS.Color.G, SelectedProfile.aDS.Color.B);
             ads_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.OutlineColor.R, SelectedProfile.aDS.OutlineColor.G, SelectedProfile.aDS.OutlineColor.B);
             sniper_dot_color.SelectedColor = Color.FromRgb(SelectedProfile.Sniper.CenterDotColor.R, SelectedProfile.Sniper.CenterDotColor.G, SelectedProfile.Sniper.CenterDotColor.B);
-
+            if (!sharedProfileResp.HasValue)
+            {
+                if (ValCCAPI != null) sharedProfileResp = await ValCCAPI.ObtainSelfSaved();
+            }
+            else
+            {
+                var respData = sharedProfileResp.Value;
+                if (respData.success && respData.data != null)
+                {
+                    var data = respData.data.FirstOrDefault();
+                    _sharecode = data.shareCode;
+                    CrosshairProfile fromDb = JsonConvert.DeserializeObject<CrosshairProfile>(data.settings);
+                    if (SelectedProfile.ProfileName == fromDb.ProfileName)
+                    {
+                        chkbxShareable.IsChecked = data.shareable;
+                        btnCopyShareCode.Visibility = Visibility.Visible;
+                    }
+                    else
+                    {
+                        chkbxShareable.IsChecked = false;
+                        btnCopyShareCode.Visibility = Visibility.Collapsed;
+                    }
+                }
+            }
             Crosshair_load();
         }
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
@@ -133,15 +125,17 @@ namespace ValorantCC
             if (e.LeftButton == MouseButtonState.Pressed) DragMove();
         }
 
-        private void btnReload_Click(object sender, RoutedEventArgs e)
+        private async void btnReload_Click(object sender, RoutedEventArgs e)
         {
             if (!LoggedIn)
             {
-                MessageBox.Show("You are not logged in!");
+                Utilities.Utils.MessageText("You are not logged in!", Brushes.Red);
                 return;
             }
-            Utils.Log("Reload Clicked > Reconstructing Processor.");
-            DataProcessor.Construct();
+            Utilities.Utils.Log("Reload Clicked > Reconstructing Processor.");
+            if (!(await DataProcessor.Construct()))
+                Utilities.Utils.MessageText("Your session expired! Please restart ValorantCC/Valorant", Brushes.Red);
+
             profiles.ItemsSource = DataProcessor.ProfileNames;
             profiles.Items.Refresh();
             profiles.SelectedIndex = DataProcessor.CurrentProfile;
@@ -155,7 +149,7 @@ namespace ValorantCC
             profiles.SelectedIndex = SelectedIndex;
         }
 
-        private void Crosshair_load()
+        public void Crosshair_load()
         {
             //Primary
             Crosshair_Parser.dot_redraw(primeDOT, primeDOTOT, SelectedProfile.Primary);
@@ -271,19 +265,23 @@ namespace ValorantCC
 
         private void ClipboardButtonEnter(object sender, MouseEventArgs e)
         {
-            CopyButtonLabel.FontSize += 1;
+            Button button = (Button)sender;
+            if (button.Name == "btnCopyLogs") CopyButtonLabel.FontSize += 1;
+            else communitylist_label.FontSize += 1;
         }
         private void ClipboardButtonLeave(object sender, MouseEventArgs e)
         {
-            CopyButtonLabel.FontSize -= 1;
+            Button button = (Button)sender;
+            if (button.Name == "btnCopyLogs") CopyButtonLabel.FontSize -= 1;
+            else communitylist_label.FontSize -= 1;
         }
 
         private void btnOpenLogs_Click(object sender, RoutedEventArgs e)
         {
             Process p = new Process();
-            p.StartInfo = new ProcessStartInfo() { FileName = LoggingDir, UseShellExecute = true };
+            p.StartInfo = new ProcessStartInfo() { FileName = Path.GetDirectoryName(Utilities.Utils.LoggingFile), UseShellExecute = true };
             p.Start();
-            MessageBox.Show("Log folder opened. Please include the OLD file on your report as this helps us recreate the bug/error you will report.");
+            Utilities.Utils.MessageText("Log folder opened! Please include OLD files to your report if exists.", Brushes.Lime);
         }
 
         private void next_Click(object sender, RoutedEventArgs e)
@@ -300,12 +298,99 @@ namespace ValorantCC
         {
             int number = int.Parse(System.IO.Path.GetFileNameWithoutExtension(CrosshairBG.Source.ToString()).Replace("CrosshairBG", "")) + (next ? 1 : -1);
 
-            if (next && number > Resources.Count - 1)
+            if (next && number > Resources.MergedDictionaries[0].Count - 1)
                 number = 0;
             else if (number < 0)
-                number = Resources.Count - 1;
+                number = Resources.MergedDictionaries[0].Count - 1;
 
             return (ImageSource)FindResource("crosshairBG" + number);
+        }
+
+        private void btnCommunityProfiles_Click(object sender, RoutedEventArgs e)
+        {
+            if (!LoggedIn)
+            {
+                Utilities.Utils.MessageText("You are not logged in !", Brushes.Red);
+                return;
+            }
+            try
+            {
+                Window publicProfiles = Application.Current.Windows.Cast<Window>().Single(window => window.GetType().ToString() == "ValorantCC.ProfilesWindow");
+                publicProfiles.Activate();
+            }
+            catch (Exception)
+            {
+                ProfilesWindow publicProfiles = new ProfilesWindow(SelectedProfile, ValCCAPI);
+                publicProfiles.Owner = this;
+                publicProfiles.Show();
+            }
+        }
+
+        private void chkbxShareable_Click(object sender, RoutedEventArgs e)
+        {
+            if (!LoggedIn)
+            {
+                Utilities.Utils.MessageText("You are not logged in !", Brushes.Red);
+                ((CheckBox)sender).IsChecked = !((CheckBox)sender).IsChecked;
+                return;
+            }
+        }
+
+        private async void btnShare_Click(object sender, RoutedEventArgs e)
+        {
+            if (!LoggedIn)
+            {
+                Utilities.Utils.MessageText("You are not logged in !", Brushes.Red);
+                return;
+            }
+            Utilities.Utils.MessageText("Your profile is being saved...", Brushes.Yellow);
+
+            ValCCAPI.Shareable = (bool)chkbxShareable.IsChecked;
+            ValCCAPI.profile = SelectedProfile;
+            SetCallResponse response = await ValCCAPI.Set();
+            if (!response.success)
+            {
+                Utilities.Utils.Log($"Unable to share crosshair: {response.message}");
+                Utilities.Utils.MessageText("Unable to share crosshair: Internal Error/Conflict", Brushes.Red);
+                return;
+            }
+            String sharecode = response.message;
+            Clipboard.SetText(sharecode);
+            MessageWindow.Show($"Your sharecode is: \"{sharecode}\" and is copied.\nIf you want this profile accessible across the community,\nPlease be sure that you have the 'shareable' checkbox checked.", "Profile shared!");
+
+            Utilities.Utils.MessageText("Your profile has been saved. It can now be browsed if \"shareable\" checkbox is checked before saving.", Brushes.Lime);
+        }
+
+        private async void spinner_Loaded(object sender, RoutedEventArgs e)
+        {
+            Trace.WriteLine(ValorantCC.src.Community.SCGen.GenerateShareCode("64f8b630-64c6-5838-9daa-916f8bbf5587"));
+            Trace.WriteLine(ValorantCC.src.Community.SCGen.GenerateShareCode("b19f4928-e1ed-5f63-a9d0-8a7fd202e3b2"));
+            Updater.CustomLogger = Utilities.Utils.Log;
+            Updater.OriginalFileName = "ValorantCC";
+            Updater.LogInterfix = "  | ";
+            if (await Updater.CheckUpdateAsync("weedeej", "ValorantCC"))
+            {
+                if (Updater.CannotWriteOnDir)
+                {
+                    Utilities.Utils.Log("User is not authorized to create a file on current valcc dir. Consider moving.");
+                    MessageWindow.Show("There's an update available but you have no access to write on this folder.\nPlease consider moving the app to a folder created by you or running the app as administrator.");
+                    this.Close();
+                }
+                var update = new UpdateWindow();
+                update.Owner = this;
+                update.ShowDialog();
+            }
+        }
+
+        private void btnCopyShareCode_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(_sharecode);
+            Utilities.Utils.MessageText("Your sharecode has been copied!", Brushes.Lime);
+        }
+
+        private void _zoom_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            Trace.WriteLine(_zoom.Value);
         }
     }
 }

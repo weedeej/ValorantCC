@@ -1,105 +1,64 @@
-<Window
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ValorantCC" xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        xmlns:Controls="clr-namespace:Xceed.Wpf.AvalonDock.Themes.Controls;assembly=Xceed.Wpf.AvalonDock.Themes.Aero" x:Class="ValorantCC.MainWindow"
-        mc:Ignorable="d"
-        Title="vTools - ValorantCC" Height="411" Width="500" SizeToContent="Manual" AllowsTransparency="True" WindowStartupLocation="CenterScreen" WindowState="Normal" ResizeMode="CanMinimize" WindowStyle="None" Icon="Resources/vtools-colored.ico"
-        Background="Transparent"
-        RenderOptions.BitmapScalingMode="Fant">
+<mah:MetroWindow
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:ValorantCC"
+    xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    x:Class="ValorantCC.MainWindow"
+    xmlns:fa="http://schemas.fontawesome.io/icons/"
+    mc:Ignorable="d"
+    Title="vTools - ValorantCC" Height="0" Width="901" SizeToContent="Height" AllowsTransparency="True" WindowStartupLocation="CenterScreen" WindowState="Normal" ResizeMode="CanMinimize" WindowStyle="None" Icon="Resources/vtools-colored.ico"
+    Background="#232429"
+    WindowTitleBrush="#232429"
+    GlowBrush="White"
+    RenderOptions.BitmapScalingMode="Fant">
     <Window.Resources>
-        <BitmapImage x:Key="crosshairBG0" UriSource="Resources/CrosshairBG0.png"/>
-        <BitmapImage x:Key="crosshairBG1" UriSource="Resources/CrosshairBG1.png"/>
-        <BitmapImage x:Key="crosshairBG2" UriSource="Resources/CrosshairBG2.png"/>
-        <BitmapImage x:Key="crosshairBG3" UriSource="Resources/CrosshairBG3.png"/>
-        <BitmapImage x:Key="crosshairBG4" UriSource="Resources/CrosshairBG4.png"/>
-        <BitmapImage x:Key="crosshairBG5" UriSource="Resources/CrosshairBG5.png"/>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Resources/BGdictionary.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
     </Window.Resources>
-    <Border Background="#232429"
-            CornerRadius="7">
-        <UserControl Foreground="{x:Null}" OpacityMask="#FFA42727">
-            <UserControl.Resources>
-                <ResourceDictionary>
-                    <Style x:Key="ChangeOpacity" TargetType="Button" BasedOn="{StaticResource RightButtonStyle}">
-                        <Setter Property="Opacity" Value="{Binding ViolationsRate}"/>
-                        <Style.Triggers>
-                            <Trigger Property="IsMouseOver" Value="true">
-                                <Setter Property="Opacity" Value="0.70" />
-                            </Trigger>
-                        </Style.Triggers>
-                    </Style>
-                </ResourceDictionary>
-            </UserControl.Resources>
-            <StackPanel MouseDown="StackPanel_MouseDown">
-                <Grid Loaded="Grid_Loaded">
+    <Border Background="#232429" Padding="2">
+        <StackPanel MouseDown="StackPanel_MouseDown">
+            <StackPanel HorizontalAlignment="Left">
 
-                    <Grid.Background>
-                        <ImageBrush/>
-                    </Grid.Background>
-                    <Border BorderThickness="1" BorderBrush="Transparent" Background ="#16171B" Margin="-1,-1,-1,-1" CornerRadius="7,5,0,0">
-                        <Grid Height="Auto" Width="Auto" Margin="0,0,0,-2" OpacityMask="#FFA42727">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="19*"/>
-                                <ColumnDefinition Width="139*"/>
-                                <ColumnDefinition Width="294*"/>
-                                <ColumnDefinition Width="24*"/>
-                                <ColumnDefinition Width="24*"/>
-                            </Grid.ColumnDefinitions>
-                            <Image Source="/Resources/vtools-colored.ico" Grid.Column="0" Margin="2,0,2,0"/>
-                            <Label x:Name="Txt_CurrVer" Foreground="White" Grid.Column="1"/>
-                            <Button x:Name="exitButton" Content="❌" Margin="0" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Style="{DynamicResource RightButtonStyle}" Cursor="Hand" Grid.Column="4" Click="ExitClick" MouseEnter="TabButtonEnter" MouseLeave="TabButtonLeave"/>
-                            <Button x:Name="minusButton" Content="➖" Margin="1,4,1,4" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="White" Style="{DynamicResource RightButtonStyle}" Cursor="Hand" Grid.Column="3" Click="MinimizeClick" MouseEnter="TabButtonEnter" MouseLeave="TabButtonLeave"/>
-                        </Grid>
-                    </Border>
-                </Grid>
-                <Grid Margin="0,3,0,0" MouseDown="StackPanel_MouseDown">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition MaxWidth="65" Width="65*"/>
-                        <ColumnDefinition Width="43*"/>
+            </StackPanel>
+            <Grid Margin="0,3,0,0" MouseDown="StackPanel_MouseDown">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="55*"/>
+                    <ColumnDefinition Width="120"/>
+                </Grid.ColumnDefinitions>
+                <DockPanel Grid.Column="0">
+                    <TextBlock FontWeight="Bold" VerticalAlignment="Center" Margin="5,0,43,0" Foreground="White" FontFamily="Segoe UI Semibold" Grid.ColumnSpan="2">
+                        <Run Text="Status:"/>
+                        <Run Foreground="Red" Text="•" Name="DotTxt"/>
+                        <Run Foreground="Red" Text="Waiting for lockfile. . ." FontSize="10" Name="StatusTxt"/>
+                    </TextBlock>
+                    <CheckBox Name="chkbxShareable" Visibility="Collapsed" Content="Shareable?" HorizontalAlignment="Right" VerticalAlignment="Center" FontWeight="Bold" Foreground="White" Margin="0,0,25,0" FlowDirection="LeftToRight" Click="chkbxShareable_Click"/>
 
-                        <ColumnDefinition MaxWidth="85" Width="85*"/>
-                        <ColumnDefinition Width="68*"/>
+                </DockPanel>
+                <ComboBox x:Name="profiles" Grid.Column="1" SelectionChanged="profiles_SelectionChanged" SelectedIndex="0" IsEditable="True" IsReadOnly="True" Text="Profiles" TextBoxBase.TextChanged="profiles_TextChanged" Background="#FF232429" Foreground="White" Margin="0,-1,2,1" FontFamily="Quicksand" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold"/>
+            </Grid>
+            <fa:ImageAwesome Icon="CircleOutlineNotch" Spin="True" Height="48" Width="48" Foreground="White" Name="spinner" Margin="0,0,0,5" Loaded="spinner_Loaded"/>
+            <Grid Name="ch_display">
 
-                        <ColumnDefinition MaxWidth="82" Width="82*"/>
-                        <ColumnDefinition Width="128*"/>
-                    </Grid.ColumnDefinitions>
-                    <TextBlock FontWeight="Bold" Grid.Column="0" Margin="5,0,43,0" Foreground="White" FontFamily="Segoe UI Semibold" VerticalAlignment="Top" Grid.ColumnSpan="2"><Run Text="Logged In:"/></TextBlock>
-                    <TextBlock Margin="2,-5,0,0" FontWeight="Bold" Foreground="#FFF90C0C" x:Name="txt_LoggedIn" FontSize="18" Grid.Column="1"  VerticalAlignment="Top" HorizontalAlignment="Left"><Run Text="•"/></TextBlock>
-                    <ComboBox x:Name="profiles" Grid.Column="5" SelectionChanged="profiles_SelectionChanged" SelectedIndex="0" IsEditable="True" IsReadOnly="True" Text="Profiles" TextBoxBase.TextChanged="profiles_TextChanged" Background="#FF232429" Foreground="White" Margin="0,-1,2,1" FontFamily="Quicksand" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold"/>
+                <Image x:Name="CrosshairBG" Source="{StaticResource crosshairBG0}" Margin="1,3,-1,3"/>
 
-                    <!--<TextBlock FontWeight="Bold" Grid.Column="2" Foreground="White">Current Color: </TextBlock>
-                <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="3" Foreground="Black"
-                  x:Name="txt_CurrentColor">
-                    ◾
-                </TextBlock>-->
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
+                    
 
-                    <!--<TextBlock FontWeight="Bold" Grid.Column="6" Foreground="White">Current Profile:</TextBlock>
-                <TextBlock Margin="0,1,0,0" FontWeight="Bold" Grid.Column="7" Foreground="Red"
-                  x:Name="txt_CurrentProfile">
-                    N/A
-                </TextBlock>-->
-                </Grid>
+                </StackPanel>
                 <Grid>
-                    <Image x:Name="CrosshairBG" Source="{StaticResource crosshairBG0}" Margin="1,3,-1,3"/>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
 
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Bottom" HorizontalAlignment="Right">
-                        <Button Name="btnCopyLogs" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Style="{DynamicResource RightButtonStyle}" Cursor="Hand" MouseEnter="ClipboardButtonEnter" MouseLeave="ClipboardButtonLeave" Click="btnOpenLogs_Click">
-                            <StackPanel Orientation="Horizontal">
-                                <Label Name="CopyButtonLabel" Content="Logs Folder" Foreground="White" FontWeight="Bold" VerticalContentAlignment="Center"/>
-                                <Image Source="Resources/folder.png" Stretch="None"/>
-                            </StackPanel>
-                        </Button>
-                    </StackPanel>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
-                            <ColumnDefinition Width="1*"/>
-                        </Grid.ColumnDefinitions>
-
-                        <Grid x:Name="CH0_grid" Grid.Column="0">
+                    <Grid x:Name="CH0_grid" Grid.Column="0">
+                        <Border BorderBrush="#232429" BorderThickness="0,0,5,0">
                             <Grid>
                                 <Grid.LayoutTransform>
                                     <ScaleTransform ScaleX="{Binding Value, ElementName=_zoom}" ScaleY="{Binding Value, ElementName=_zoom}"/>
@@ -127,11 +86,13 @@
                                 <Rectangle x:Name="primeDOTOT" Stroke="Black" StrokeThickness="1" Width="3" Height="3"/>
                                 <Rectangle x:Name="primeDOT" Fill="White" Width="2" Height="2"/>
                             </Grid>
+                        </Border>
 
-                            <TextBlock HorizontalAlignment="Center" Foreground="White" FontWeight="Bold" FontFamily="Segoe UI Semibold" Margin="0,12,0,0"><Run Text="Primary"/></TextBlock>
-                            <Slider Style="{StaticResource Horizontal_Slider}" Margin="4,174,58,3" Grid.Row="0" Grid.Column="0" x:Name="_zoom" Minimum="1" Maximum="2" />
-                        </Grid>
-                        <Grid Grid.Column="1">
+                        <TextBlock HorizontalAlignment="Center" Foreground="White" FontWeight="Bold" FontFamily="Segoe UI Semibold" Margin="0,12,0,0"><Run Text="Primary"/></TextBlock>
+                        <Slider Margin="4,174,58,3" Grid.Row="0" Grid.Column="0" x:Name="_zoom" Minimum="1" Maximum="2.1" VerticalAlignment="Bottom" ValueChanged="_zoom_ValueChanged" TickFrequency="0.006" IsSnapToTickEnabled="True" SmallChange="0.003"/>
+                    </Grid>
+                    <Grid Grid.Column="1">
+                        <Border BorderBrush="#232429" BorderThickness="0 0 5 0">
                             <Grid>
                                 <Grid.LayoutTransform>
                                     <ScaleTransform ScaleX="{Binding Value, ElementName=_zoom}" ScaleY="{Binding Value, ElementName=_zoom}"/>
@@ -159,84 +120,139 @@
                                 <Rectangle x:Name="adsDOTOT" Stroke="Black" StrokeThickness="1" Width="3" Height="3"/>
                                 <Rectangle x:Name="adsDOT" Fill="White" Width="2" Height="2"/>
                             </Grid>
+                        </Border>
 
-                            <TextBlock HorizontalAlignment="Center" Foreground="White" FontWeight="Bold" Margin="0,12,0,0" FontFamily="Segoe UI Semibold"><Run Text="Aim Down Sights"/></TextBlock>
-                        </Grid>
-                        <Grid Grid.Column="2">
-                            <TextBlock HorizontalAlignment="Center" Foreground="White" Margin="0,12,0,0" FontWeight="Bold" FontFamily="Segoe UI Semibold"><Run Text="Sniper Dot"/></TextBlock>
-                            <Grid>
-                                <Grid.LayoutTransform>
-                                    <ScaleTransform ScaleX="{Binding Value, ElementName=_zoom}" ScaleY="{Binding Value, ElementName=_zoom}"/>
-                                </Grid.LayoutTransform>
-                                <Ellipse x:Name="sniperdot" Width="5" Height="5" Fill="Red"/>
-                            </Grid>
+                        <TextBlock HorizontalAlignment="Center" Foreground="White" FontWeight="Bold" Margin="0,12,0,0" FontFamily="Segoe UI Semibold"><Run Text="Aim Down Sights"/></TextBlock>
+                    </Grid>
+                    <Grid Grid.Column="2">
+                        <TextBlock HorizontalAlignment="Center" Foreground="White" Margin="0,12,0,0" FontWeight="Bold" FontFamily="Segoe UI Semibold"><Run Text="Sniper Dot"/></TextBlock>
+                        <Grid>
+                            <Grid.LayoutTransform>
+                                <ScaleTransform ScaleX="{Binding Value, ElementName=_zoom}" ScaleY="{Binding Value, ElementName=_zoom}"/>
+                            </Grid.LayoutTransform>
+                            <Ellipse x:Name="sniperdot" Width="5" Height="5" Fill="Red"/>
                         </Grid>
                     </Grid>
-                    <Button x:Name="previous" Style="{StaticResource ChangeOpacity}" Cursor="Hand" Click="previos_Click" HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Height="30" Margin="-6,0,0,0">
-                        <Button.Background>
-                            <ImageBrush ImageSource="/Resources/chevron-left.png"/>
-                        </Button.Background>
-                    </Button>
-                    <Button x:Name="next" Style="{StaticResource ChangeOpacity}" Cursor="Hand" Click="next_Click" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-8,0" Width="30" Height="30">
-                        <Button.Background>
-                            <ImageBrush ImageSource="/Resources/chevron-right.png"/>
-                        </Button.Background>
-                    </Button>
                 </Grid>
+                <Button x:Name="previous"  BorderThickness="0" Style="{DynamicResource MahApps.Styles.Button.Flat}" Cursor="Hand" Click="previos_Click" HorizontalAlignment="Left" VerticalAlignment="Center" Width="30" Height="30" Margin="-6,0,0,0">
+                    <Button.Background>
+                        <ImageBrush ImageSource="/Resources/chevron-left.png"/>
+                    </Button.Background>
+                </Button>
+                <Button x:Name="next" Style="{DynamicResource MahApps.Styles.Button.Flat}" BorderThickness="0" Cursor="Hand" Click="next_Click" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,-8,0" Width="30" Height="30">
+                    <Button.Background>
+                        <ImageBrush ImageSource="/Resources/chevron-right.png"/>
+                    </Button.Background>
+                </Button>
+            </Grid>
 
-                <Path Data="M28,378 L573,378" Fill="#16171B" Height="1" Stretch="Fill" Stroke="White" Width="538"/>
+            <Path Data="M28,378 L573,378" MaxHeight="411" Fill="#16171B" Height="1" Stretch="Fill" Stroke="White" />
 
-                <Grid Margin="3" Height="26" RenderTransformOrigin="0.5,0.5" Width="494">
-                    <Grid.RenderTransform>
-                        <TransformGroup>
-                            <ScaleTransform ScaleY="1"/>
-                            <SkewTransform/>
-                            <RotateTransform/>
-                            <TranslateTransform/>
-                        </TransformGroup>
-                    </Grid.RenderTransform>
-                    <Grid.RowDefinitions>
-                        <RowDefinition/>
-                    </Grid.RowDefinitions>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="163*"/>
-                        <ColumnDefinition Width="84*"/>
-                        <ColumnDefinition Width="88*"/>
-                        <ColumnDefinition Width="160*"/>
-                    </Grid.ColumnDefinitions>
-                    <Button Style="{DynamicResource RoundButton}" Content="Relogin" Height="25" Click="btnReload_Click" Cursor="Hand" VerticalAlignment="Center" Background="#FF295FFE" FontFamily="Quicksand" FontWeight="DemiBold" FontSize="11" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Grid.Column="1" Margin="24,0,28,0" Grid.ColumnSpan="2" Width="120"/>
-                    <Button Style="{DynamicResource RoundButton}" Content="Save" Height="25" Click="btnSave_Click" Cursor="Hand" VerticalAlignment="Center" Background="#FF295FFE" FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" Grid.Column="3" Margin="28.2,0,0,0" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Width="124"/>
-                    <Button x:Name="btnLogin" Style="{DynamicResource RoundButton}"  Content="Login" HorizontalContentAlignment="Left" Click="btnLogin_Click" Cursor="Hand" Height="25" VerticalContentAlignment="Top" HorizontalAlignment="Left" VerticalAlignment="Center" Width="124" Background="#FF295FFE" FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Margin="0,0,0,0"/>
+            <Grid Name="buttons_group" Margin="3" RenderTransformOrigin="0.5,0.5">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform ScaleY="1"/>
+                        <SkewTransform/>
+                        <RotateTransform/>
+                        <TranslateTransform/>
+                    </TransformGroup>
+                </Grid.RenderTransform>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="40"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="163*"/>
+                    <ColumnDefinition Width="84*"/>
+                    <ColumnDefinition Width="88*"/>
+                    <ColumnDefinition Width="160*"/>
+                </Grid.ColumnDefinitions>
+                <DockPanel Grid.ColumnSpan="4">
+                    <Button Content="Reload" HorizontalAlignment="Left" Margin="0,0,5,0" Style="{DynamicResource MahApps.Styles.Button.MetroWindow.Base}" BorderThickness="0" Background="#FF0079FF" Padding="0" Height="30" Click="btnReload_Click" Cursor="Hand" VerticalAlignment="Center" FontFamily="Quicksand" FontWeight="DemiBold" FontSize="11" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Grid.Column="1" Grid.ColumnSpan="2" Width="120"/>
+                    <Button Content="Save" HorizontalAlignment="Left" Margin="0,0,5,0" Style="{DynamicResource MahApps.Styles.Button.MetroWindow.Base}" BorderThickness="0" Background="#FF0079FF" Padding="0" Height="30" Click="btnSave_Click" Cursor="Hand" VerticalAlignment="Center" FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Width="124"/>
+                    <Button x:Name="btnShare" HorizontalAlignment="Left" Margin="0,0,5,0" Style="{DynamicResource MahApps.Styles.Button.MetroWindow.Base}" BorderThickness="0" Background="#FF0079FF" Padding="0" Content="Share" Click="btnShare_Click" Cursor="Hand" Height="30" VerticalAlignment="Center" Width="124"  FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold"/>
+                    <Button x:Name="btnCopyShareCode" HorizontalAlignment="Left" Margin="0,0,5,0" Style="{DynamicResource MahApps.Styles.Button.MetroWindow.Base}" BorderThickness="0" Background="#FF0079FF" Padding="0" Content="Copy Sharecode" Click="btnCopyShareCode_Click" Cursor="Hand" Height="30" VerticalAlignment="Center" Width="124"  FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Visibility="Collapsed"/>
 
-                </Grid>
-                <Grid Width="495">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="119*"/>
-                        <ColumnDefinition Width="46*"/>
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="12*"/>
-                        <RowDefinition Height="12*"/>
-                        <RowDefinition Height="12*"/>
-                        <RowDefinition Height="12*"/>
-                        <RowDefinition Height="17*"/>
-                    </Grid.RowDefinitions>
-                    <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="0"  Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Primary Color"/></TextBlock>
-                    <xctk:ColorPicker x:Name="primary_color" Grid.Row="0" Grid.Column="1" SelectedColorChanged="primary_color_SelectedColorChanged" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="10,1,4,1" Cursor="Hand" BorderBrush="White" DropDownBackground="#FF252526" DropDownBorderBrush="#FF252526" HeaderBackground="#FF252526" TabBackground="#FF252526" Foreground="White" HeaderForeground="White" TabForeground="#FFFBF9F9" UsingAlphaChannel="False" Background="{x:Null}" DisplayColorAndName="True"/>
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <Button Name="btnCommunityProfiles" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Cursor="Hand" Style="{DynamicResource MahApps.Styles.Button.Flat}" MouseEnter="ClipboardButtonEnter" MouseLeave="ClipboardButtonLeave" Click="btnCommunityProfiles_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Name="communitylist_label" Content="Community Profiles" Foreground="White" FontWeight="Bold" VerticalContentAlignment="Center"/>
+                                <Image Source="Resources/menu.png" Width="24"/>
+                            </StackPanel>
+                        </Button>
+                        <Button Name="btnCopyLogs" HorizontalAlignment="Right" Background="{x:Null}" BorderBrush="{x:Null}" Foreground="{x:Null}" Cursor="Hand" Style="{DynamicResource MahApps.Styles.Button.Flat}" MouseEnter="ClipboardButtonEnter" MouseLeave="ClipboardButtonLeave" Click="btnOpenLogs_Click">
+                            <StackPanel Orientation="Horizontal">
+                                <Label Name="CopyButtonLabel" Content="Logs Folder" Foreground="White" FontWeight="Bold" VerticalContentAlignment="Center"/>
+                                <Image Source="Resources/folder.png" Stretch="None"/>
+                            </StackPanel>
+                        </Button>
+                    </StackPanel>
+                </DockPanel>
+            </Grid>
+            <Grid Name="controls_group">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="12*"/>
+                    <RowDefinition Height="12*"/>
+                    <RowDefinition Height="12*"/>
+                    <RowDefinition Height="12*"/>
+                    <RowDefinition Height="17*"/>
+                    <RowDefinition Height="12*"/>
+                </Grid.RowDefinitions>
+                <Border Grid.Row="0" VerticalAlignment="Center" Margin="0,0,0,10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20*"/>
+                            <ColumnDefinition Width="10*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="12*"/>
+                            <RowDefinition Height="12*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" FontWeight="Bold" Grid.Row="0"  Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Primary Color"/></TextBlock>
+                        <mah:ColorPicker VerticalAlignment="Center" x:Name="primary_color" Style="{DynamicResource MahApps.Styles.ColorPicker}" Grid.Row="0" Grid.Column="1" SelectedColorChanged="primary_color_SelectedColorChanged" AdvancedTabHeader="Manual" Margin="10,1,4,1" Cursor="Hand" BorderBrush="White" Foreground="White" Background="{x:Null}"/>
 
-                    <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="1" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Aim Down Color"/></TextBlock>
-                    <xctk:ColorPicker x:Name="ads_color" Grid.Row="1" Grid.Column="1" SelectedColorChanged="ads_color_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="10,1,4,1" Cursor="Hand" BorderBrush="White" Background="{x:Null}" Foreground="White" HeaderBackground="#FF252526" HeaderForeground="White" TabBackground="#FF252526" TabForeground="#FFFBF9F9" DropDownBorderBrush="#FF252526" DropDownBackground="#FF252526" DisplayColorAndName="True"/>
+                        <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" FontWeight="Bold" Grid.Row="1" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Primary Outline Color"/></TextBlock>
+                        <mah:ColorPicker VerticalAlignment="Center" x:Name="prim_outline_color" Grid.Row="1" Grid.Column="1" SelectedColorChanged="prim_outline_color_SelectedColorChanged" AdvancedTabHeader="Manual" Margin="10,1,4,1" Cursor="Hand" BorderBrush="#FFDADADA" Background="{x:Null}" Foreground="White"/>
+                    </Grid>
+                </Border>
 
-                    <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="2" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Primary Outline Color"/></TextBlock>
-                    <xctk:ColorPicker x:Name="prim_outline_color" Grid.Row="2" Grid.Column="1" SelectedColorChanged="prim_outline_color_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="10,1,4,1" Cursor="Hand" DisplayColorAndName="True" BorderBrush="#FFDADADA" Background="{x:Null}" Foreground="White" HeaderBackground="#FF252526" HeaderForeground="White" TabBackground="#FF252526" TabForeground="#FFFBF9F9" DropDownBorderBrush="#FF252526" DropDownBackground="#FF252526"/>
+                <Border Grid.Row="1" VerticalAlignment="Center" Margin="0,0,0,10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20*"/>
+                            <ColumnDefinition Width="10*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="12*"/>
+                            <RowDefinition Height="12*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Aim Down Color"/></TextBlock>
+                        <mah:ColorPicker VerticalAlignment="Center" x:Name="ads_color" Grid.Row="0" Grid.Column="1" SelectedColorChanged="ads_color_SelectedColorChanged" AdvancedTabHeader="Manual" Margin="10,1,4,1" Cursor="Hand" BorderBrush="White" Background="{x:Null}" Foreground="White"/>
 
-                    <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="3" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Aim Down Outline Color"/></TextBlock>
-                    <xctk:ColorPicker x:Name="ads_outline_color" Grid.Row="3" Grid.Column="1" SelectedColorChanged="ads_outline_color_SelectedColorChanged" UsingAlphaChannel="False" ShowStandardColors="False" AdvancedTabHeader="Manual" Margin="10,1,4,1" Cursor="Hand" DisplayColorAndName="True" BorderBrush="#FFDADADA" Background="{x:Null}" Foreground="White" HeaderBackground="#FF252526" HeaderForeground="White" TabBackground="#FF252526" TabForeground="#FFFBF9F9" DropDownBorderBrush="#FF252526" DropDownBackground="#FF252526"/>
+                        <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" FontWeight="Bold" Grid.Row="1" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Aim Down Outline Color"/></TextBlock>
+                        <mah:ColorPicker VerticalAlignment="Center" x:Name="ads_outline_color" Grid.Row="1" Grid.Column="1" SelectedColorChanged="ads_outline_color_SelectedColorChanged" AdvancedTabHeader="Manual" Margin="10,1,4,1" Cursor="Hand" BorderBrush="#FFDADADA" Background="{x:Null}" Foreground="White"/>
+                    </Grid>
+                </Border>
 
-                    <TextBlock Margin="2,2,2,2" FontWeight="Bold" Grid.Row="4" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Sniper Dot Color"/></TextBlock>
-                    <xctk:ColorPicker x:Name="sniper_dot_color"  Grid.Row="4" Grid.Column="1" SelectedColorChanged="sniper_dot_color_SelectedColorChanged" UsingAlphaChannel="False" AdvancedTabHeader="Manual" Margin="10,0,4,0" Cursor="Hand" OpacityMask="#FFB82525" Height="23.96" VerticalAlignment="Center" Background="{x:Null}" DisplayColorAndName="True" BorderBrush="#FFDADADA" Foreground="White" HeaderBackground="#FF252526" HeaderForeground="White" TabBackground="#FF252526" TabForeground="#FFFBF9F9" DropDownBorderBrush="#FF252526" DropDownBackground="#FF252526" ShowStandardColors="False"/>
-                </Grid>
-            </StackPanel>
-        </UserControl>
+                <Border Grid.Row="2" VerticalAlignment="Center" Margin="0,0,0,10" >
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20*"/>
+                            <ColumnDefinition Width="10*"/>
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="12*"/>
+                        </Grid.RowDefinitions>
+                        <TextBlock VerticalAlignment="Center" Margin="2,2,2,2" FontWeight="Bold" Grid.Row="0" Grid.Column="0" Foreground="White" FontFamily="Segoe UI Semibold"><Run Text="Sniper Dot Color"/></TextBlock>
+                        <mah:ColorPicker VerticalAlignment="Center" x:Name="sniper_dot_color"  Grid.Row="0" Grid.Column="1" SelectedColorChanged="sniper_dot_color_SelectedColorChanged" AdvancedTabHeader="Manual" Margin="10,0,4,0" Cursor="Hand" OpacityMask="#FFB82525" Height="23.96" Background="{x:Null}" BorderBrush="#FFDADADA" Foreground="White"/>
+                    </Grid>
+                </Border>
+            </Grid>
+            <Border Width="auto" MinHeight="18" Background="#FF44464F" Margin="-2,2,-2,2">
+                <DockPanel>
+                    <TextBlock FontWeight="Bold" Margin="6,0,2,2" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10" Text="Message: "/>
+                    <TextBlock FontWeight="Bold" Margin="0,0,2,2" Foreground="Yellow" FontFamily="Segoe UI Semibold" TextWrapping="Wrap" Name="MessageTxt" FontSize="10" Text="Waiting for Valorant or Riot Client. . ."/>
+                </DockPanel>
+            </Border>
+        </StackPanel>
     </Border>
-</Window>
+</mah:MetroWindow>

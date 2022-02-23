@@ -3,108 +3,145 @@ using RestSharp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Media;
-using Utilities;
-
+using ValorantCC.src;
 namespace ValorantCC
 {
-    class Processor
+    public class Processor
     {
         private AuthResponse AuthResponse;
         public bool isLoggedIn = false;
         private RestClient client = new RestClient("https://playerpreferences.riotgames.com");
         private Data UserSettings;
-        private int SavedProfilesIndex = 0;
         public bool ProfileListed;
         public List<string> ProfileNames;
         private ProfileList FetchedProfiles;
         public int CurrentProfile;
+        //Haruki's "bug" fix
+        private Color[] DefaultColors = new Color[8];
 
-        public AuthResponse Login()
+        public Processor()
         {
-            Utils.Log("Login started");
+            DefaultColors[0] = new Color { R = 0, G = 255, B = 0 }; //Green
+            DefaultColors[1] = new Color { R = 127, G = 255, B = 0 }; //Greenish yellow
+            DefaultColors[2] = new Color { R = 223, G = 255, B = 0 }; //Yellowish green
+            DefaultColors[3] = new Color { R = 255, G = 255, B = 0 }; //Yellow
+            DefaultColors[4] = new Color { R = 0, G = 255, B = 255 }; //Cyan
+            DefaultColors[5] = new Color { R = 255, G = 0, B = 255 }; //Pink
+            DefaultColors[6] = new Color { R = 255, G = 0, B = 0 }; //Red
+            DefaultColors[7] = new Color { R = 255, G = 255, B = 255 }; //White
+        }
+
+        public async Task<AuthResponse> Login()
+        {
+            Utilities.Utils.Log("Login started");
             AuthObj AuthObj = new AuthObj();
-            AuthResponse = AuthObj.StartAuth(false);
+            AuthResponse = await AuthObj.StartAuth();
             if (!AuthResponse.Success) return AuthResponse;
-            Utils.Log("Auth Success");
-            Construct();
+            Utilities.Utils.Log("Auth Success");
+            await Construct();
             return AuthResponse;
         }
 
-        public void Construct()
+        public async Task<bool> Construct()
         {
-            Utils.Log("Constructing Properties -->");
+            Utilities.Utils.Log("Constructing Properties -->");
 
-            client.AddDefaultHeaders(Utils.ConstructHeaders(AuthResponse));
-            UserSettings = FetchUserSettings();
+            UserSettings = await FetchUserSettings();
+            if (UserSettings.settingsProfiles == null) return false;
+
             ProfileListed = CheckIfList(UserSettings);
-            Utils.Log($"Multiple Profiles: {ProfileListed}");
+            Utilities.Utils.Log($"Multiple Profiles: {ProfileListed}");
+            Stringsetting SavedProfiles;
             if (ProfileListed)
             {
-                SavedProfilesIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
+                SavedProfiles = UserSettings.stringSettings.FirstOrDefault(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
             }
             else
             {
-                SavedProfilesIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
-                if (SavedProfilesIndex == -1)
+                try
                 {
-                    Utils.Log("User is new account/Using White Color");
-                    Stringsetting[] StringSettings = UserSettings.stringSettings.Append(new Stringsetting
+                    SavedProfiles = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
+                }
+                catch (ArgumentNullException)
+                {
+                    Utilities.Utils.Log("User is new account/Using White Color");
+                    UserSettings.stringSettings.Add(new Stringsetting
                     {
                         settingEnum = "EAresStringSettingName::CrosshairColor",
                         value = "(R=0,G=0,B=0,A=255)"
-                    }).ToArray();
-                    UserSettings.stringSettings = StringSettings;
-                    SavedProfilesIndex = StringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
+                    });
+                    SavedProfiles = UserSettings.stringSettings.Last();
                 }
             }
 
-            FetchedProfiles = FetchProfiles(UserSettings.stringSettings[SavedProfilesIndex].value);
+            FetchedProfiles = FetchProfiles(SavedProfiles.value);
             ProfileNames = FetchProfileNames(FetchedProfiles);
             CurrentProfile = FetchedProfiles.CurrentProfile;
 
             isLoggedIn = true;
-            Utils.Log("<-- Constructing Properties");
+            Utilities.Utils.Log("<-- Constructing Properties");
+            return true;
         }
 
         private bool CheckIfList(Data settings)
         {
-            Utils.Log("Checking if User has multiple profiles");
+            Utilities.Utils.Log("Checking if User has multiple profiles");
             return settings.stringSettings.Any(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
         }
 
-        private Data FetchUserSettings()
+        private async Task<Data> FetchUserSettings()
         {
-            Utils.Log("Obtaining User Settings");
-            RestRequest request = new RestRequest("/playerPref/v3/getPreference/Ares.PlayerSettings");
-            string responseContext = client.Get(request).Content;
-            Dictionary<string, object> response = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseContext);
-            Data settings = Utils.Decompress(Convert.ToString(response["data"]));
+            Utilities.Utils.Log("Obtaining User Settings");
+            RestRequest request = new RestRequest("/playerPref/v3/getPreference/Ares.PlayerSettings", Method.Get);
+            request.AddHeaders(Utilities.Utils.ConstructHeaders(AuthResponse));
+            string responseContent = (await client.ExecuteAsync(request)).Content;
+            RestResponse resp = await client.ExecuteAsync(request);
+            Dictionary<string, object> response = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseContent);
+            Data settings = new Data();
+            try
+            {
+                settings = Utilities.Utils.Decompress(Convert.ToString(response["data"]));
+            }
+            catch (KeyNotFoundException)
+            {
+                return settings;
+            }
+
             return settings;
         }
 
-        private bool putUserSettings(Data newData)
+        private async Task<bool> putUserSettings(Data newData)
         {
-            Utils.Log("Saving New Data: (BACKUP) " + JsonConvert.SerializeObject(newData));
+            Utilities.Utils.Log("Saving New Data: (BACKUP) " + JsonConvert.SerializeObject(newData));
 
-            IRestRequest request = new RestRequest("/playerPref/v3/savePreference");
-            request.AddJsonBody(new { type = "Ares.PlayerSettings", data = Utils.Compress(newData) });
-            IRestResponse response = client.Put(request);
-            if (!response.IsSuccessful) return false;
+            RestRequest request = new RestRequest("/playerPref/v3/savePreference", Method.Put);
+            request.AddHeaders(Utilities.Utils.ConstructHeaders(AuthResponse));
+            request.AddJsonBody(new { type = "Ares.PlayerSettings", data = Utilities.Utils.Compress(newData) });
+
+            RestResponse response = await client.ExecuteAsync(request);
+            if (!response.IsSuccessful)
+            {
+                Utilities.Utils.Log("savePreference Unsuccessfull: " + response.Content.ToString());
+                return false;
+            }
 
             Dictionary<string, object> responseDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);
             if (responseDict.ContainsKey("data")) return true;
+            Utilities.Utils.Log("savePreference Unsuccessfull: " + response.Content.ToString());
             return false;
         }
 
         private ProfileList FetchProfiles(string SettingValue)
         {
             string DefaultUserSettings = JsonConvert.SerializeObject(UserSettings);
-            Utils.Log("Fetching/Creating Profile/s");
-            Utils.Log($"Setting Value: {DefaultUserSettings}");
+            Utilities.Utils.Log("Fetching/Creating Profile/s");
+            Utilities.Utils.Log($"Setting Value: {DefaultUserSettings}");
             if (ProfileListed) return JsonConvert.DeserializeObject<ProfileList>(SettingValue);
-            CrosshairColor ParsedColor = Utils.parseCrosshairColor(UserSettings.stringSettings[SavedProfilesIndex].value);
-            int NameIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName");
+
+            CrosshairColor ParsedColor = Utilities.Utils.parseCrosshairColor(SettingValue);
+            string profileName = UserSettings.stringSettings.FirstOrDefault(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName").value;
 
             return new ProfileList
             {
@@ -114,7 +151,7 @@ namespace ValorantCC
                     new CrosshairProfile
                     {
                         Primary = new ProfileSettings {Color = ParsedColor},
-                        ProfileName = UserSettings.stringSettings[NameIndex].value
+                        ProfileName = profileName
                     }
                 }
             };
@@ -122,67 +159,47 @@ namespace ValorantCC
 
         private List<string> FetchProfileNames(ProfileList ProfileList)
         {
-            Utils.Log("Fetching Profile names");
+            Utilities.Utils.Log("Fetching Profile names");
             if (ProfileListed) return (from profile in ProfileList.Profiles
                                        select profile.ProfileName).ToList();
 
-            int NameIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName");
-            return new List<string> { UserSettings.stringSettings[NameIndex].value };
+            string profileName = UserSettings.stringSettings.FirstOrDefault(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName").value;
+            return new List<string> { profileName };
         }
 
         public CrosshairProfile ProfileFromIndex(int Index)
         {
-            Utils.Log($"Obtained Profile from index: {FetchedProfiles.Profiles[Index].ProfileName}");
+            Utilities.Utils.Log($"Obtained Profile from index: {FetchedProfiles.Profiles[Index].ProfileName}");
             return FetchedProfiles.Profiles[Index];
         }
 
-        private void ChangeActiveProfile(List<Color> Colors, int SelectedIndex)
-        {
-            Utils.Log("Updating active color");
-            List<Stringsetting> DummySettings = UserSettings.stringSettings.ToList();
-            int DefaultProfileIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
-            if (DefaultProfileIndex == -1)
-            {
-                DummySettings.Add(new Stringsetting { settingEnum = "EAresStringSettingName::CrosshairColor", value = Utils.ColorToString(Colors[0]) });
-                DefaultProfileIndex = DummySettings.FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
-            }
-            DummySettings[DefaultProfileIndex].value = Utils.ColorToString(Colors[0]);
-            if (FetchedProfiles.Profiles[SelectedIndex].bUseAdvancedOptions)
-            {
-                Utils.Log("Removing Old colors.");
-                DummySettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairSnipersCenterDotColor");
-                DummySettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshasirADSColor");
-            }
-            Utils.Log("Appending new colors.");
-            DummySettings.Add(new Stringsetting { settingEnum = "EAresStringSettingName::CrosshairSniperCenterDotColor", value = Utils.ColorToString(Colors[4]) });
-            DummySettings.Add(new Stringsetting { settingEnum = "EAresStringSettingName::CrosshairADSColor", value = Utils.ColorToString(Colors[2]) });
-            UserSettings.stringSettings = DummySettings.ToArray();
-        }
         private void SaveListedSettings(List<Color> Colors, int SelectedIndex)
         {
             if (SelectedIndex == FetchedProfiles.CurrentProfile)
             {
                 try
                 {
-                    ChangeActiveProfile(Colors, SelectedIndex);
+                    UserSettings = Modifier.ChangeActiveProfile(Colors, SelectedIndex, UserSettings, FetchedProfiles);
                 }
                 catch (Exception e)
                 {
-                    Utils.Log($"Error occured: {e}");
+                    Utilities.Utils.Log($"Error occured: {e}");
                 }
 
             }
-            Utils.Log("Modifying Selected Profile.");
-            FetchedProfiles.Profiles[SelectedIndex].bUseAdvancedOptions = true;
-            FetchedProfiles.Profiles[SelectedIndex].bUsePrimaryCrosshairForADS = false;
-            FetchedProfiles.Profiles[SelectedIndex].Primary.Color = new CrosshairColor { R = Colors[0].R, G = Colors[0].G, B = Colors[0].B, A = 255 };
-            FetchedProfiles.Profiles[SelectedIndex].Primary.OutlineColor = new CrosshairColor { R = Colors[1].R, G = Colors[1].G, B = Colors[1].B, A = 255 };
-            FetchedProfiles.Profiles[SelectedIndex].aDS.Color = new CrosshairColor { R = Colors[2].R, G = Colors[2].G, B = Colors[2].B, A = 255 };
-            FetchedProfiles.Profiles[SelectedIndex].aDS.OutlineColor = new CrosshairColor { R = Colors[3].R, G = Colors[3].G, B = Colors[3].B, A = 255 };
+            Utilities.Utils.Log("Modifying Selected Profile.");
+            CrosshairProfile currentProfile = FetchedProfiles.Profiles[SelectedIndex];
 
-            if (FetchedProfiles.Profiles[SelectedIndex].Sniper == null)
+            currentProfile.bUseAdvancedOptions = true;
+            currentProfile.bUsePrimaryCrosshairForADS = false;
+            currentProfile.Primary.Color = new CrosshairColor { R = Colors[0].R, G = Colors[0].G, B = Colors[0].B, A = 255 };
+            currentProfile.Primary.OutlineColor = new CrosshairColor { R = Colors[1].R, G = Colors[1].G, B = Colors[1].B, A = 255 };
+            currentProfile.aDS.Color = new CrosshairColor { R = Colors[2].R, G = Colors[2].G, B = Colors[2].B, A = 255 };
+            currentProfile.aDS.OutlineColor = new CrosshairColor { R = Colors[3].R, G = Colors[3].G, B = Colors[3].B, A = 255 };
+
+            if (currentProfile.Sniper == null)
             {
-                FetchedProfiles.Profiles[SelectedIndex].Sniper = new SniperSettings
+                currentProfile.Sniper = new SniperSettings
                 {
                     bDisplayCenterDot = true,
                     CenterDotColor = new CrosshairColor { R = Colors[4].R, G = Colors[4].G, B = Colors[4].B, A = 255 },
@@ -191,33 +208,57 @@ namespace ValorantCC
                 };
             }
             else
-                FetchedProfiles.Profiles[SelectedIndex].Sniper.CenterDotColor = new CrosshairColor { R = Colors[4].R, G = Colors[4].G, B = Colors[4].B, A = 255 };
+                currentProfile.Sniper.CenterDotColor = new CrosshairColor { R = Colors[4].R, G = Colors[4].G, B = Colors[4].B, A = 255 };
         }
-        public bool SaveNewColor(List<Color> Colors, int SelectedIndex, string ProfileName)
+        public async Task<bool> SaveNewColor(List<Color> Colors, int SelectedIndex, string ProfileName)
         {
-            Utils.Log("Save button clicked. Saving...");
+            Utilities.Utils.Log("Save button clicked. Saving...");
+
             if (ProfileListed)
             {
-                Utils.Log("Profile type: List");
+                Utilities.Utils.Log("Profile type: List");
                 SaveListedSettings(Colors, SelectedIndex);
+
+                for (int i = 0; i < FetchedProfiles.Profiles.Count; i++)
+                {
+                    var item = FetchedProfiles.Profiles[i];
+                    for (int x = 0; x < DefaultColors.Length; x++)
+                    {
+                        var color = DefaultColors[x];
+                        CheckDefaultColor(item.Primary.Color, color);
+                        CheckDefaultColor(item.aDS.Color, color);
+                        CheckDefaultColor(item.Sniper.CenterDotColor, color);
+                    }
+                }
+
                 FetchedProfiles.Profiles[SelectedIndex].ProfileName = ProfileName;
-                SavedProfilesIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
-                UserSettings.stringSettings[SavedProfilesIndex].value = JsonConvert.SerializeObject(FetchedProfiles);
+                Stringsetting SavedProfiles = UserSettings.stringSettings.FirstOrDefault(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
+                SavedProfiles.value = JsonConvert.SerializeObject(FetchedProfiles);
             }
             else
             {
-                Utils.Log("Profile type: Enum");
-                int NameIndex = UserSettings.stringSettings.ToList().FindIndex(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName");
-                UserSettings.stringSettings[SavedProfilesIndex].value = Utils.ColorToString(Colors[0]);
-                UserSettings.stringSettings[NameIndex].value = ProfileName;
+                Utilities.Utils.Log("Profile type: Enum");
+                Stringsetting profileName = UserSettings.stringSettings.FirstOrDefault(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName");
+                UserSettings = Modifier.ChangeActiveProfile(Colors, SelectedIndex, UserSettings, FetchedProfiles);
+                profileName.value = ProfileName;
+
             }
-            if (putUserSettings(UserSettings))
+            if (await putUserSettings(UserSettings))
             {
-                Utils.Log("Reconstructing Data");
-                Construct();
+                Utilities.Utils.Log("Reconstructing Data");
+                await Construct();
                 return true;
             }
             return false;
+        }
+
+        private void CheckDefaultColor(CrosshairColor prfColor, Color color)
+        {
+            if (prfColor.R == color.R && prfColor.G == color.G && prfColor.B == color.B)
+                if (prfColor.R != 0)
+                    prfColor.R--;
+                else
+                    prfColor.G--;
         }
     }
 }

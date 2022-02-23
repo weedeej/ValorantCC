@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <OutputType>WinExe</OutputType>
-    <TargetFramework>net5.0-windows</TargetFramework>
+    <TargetFramework>net6.0-windows</TargetFramework>
     <UseWPF>true</UseWPF>
     <Authors>Weedeej</Authors>
     <Company>N/A</Company>
@@ -14,13 +14,15 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <AssemblyVersion></AssemblyVersion>
     <FileVersion></FileVersion>
-    <Version>2.6.10</Version>
+    <Version>3.0.0</Version>
     <SignAssembly>false</SignAssembly>
   </PropertyGroup>
 
   <ItemGroup>
     <None Remove="Resources\chevron-left.png" />
     <None Remove="Resources\chevron-right.png" />
+    <None Remove="Resources\chevron-up.png" />
+    <None Remove="Resources\menu.png" />
     <None Remove="Resources\CrosshairBG0.png" />
     <None Remove="Resources\CrosshairBG1.png" />
     <None Remove="Resources\CrosshairBG2.png" />
@@ -29,6 +31,7 @@
     <None Remove="Resources\CrosshairBG5.png" />
     <None Remove="Resources\folder.png" />
     <None Remove="Resources\vtools-colored.ico" />
+    <None Remove="Resources\vtspinner optimized.gif" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,6 +39,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\chevron-right.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+	<Resource Include="Resources\chevron-up.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+    <Resource Include="Resources\menu.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\CrosshairBG0.png">
@@ -56,40 +65,42 @@
     <Resource Include="Resources\CrosshairBG5.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="EZ_Updater" Version="0.5.1.1" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
-    <PackageReference Include="RestSharp" Version="106.13.0" />
-    <PackageReference Include="SharpZipLib" Version="1.3.3" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <_DeploymentManifestIconFile Remove="Resources\vtools-colored.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Reference Include="Xceed.Wpf.AvalonDock">
-      <HintPath>References\Xceed.Wpf.AvalonDock.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero">
-      <HintPath>References\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit">
-      <HintPath>References\Xceed.Wpf.Toolkit.dll</HintPath>
-    </Reference>
-  </ItemGroup>
-
-  <ItemGroup>
-    <_DeploymentManifestIconFile Remove="Resources\vtools-colored.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
     <Resource Include="Resources\folder.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
     <Resource Include="Resources\vtools-colored.ico" />
+    <Resource Include="Resources\vtspinner optimized.gif">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="EZ_Updater" Version="0.5.2" />
+    <PackageReference Include="FontAwesome.WPF" Version="4.7.0.9" />
+    <PackageReference Include="MahApps.Metro" Version="2.4.9" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <PackageReference Include="RestSharp" Version="107.3.0" />
+    <PackageReference Include="WpfAnimatedGif" Version="2.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_DeploymentManifestIconFile Remove="Resources\vtools-colored.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_DeploymentManifestIconFile Remove="Resources\vtools-colored.ico" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="Resources\vtspinner.gif">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Resources\BGdictionary.xaml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Page>
   </ItemGroup>
 
 </Project>

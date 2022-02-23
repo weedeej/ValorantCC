@@ -19,13 +19,12 @@ namespace ValorantCC
             Messagelbl.Content = Updater.Message;
             progressBar1.Value = Updater.ProgressPercentage;
 
-            switch (Updater.State)
+            switch (Updater.ShortState)
             {
-                case UpdaterState.Canceled:
-                case UpdaterState.InstallFailed:
+                case UpdaterShortState.Canceled:
                     OKbtn.Visibility = Visibility.Visible;
                     break;
-                case UpdaterState.Installed:
+                case UpdaterShortState.Installed:
                     Process.Start(Updater.ProgramFileName);
                     Application.Current.Shutdown();
                     break;

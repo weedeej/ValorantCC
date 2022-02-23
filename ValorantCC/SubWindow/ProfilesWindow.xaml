@@ -1,0 +1,38 @@
+﻿<mah:MetroWindow x:Class="ValorantCC.ProfilesWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ValorantCC"
+        xmlns:mah="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+        xmlns:gif="http://wpfanimatedgif.codeplex.com"
+        mc:Ignorable="d"
+        Title=""
+        RenderOptions.BitmapScalingMode="Fant" 
+        AllowsTransparency="True"
+        Height="481" Width="339"
+        ResizeMode="NoResize"
+        SizeToContent="WidthAndHeight"
+        ShowInTaskbar="False"
+        WindowTitleBrush="#232429"
+        GlowBrush="White"
+        WindowStartupLocation="CenterOwner" WindowStyle="None" WindowState="Normal" Icon="../Resources/vtools-colored.ico">
+   
+    <Border BorderThickness="0" Background="#232429" Height="450" Margin="0,5,0,15">
+        <Grid>
+            <StackPanel Name="Container" HorizontalAlignment="Center" Margin="0,5">
+                <StackPanel Orientation="Horizontal" Width="350">
+                    <TextBox Style="{DynamicResource MahApps.Styles.TextBox}" Name="SearchCode" MinWidth="128" MaxWidth="128" Background="#FF393B44" Margin="65,4,5,0" Foreground="White" Height="22"/>
+                    <Button Style="{DynamicResource MahApps.Styles.Button}" Name="btnSearchCode" Content="Search Code" MinWidth="85" Background="#FF393B44" Margin="0,5,5,0" Foreground="White" Cursor="Hand"  Click="btnSearchCode_Click" BorderBrush="#FF393B44"/>
+                </StackPanel>
+                <TextBlock Foreground="White" HorizontalAlignment="Center" Visibility="Collapsed" Name="fetchErrorTxt">An error has occured while fetching profiles.</TextBlock>
+                <Image gif:ImageBehavior.AnimatedSource="../Resources/vtspinner optimized.gif" Width="50" Height="52" Margin="0,155,0,0" x:Name="LoadingPlaceHolder" Visibility="Visible" IsVisibleChanged="LoadingPlaceHolder_IsVisibleChanged"/>
+                <ScrollViewer  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,5,0,0" Height="405" Width="338">
+
+                    <StackPanel Name="ShareablesContainer" HorizontalAlignment="Center" Loaded="ShareablesContainer_Loaded">
+                    </StackPanel>
+                </ScrollViewer>
+            </StackPanel>
+        </Grid>
+    </Border>
+</mah:MetroWindow>

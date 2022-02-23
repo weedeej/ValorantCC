@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 namespace ValorantCC
 {
     public partial class Actionmapping
@@ -72,12 +73,17 @@ namespace ValorantCC
         public float CenterDotOpacity { get; set; }
         public bool bDisplayCenterDot { get; set; }
     }
-    public partial class CrosshairColor
+    public partial class CrosshairColor : ICloneable
     {
         public byte R { get; set; }
         public byte G { get; set; }
         public byte B { get; set; }
         public byte A { get; set; }
+
+        public object Clone()
+        {
+            throw new NotImplementedException();
+        }
     }
 
     public partial class LineSettings
@@ -102,14 +108,14 @@ namespace ValorantCC
 
     public partial class Data
     {
-        public Actionmapping[] actionMappings { get; set; }
-        public object[] axisMappings { get; set; }
-        public Boolsetting[] boolSettings { get; set; }
-        public Floatsetting[] floatSettings { get; set; }
-        public Intsetting[] intSettings { get; set; }
+        public List<Actionmapping> actionMappings { get; set; }
+        public List<object> axisMappings { get; set; }
+        public List<Boolsetting> boolSettings { get; set; }
+        public List<Floatsetting> floatSettings { get; set; }
+        public List<Intsetting> intSettings { get; set; }
         public int roamingSetttingsVersion { get; set; }
-        public Stringsetting[] stringSettings { get; set; }
-        public string[] settingsProfiles { get; set; }
+        public List<Stringsetting> stringSettings { get; set; }
+        public List<string> settingsProfiles { get; set; }
     }
 
 }
