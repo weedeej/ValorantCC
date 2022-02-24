@@ -64,7 +64,7 @@ namespace ValorantCC
                 {
                     SavedProfiles = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
                 }
-                catch (ArgumentNullException)
+                catch
                 {
                     Utilities.Utils.Log("User is new account/Using White Color");
                     UserSettings.stringSettings.Add(new Stringsetting
