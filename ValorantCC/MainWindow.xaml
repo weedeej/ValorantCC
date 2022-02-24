@@ -42,6 +42,7 @@
                 <ComboBox x:Name="profiles" Grid.Column="1" SelectionChanged="profiles_SelectionChanged" SelectedIndex="0" IsEditable="True" IsReadOnly="True" Text="Profiles" TextBoxBase.TextChanged="profiles_TextChanged" Background="#FF232429" Foreground="White" Margin="0,-1,2,1" FontFamily="Quicksand" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold"/>
             </Grid>
             <fa:ImageAwesome Icon="CircleOutlineNotch" Spin="True" Height="48" Width="48" Foreground="White" Name="spinner" Margin="0,0,0,5" Loaded="spinner_Loaded"/>
+            <Button x:Name="ForceLoginBtn" HorizontalAlignment="Center" Style="{DynamicResource MahApps.Styles.Button.MetroWindow.Base}" BorderThickness="0" Background="#FF0079FF" Padding="0" Content="Force Login" Cursor="Hand" Height="30" VerticalAlignment="Center" Width="124"  FontFamily="Quicksand" FontSize="11" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Margin="0,20,0,15" Click="ForceLoginBtn_Click"/>
             <Grid Name="ch_display">
 
                 <Image x:Name="CrosshairBG" Source="{StaticResource crosshairBG0}" Margin="1,3,-1,3"/>

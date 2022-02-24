@@ -25,6 +25,7 @@ namespace ValorantCC
         public API ValCCAPI;
         public int SelectedIndex;
         public bool LoggedIn;
+        public bool PressedForceLogin = false;
         private string _sharecode;
         private FetchResponse? sharedProfileResp;
         public MainWindow()
@@ -391,6 +392,13 @@ namespace ValorantCC
         private void _zoom_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             Trace.WriteLine(_zoom.Value);
+        }
+
+        private void ForceLoginBtn_Click(object sender, RoutedEventArgs e)
+        {
+            PressedForceLogin = true;
+            ForceLoginBtn.Content = "Forcing Loging . . .";
+            ForceLoginBtn.Background = (Brush)bc.ConvertFrom("#FF44464F");
         }
     }
 }

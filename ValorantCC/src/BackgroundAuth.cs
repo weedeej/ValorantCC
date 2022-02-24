@@ -20,9 +20,11 @@ namespace ValorantCC
         {
             string LockfilePath = Environment.GetEnvironmentVariable("LocalAppData") + "\\Riot Games\\Riot Client\\Config\\lockfile"; //Copy pasted from Auth.cs because why not?
             bool lockfilexists = false;
+            int FlagExistsCount = 0;
             main.ch_display.Visibility = Visibility.Collapsed;
             main.buttons_group.Visibility = Visibility.Collapsed;
             main.controls_group.Visibility = Visibility.Collapsed;
+            main.ForceLoginBtn.Visibility = Visibility.Collapsed;
             while (true)
             {
                 if (AuthObj.CheckLockFile(LockfilePath) && !lockfilexists)
@@ -31,9 +33,12 @@ namespace ValorantCC
                     main.StatusTxt.Text = "Waiting for session. . .";
                     lockfilexists = true;
                 }
-                if (!await LoginFlagExists())
+                if (!await LoginFlagExists() && !main.PressedForceLogin)
                 {
                     await Task.Delay(1500);
+                    FlagExistsCount++;
+                    if (FlagExistsCount > 10)
+                        main.ForceLoginBtn.Visibility = Visibility.Visible;
                     continue;
                 }
                 if (lockfilexists && AuthObj.ObtainLockfileData(LockfilePath).Success)
@@ -45,6 +50,7 @@ namespace ValorantCC
                     if (!main.LoggedIn)
                     {
                         main.StatusTxt.Text = "Failed. Please login to Riot Client or Start Valorant.";
+                        main.ForceLoginBtn.Visibility = Visibility.Collapsed;
                         await Task.Delay(1500);
                         continue;
                     }
@@ -67,6 +73,7 @@ namespace ValorantCC
                     main.chkbxShareable.Visibility = Visibility.Visible;
 
                     main.spinner.Visibility = Visibility.Collapsed;
+                    main.ForceLoginBtn.Visibility = Visibility.Collapsed;
                     main.spinner.Spin = false;
                     main.UpdateLayout();
                     Trace.WriteLine(main.Height + " || " + OriginalHeight);
@@ -74,7 +81,7 @@ namespace ValorantCC
 
                     return;
                 }
-                await Task.Delay(1500);
+                await Task.Delay(500);
             }
         }
 
@@ -85,17 +92,13 @@ namespace ValorantCC
 
             string content;
             using (FileStream fileStream = File.Open(log.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-            {
                 using (StreamReader sr = new StreamReader(fileStream))
-                {
                     content = (String)sr.ReadToEnd().Clone();
-                }
-            }
+
             bool t = false;
             if (content.Contains("riot-messaging-service: State is now Connected"))
-            {
                 t = true;
-            }
+
             await Task.Delay(1);
             return t;
         }

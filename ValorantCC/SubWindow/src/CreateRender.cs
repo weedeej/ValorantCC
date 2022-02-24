@@ -21,6 +21,7 @@ namespace ValorantCC
         static Style style;
         static Random rand = new Random();
         static BrushConverter bc = new BrushConverter();
+        static ImageBrush previousBG = null;
         static List<ImageBrush> imageSources = new List<ImageBrush>();
         static ImageBrush RandomBG => imageSources[rand.Next(0, imageSources.Count - 1)];
 
@@ -33,12 +34,16 @@ namespace ValorantCC
 
         public static async Task<UIElement> GenerateRender(this ProfilesWindow profilesWindow, PublicProfile profile)
         {
-            // This will be changed and will be replaced with more efficient method of rendering multiple settings.
+            //More random BG xd
+            var RandomBGC = RandomBG;
+            while (RandomBGC == previousBG)
+                RandomBGC = RandomBG;
+            previousBG = RandomBGC;
 
             // Main border
             Border template = new Border()
             {
-                Background = RandomBG,
+                Background = RandomBGC,
                 CornerRadius = new CornerRadius(7, 7, 25, 25),
                 MinHeight = 95,
                 MaxHeight = 95,
