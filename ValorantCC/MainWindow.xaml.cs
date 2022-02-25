@@ -52,14 +52,8 @@ namespace ValorantCC
                 Utilities.Utils.MessageText("You are not logged in!", Brushes.Red);
                 return;
             }
-            if (DataProcessor.ProfileListed)
-            {
-                SelectedColors = new List<Color> { (Color)primary_color.SelectedColor, (Color)prim_outline_color.SelectedColor, (Color)ads_color.SelectedColor, (Color)ads_outline_color.SelectedColor, (Color)sniper_dot_color.SelectedColor };
-            }
-            else
-            {
-                SelectedColors = new List<Color> { (Color)primary_color.SelectedColor };
-            }
+            SelectedColors = new List<Color> { (Color)primary_color.SelectedColor, (Color)prim_outline_color.SelectedColor, (Color)ads_color.SelectedColor, (Color)ads_outline_color.SelectedColor, (Color)sniper_dot_color.SelectedColor };
+
             if (await DataProcessor.SaveNewColor(SelectedColors, profiles.SelectedIndex, profiles.Text))
             {
                 await DataProcessor.Construct();
@@ -81,14 +75,6 @@ namespace ValorantCC
             SelectedProfile = DataProcessor.ProfileFromIndex(SelectedIndex);
 
             primary_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.Color.R, SelectedProfile.Primary.Color.G, SelectedProfile.Primary.Color.B);
-            if (!DataProcessor.ProfileListed)
-            {
-                prim_outline_color.IsEnabled = false;
-                ads_color.IsEnabled = false;
-                ads_outline_color.IsEnabled = false;
-                sniper_dot_color.IsEnabled = false;
-                return;
-            }
             prim_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.OutlineColor.R, SelectedProfile.Primary.OutlineColor.G, SelectedProfile.Primary.OutlineColor.B);
             if (SelectedProfile.aDS == null) SelectedProfile.aDS = SelectedProfile.Primary;
             if (SelectedProfile.bUsePrimaryCrosshairForADS) SelectedProfile.aDS.Color = SelectedProfile.Primary.Color;
@@ -364,8 +350,6 @@ namespace ValorantCC
 
         private async void spinner_Loaded(object sender, RoutedEventArgs e)
         {
-            Trace.WriteLine(ValorantCC.src.Community.SCGen.GenerateShareCode("64f8b630-64c6-5838-9daa-916f8bbf5587"));
-            Trace.WriteLine(ValorantCC.src.Community.SCGen.GenerateShareCode("b19f4928-e1ed-5f63-a9d0-8a7fd202e3b2"));
             Updater.CustomLogger = Utilities.Utils.Log;
             Updater.OriginalFileName = "ValorantCC";
             Updater.LogInterfix = "  | ";
@@ -391,7 +375,7 @@ namespace ValorantCC
 
         private void _zoom_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            Trace.WriteLine(_zoom.Value);
+            //
         }
 
         private void ForceLoginBtn_Click(object sender, RoutedEventArgs e)

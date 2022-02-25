@@ -37,7 +37,7 @@ namespace ValorantCC
                 {
                     await Task.Delay(1500);
                     FlagExistsCount++;
-                    if (FlagExistsCount > 10)
+                    if (FlagExistsCount > 5)
                         main.ForceLoginBtn.Visibility = Visibility.Visible;
                     continue;
                 }

@@ -103,7 +103,7 @@ namespace Utilities
         public static string LoginResponse(Processor processor)
         {
             if (processor.ProfileListed) return "Logged In! You may now close Valorant.";
-            return "Logged In! You may now close Valorant. NOTE: You only have 1 Profile. To use the other features, Please create an extra profile.";
+            return "Logged In! You may now close Valorant. NOTE: You only have 1 Profile. Your in-game can't be reflected here unless you create another.";
         }
 
         public static void MessageText(String message, Brush color)

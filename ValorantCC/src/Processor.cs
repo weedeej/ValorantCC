@@ -57,12 +57,19 @@ namespace ValorantCC
             if (ProfileListed)
             {
                 SavedProfiles = UserSettings.stringSettings.FirstOrDefault(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
+                FetchedProfiles = FetchProfiles(SavedProfiles.value, null, null ,null ,null);
             }
             else
             {
+                Stringsetting Primary, PrimaryOutline, aDS, aDSOutline, sniperDot;
+
                 try
                 {
-                    SavedProfiles = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
+                    Primary = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
+                    PrimaryOutline = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairOutlineColor");
+                    aDS = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairADSColor");
+                    aDSOutline = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairADSOutlineColor");
+                    sniperDot = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairSniperCenterDotColor");
                 }
                 catch
                 {
@@ -72,11 +79,36 @@ namespace ValorantCC
                         settingEnum = "EAresStringSettingName::CrosshairColor",
                         value = "(R=0,G=0,B=0,A=255)"
                     });
-                    SavedProfiles = UserSettings.stringSettings.Last();
+                    UserSettings.stringSettings.Add(new Stringsetting
+                    {
+                        settingEnum = "EAresStringSettingName::CrosshairOutlineColor",
+                        value = "(R=255,G=255,B=255,A=255)"
+                    });
+                    UserSettings.stringSettings.Add(new Stringsetting
+                    {
+                        settingEnum = "EAresStringSettingName::CrosshairADSColor",
+                        value = "(R=0,G=0,B=0,A=255)"
+                    });
+                    UserSettings.stringSettings.Add(new Stringsetting
+                    {
+                        settingEnum = "EAresStringSettingName::CrosshairADSOutlineColor",
+                        value = "(R=255,G=255,B=255,A=255)"
+                    });
+                    UserSettings.stringSettings.Add(new Stringsetting
+                    {
+                        settingEnum = "EAresStringSettingName::CrosshairSniperCenterDotColor",
+                        value = "(R=254,G=254,B=254,A=255)"
+                    });
+
+                    Primary = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
+                    PrimaryOutline = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairOutlineColor");
+                    aDS = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairADSColor");
+                    aDSOutline = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairADSOutlineColor");
+                    sniperDot = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairSniperCenterDotColor");
                 }
+                FetchedProfiles = FetchProfiles(Primary.value, PrimaryOutline.value, aDS.value, aDSOutline.value, sniperDot.value);
             }
 
-            FetchedProfiles = FetchProfiles(SavedProfiles.value);
             ProfileNames = FetchProfileNames(FetchedProfiles);
             CurrentProfile = FetchedProfiles.CurrentProfile;
 
@@ -133,14 +165,18 @@ namespace ValorantCC
             return false;
         }
 
-        private ProfileList FetchProfiles(string SettingValue)
+        private ProfileList FetchProfiles(string SettingValue, string? PrimOutlineColor, string? ADSColorValue, string? ADSOutlineColor, string? SniperCenterdotColor)
         {
             string DefaultUserSettings = JsonConvert.SerializeObject(UserSettings);
             Utilities.Utils.Log("Fetching/Creating Profile/s");
             Utilities.Utils.Log($"Setting Value: {DefaultUserSettings}");
             if (ProfileListed) return JsonConvert.DeserializeObject<ProfileList>(SettingValue);
 
-            CrosshairColor ParsedColor = Utilities.Utils.parseCrosshairColor(SettingValue);
+            CrosshairColor PrimaryColor = Utilities.Utils.parseCrosshairColor(SettingValue);
+            CrosshairColor PrimaryOutlineColor = Utilities.Utils.parseCrosshairColor(PrimOutlineColor);
+            CrosshairColor ADSColor = Utilities.Utils.parseCrosshairColor(ADSColorValue);
+            CrosshairColor aDSOutlineColor = Utilities.Utils.parseCrosshairColor(ADSOutlineColor);
+            CrosshairColor sniperCenterdotColor = Utilities.Utils.parseCrosshairColor(SniperCenterdotColor);    
             string profileName = UserSettings.stringSettings.FirstOrDefault(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName").value;
 
             return new ProfileList
@@ -150,7 +186,10 @@ namespace ValorantCC
                 {
                     new CrosshairProfile
                     {
-                        Primary = new ProfileSettings {Color = ParsedColor},
+                        Primary = new ProfileSettings {Color = PrimaryColor, OutlineColor = PrimaryOutlineColor, InnerLines = new LineSettings(), OuterLines = new LineSettings(), bHasOutline = true, OutlineOpacity = 1, OutlineThickness = 1},
+                        aDS = new ProfileSettings {Color = ADSColor, OutlineColor = aDSOutlineColor, InnerLines = new LineSettings(), OuterLines = new LineSettings(), bHasOutline = true, OutlineOpacity = 1, OutlineThickness = 1},
+                        Sniper = new SniperSettings { CenterDotColor = sniperCenterdotColor, CenterDotSize = 1, CenterDotOpacity = 1, bDisplayCenterDot = true},
+                        bUseAdvancedOptions = true,
                         ProfileName = profileName
                     }
                 }

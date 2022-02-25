@@ -88,14 +88,14 @@ namespace ValorantCC
 
     public partial class LineSettings
     {
-        public float LineThickness { get; set; }
-        public float LineLength { get; set; }
-        public float LineOffset { get; set; }
+        public float LineThickness { get; set; } = 2;
+        public float LineLength { get; set; } = 4;
+        public float LineOffset { get; set; } = 2;
         public bool bShowMovementError { get; set; }
         public bool bShowShootingError { get; set; }
         public bool bShowMinError { get; set; }
-        public float Opacity { get; set; }
-        public bool bShowLines { get; set; }
+        public float Opacity { get; set; } = 1;
+        public bool bShowLines { get; set; } = true;
         public float firingErrorScale { get; set; }
         public float movementErrorScale { get; set; }
     }
