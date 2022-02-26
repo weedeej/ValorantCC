@@ -52,38 +52,33 @@ namespace ValorantCC
 
     public partial class ProfileSettings
     {
-        public CrosshairColor Color { get; set; }
-        public bool bHasOutline { get; set; }
-        public float OutlineThickness { get; set; }
-        public CrosshairColor OutlineColor { get; set; }
-        public float OutlineOpacity { get; set; }
-        public float CenterDotSize { get; set; }
-        public float CenterDotOpacity { get; set; }
-        public bool bDisplayCenterDot { get; set; }
-        public bool bFixMinErrorAcrossWeapons { get; set; }
-        public LineSettings InnerLines { get; set; }
-        public LineSettings OuterLines { get; set; }
+        public CrosshairColor Color { get; set; } = new CrosshairColor();
+        public bool bHasOutline { get; set; } = false;
+        public float OutlineThickness { get; set; } = 1;
+        public CrosshairColor OutlineColor { get; set; } = new CrosshairColor();
+        public float OutlineOpacity { get; set; } = 0;
+        public float CenterDotSize { get; set; } = 1;
+        public float CenterDotOpacity { get; set; } = 0;
+        public bool bDisplayCenterDot { get; set; } = false;
+        public bool bFixMinErrorAcrossWeapons { get; set; } = false;
+        public LineSettings InnerLines { get; set; } = new LineSettings();
+        public LineSettings OuterLines { get; set; } = new LineSettings();
 
     }
 
     public partial class SniperSettings
     {
-        public CrosshairColor CenterDotColor { get; set; }
-        public float CenterDotSize { get; set; }
-        public float CenterDotOpacity { get; set; }
-        public bool bDisplayCenterDot { get; set; }
+        public CrosshairColor CenterDotColor { get; set; } = new CrosshairColor();
+        public float CenterDotSize { get; set; } = 0;
+        public float CenterDotOpacity { get; set; } = 0;
+        public bool bDisplayCenterDot { get; set; } = false;
     }
-    public partial class CrosshairColor : ICloneable
+    public partial class CrosshairColor
     {
-        public byte R { get; set; }
-        public byte G { get; set; }
-        public byte B { get; set; }
-        public byte A { get; set; }
-
-        public object Clone()
-        {
-            throw new NotImplementedException();
-        }
+        public byte R { get; set; } = 0;
+        public byte G { get; set; } = 0;
+        public byte B { get; set; } = 0;
+        public byte A { get; set; } = 0;
     }
 
     public partial class LineSettings
@@ -91,9 +86,9 @@ namespace ValorantCC
         public float LineThickness { get; set; } = 2;
         public float LineLength { get; set; } = 4;
         public float LineOffset { get; set; } = 2;
-        public bool bShowMovementError { get; set; }
-        public bool bShowShootingError { get; set; }
-        public bool bShowMinError { get; set; }
+        public bool bShowMovementError { get; set; } = false;
+        public bool bShowShootingError { get; set; } = false;
+        public bool bShowMinError { get; set; } = false;
         public float Opacity { get; set; } = 1;
         public bool bShowLines { get; set; } = true;
         public float firingErrorScale { get; set; }
