@@ -52,6 +52,7 @@ namespace ValorantCC
                 Utilities.Utils.MessageText("You are not logged in!", Brushes.Red);
                 return;
             }
+            Utilities.Utils.MessageText("Saving...", Brushes.Yellow);
             SelectedColors = new List<Color> { (Color)primary_color.SelectedColor, (Color)prim_outline_color.SelectedColor, (Color)ads_color.SelectedColor, (Color)ads_outline_color.SelectedColor, (Color)sniper_dot_color.SelectedColor };
 
             if (await DataProcessor.SaveNewColor(SelectedColors, profiles.SelectedIndex, profiles.Text))
@@ -67,7 +68,7 @@ namespace ValorantCC
             return;
         }
 
-        private async void profiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        private void profiles_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (profiles.SelectedIndex == -1) return;
 
@@ -81,7 +82,7 @@ namespace ValorantCC
             ads_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.Color.R, SelectedProfile.aDS.Color.G, SelectedProfile.aDS.Color.B);
             ads_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.OutlineColor.R, SelectedProfile.aDS.OutlineColor.G, SelectedProfile.aDS.OutlineColor.B);
             sniper_dot_color.SelectedColor = Color.FromRgb(SelectedProfile.Sniper.CenterDotColor.R, SelectedProfile.Sniper.CenterDotColor.G, SelectedProfile.Sniper.CenterDotColor.B);
-            if (!sharedProfileResp.HasValue)
+            /*if (!sharedProfileResp.HasValue)
             {
                 if (ValCCAPI != null) sharedProfileResp = await ValCCAPI.ObtainSelfSaved();
             }
@@ -104,7 +105,7 @@ namespace ValorantCC
                         btnCopyShareCode.Visibility = Visibility.Collapsed;
                     }
                 }
-            }
+            }*/
             Crosshair_load();
         }
         private void StackPanel_MouseDown(object sender, MouseButtonEventArgs e)
