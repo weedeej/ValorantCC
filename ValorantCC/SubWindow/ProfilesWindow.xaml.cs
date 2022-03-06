@@ -29,6 +29,7 @@ namespace ValorantCC
         private static API ValCCApi;
         private static MainWindow main;
         private static List<PublicProfile> PublicProfiles = new List<PublicProfile>();
+        private int _offset = 0;
         public ProfilesWindow(CrosshairProfile current, API ValCCAPI)
         {
             InitializeComponent();
@@ -41,6 +42,7 @@ namespace ValorantCC
         private async void ShareablesContainer_Loaded(object sender, RoutedEventArgs e)
         {
             LoadingPlaceHolder.Visibility = Visibility.Visible;
+            Pagination.Visibility = Visibility.Collapsed;
             fetchErrorTxt.Visibility = Visibility.Collapsed;
             try
             {
@@ -56,6 +58,7 @@ namespace ValorantCC
                 Utilities.Utils.Log(ex.StackTrace.ToString());
             }
             LoadingPlaceHolder.Visibility = Visibility.Collapsed;
+            Pagination.Visibility = Visibility.Visible;
         }
 
         /// <summary>
@@ -86,9 +89,10 @@ namespace ValorantCC
             else
             {
                 Utilities.Utils.Log($"Fetching profiles from server");
-                FetchResponse fetchResponse = await ValCCApi.Fetch();
+                FetchResponse fetchResponse = await ValCCApi.Fetch(Offset: _offset);
                 if (!fetchResponse.success) return false;
                 Shareables = fetchResponse.data;
+                Pagination.Visibility = Visibility.Visible;
             }
 
             if (Shareables.Count == 0) return true;
@@ -122,6 +126,7 @@ namespace ValorantCC
         private async void btnSearchCode_Click(object sender, RoutedEventArgs e)
         {
             LoadingPlaceHolder.Visibility = Visibility.Visible;
+            Pagination.Visibility = Visibility.Collapsed;
             fetchErrorTxt.Visibility = Visibility.Collapsed;
             try
             {
@@ -205,6 +210,52 @@ namespace ValorantCC
                 WpfAnimatedGif.ImageBehavior.GetAnimationController(LoadingPlaceHolder)?.Play();
             else
                 WpfAnimatedGif.ImageBehavior.GetAnimationController(LoadingPlaceHolder)?.Pause();
+        }
+
+        private async void btnNextOffset_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            LoadingPlaceHolder.Visibility = Visibility.Visible;
+            Pagination.Visibility = Visibility.Collapsed;
+            fetchErrorTxt.Visibility = Visibility.Collapsed;
+            _offset += 20;
+            try
+            {
+                bool fetchSucc = await InitialFetch();
+                if (!fetchSucc) fetchErrorTxt.Visibility = Visibility.Visible;
+                else
+                {
+                    await RenderProfiles();
+                }
+            }
+            catch (Exception ex)
+            {
+                Utilities.Utils.Log(ex.StackTrace.ToString());
+            }
+            LoadingPlaceHolder.Visibility = Visibility.Collapsed;
+            Pagination.Visibility = Visibility.Visible;
+        }
+
+        private async void btnPreviousOffset_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            LoadingPlaceHolder.Visibility = Visibility.Visible;
+            Pagination.Visibility = Visibility.Collapsed;
+            fetchErrorTxt.Visibility = Visibility.Collapsed;
+            if (_offset >= 20) _offset -= 20;
+            try
+            {
+                bool fetchSucc = await InitialFetch();
+                if (!fetchSucc) fetchErrorTxt.Visibility = Visibility.Visible;
+                else
+                {
+                    await RenderProfiles();
+                }
+            }
+            catch (Exception ex)
+            {
+                Utilities.Utils.Log(ex.StackTrace.ToString());
+            }
+            LoadingPlaceHolder.Visibility = Visibility.Collapsed;
+            Pagination.Visibility = Visibility.Visible;
         }
     }
 }

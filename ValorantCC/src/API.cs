@@ -19,6 +19,7 @@ namespace ValorantCC
         public bool success { get; set; }
         public List<ShareableProfile> data { get; set; }
         public string message { get; set; }
+        public int offset { get; set; }
     }
 
     public struct ShareableProfile
@@ -49,13 +50,13 @@ namespace ValorantCC
             Shareable = isShareable;
         }
 
-        public async Task<FetchResponse> Fetch(String sharecode = null)
+        public async Task<FetchResponse> Fetch(String sharecode = null, int Offset = 0)
         {
             RestRequest request;
             if (sharecode != null)
                 request = new RestRequest($"/sharecode/{sharecode}", Method.Get);
             else
-                request = new RestRequest("/profiles", Method.Get);
+                request = new RestRequest($"/profiles?offset={Offset}", Method.Get);
 
             RestResponse response = await client.ExecuteAsync(request);
             if (!response.IsSuccessful && response.StatusCode != System.Net.HttpStatusCode.NotFound)
@@ -65,13 +66,14 @@ namespace ValorantCC
             }
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                return new FetchResponse() { success = true, data = new List<ShareableProfile>() };
+                return new FetchResponse() { success = true, data = new List<ShareableProfile>(), offset = Offset };
             }
 
             return new FetchResponse()
             {
                 success = true,
-                data = JsonConvert.DeserializeObject<List<ShareableProfile>>(response.Content)
+                data = JsonConvert.DeserializeObject<List<ShareableProfile>>(response.Content),
+                offset = Offset
             };
         }
 

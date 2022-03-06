@@ -14,10 +14,9 @@ namespace ValorantCC.src
             West = 2,
             East = 3,
         }
-        static CrosshairColor defaultColor = new CrosshairColor();
+
         public static void Generate(int column, Grid grid, ProfileSettings settings)
         {
-            settings = settings ?? new ProfileSettings();
             Rectangle[] rectangles = new Rectangle[16];
             int recindex = 0;
             for (int i = 0; i < rectangles.Length; i++)
@@ -57,8 +56,6 @@ namespace ValorantCC.src
                 recindex++;
 
                 rectangle_redraw(rectangles[i], rectangles[i + 1], pos, settings);
-                settings.Color = settings.Color ?? defaultColor;
-                settings.OutlineColor = settings.OutlineColor ?? defaultColor;
                 rectangles[i].Fill = new SolidColorBrush(Color.FromArgb(settings.Color.A, settings.Color.R, settings.Color.G, settings.Color.B));
                 rectangles[i + 1].Stroke = new SolidColorBrush(Color.FromArgb(settings.OutlineColor.A, settings.OutlineColor.R, settings.OutlineColor.G, settings.OutlineColor.B));
                 Grid.SetColumn(rectangles[i], column);
@@ -80,8 +77,6 @@ namespace ValorantCC.src
             };
 
             dot_redraw(dot, dotOT, settings);
-            settings.Color = settings.Color ?? defaultColor;
-            settings.OutlineColor = settings.OutlineColor ?? defaultColor;
             dot.Fill = new SolidColorBrush(Color.FromArgb(settings.Color.A, settings.Color.R, settings.Color.G, settings.Color.B));
             dotOT.Stroke = new SolidColorBrush(Color.FromArgb(settings.OutlineColor.A, settings.OutlineColor.R, settings.OutlineColor.G, settings.OutlineColor.B));
             Grid.SetColumn(dot, column);
@@ -97,8 +92,6 @@ namespace ValorantCC.src
         {
             Ellipse ellipse = new();
             dot_redraw(ellipse, settings);
-            settings = settings ?? new SniperSettings();
-            settings.CenterDotColor = settings.CenterDotColor ?? defaultColor;
             ellipse.Fill = new SolidColorBrush(Color.FromArgb(settings.CenterDotColor.A, settings.CenterDotColor.R, settings.CenterDotColor.G, settings.CenterDotColor.B));
             Grid.SetColumn(ellipse, column);
             Grid.SetRow(ellipse, 0);
@@ -128,7 +121,6 @@ namespace ValorantCC.src
 
         public static void dot_redraw(Ellipse ellipse, SniperSettings settings)
         {
-            settings = settings ?? new SniperSettings();
             ellipse.Width = ellipse.Height = settings.CenterDotSize * 6;
             ellipse.Opacity = settings.CenterDotOpacity;
 
@@ -145,16 +137,10 @@ namespace ValorantCC.src
             Width = Rect.Width;
             Height = Rect.Height;
 
-            settings = settings ?? new ProfileSettings();
             LineSettings line = settings.InnerLines;
             if (Rect.Name.Contains("OL"))
                 line = settings.OuterLines;
 
-            line = line ?? new LineSettings()
-            {
-                bShowLines = false,
-                Opacity = 0
-            };
             if (line.bShowShootingError)
                 Margin += 8;
 
@@ -194,12 +180,12 @@ namespace ValorantCC.src
             RectOT.Opacity = settings.OutlineOpacity;
 
 
-            if (line.bShowLines || line.Opacity > 0)
+            if (line.bShowLines)
                 Rect.Visibility = Visibility.Visible;
             else
                 Rect.Visibility = Visibility.Hidden;
 
-            if (settings.bHasOutline && line.LineThickness > 0 && line.bShowLines && line.Opacity > 0)
+            if (settings.bHasOutline && line.LineThickness > 0 && line.bShowLines)
                 RectOT.Visibility = Visibility.Visible;
             else
                 RectOT.Visibility = Visibility.Hidden;

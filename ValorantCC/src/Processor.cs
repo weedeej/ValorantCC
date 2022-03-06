@@ -6,13 +6,14 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
 using ValorantCC.src;
+using ValorantCC.src.Crosshair;
 namespace ValorantCC
 {
     public class Processor
     {
         private AuthResponse AuthResponse;
         public bool isLoggedIn = false;
-        private RestClient client = new RestClient("https://playerpreferences.riotgames.com");
+        private RestClient client = new RestClient(new RestClientOptions() { RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true });
         private Data UserSettings;
         public bool ProfileListed;
         public List<string> ProfileNames;
@@ -47,7 +48,7 @@ namespace ValorantCC
         public async Task<bool> Construct()
         {
             Utilities.Utils.Log("Constructing Properties -->");
-
+            client.Authenticator = new RestSharp.Authenticators.HttpBasicAuthenticator("riot", AuthResponse.LockfileData.Key);
             UserSettings = await FetchUserSettings();
             if (UserSettings.settingsProfiles == null) return false;
 
@@ -74,30 +75,35 @@ namespace ValorantCC
                 catch
                 {
                     Utilities.Utils.Log("User is new account/Using White Color");
+                    UserSettings.stringSettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairSniperCenterDotColor");
+                    UserSettings.stringSettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairADSColor");
+                    UserSettings.stringSettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairOutlineColor");
+                    UserSettings.stringSettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairADSOutlineColor");
+
                     UserSettings.stringSettings.Add(new Stringsetting
                     {
                         settingEnum = "EAresStringSettingName::CrosshairColor",
-                        value = "(R=0,G=0,B=0,A=255)"
+                        value = "(R=0,G=0,B=0,A=254)"
                     });
                     UserSettings.stringSettings.Add(new Stringsetting
                     {
                         settingEnum = "EAresStringSettingName::CrosshairOutlineColor",
-                        value = "(R=255,G=255,B=255,A=255)"
+                        value = "(R=254,G=254,B=254,A=254)"
                     });
                     UserSettings.stringSettings.Add(new Stringsetting
                     {
                         settingEnum = "EAresStringSettingName::CrosshairADSColor",
-                        value = "(R=0,G=0,B=0,A=255)"
+                        value = "(R=0,G=0,B=0,A=254)"
                     });
                     UserSettings.stringSettings.Add(new Stringsetting
                     {
                         settingEnum = "EAresStringSettingName::CrosshairADSOutlineColor",
-                        value = "(R=255,G=255,B=255,A=255)"
+                        value = "(R=254,G=254,B=254,A=254)"
                     });
                     UserSettings.stringSettings.Add(new Stringsetting
                     {
                         settingEnum = "EAresStringSettingName::CrosshairSniperCenterDotColor",
-                        value = "(R=254,G=254,B=254,A=255)"
+                        value = "(R=254,G=254,B=254,A=254)"
                     });
 
                     Primary = UserSettings.stringSettings.First(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
@@ -125,33 +131,31 @@ namespace ValorantCC
 
         private async Task<Data> FetchUserSettings()
         {
-            Utilities.Utils.Log("Obtaining User Settings");
-            RestRequest request = new RestRequest("/playerPref/v3/getPreference/Ares.PlayerSettings", Method.Get);
-            request.AddHeaders(Utilities.Utils.ConstructHeaders(AuthResponse));
-            string responseContent = (await client.ExecuteAsync(request)).Content;
+            Utilities.Utils.Log("Obtaining User Settings using WS");
+            RestRequest request = new RestRequest($"{AuthResponse.LockfileData.Protocol}://127.0.0.1:{AuthResponse.LockfileData.Port}/player-preferences/v1/data-json/Ares.PlayerSettings", Method.Get);
+            
             RestResponse resp = await client.ExecuteAsync(request);
-            Dictionary<string, object> response = JsonConvert.DeserializeObject<Dictionary<string, object>>(responseContent);
-            Data settings = new Data();
+            if (!resp.IsSuccessful) return new Data();
+            string responseContent = resp.Content;
+            FetchResponseData response;
             try
             {
-                settings = Utilities.Utils.Decompress(Convert.ToString(response["data"]));
+                response = JsonConvert.DeserializeObject<FetchResponseData>(responseContent);
             }
             catch (KeyNotFoundException)
             {
-                return settings;
+                return new Data();
             }
 
-            return settings;
+            return response.data;
         }
 
         private async Task<bool> putUserSettings(Data newData)
         {
             Utilities.Utils.Log("Saving New Data: (BACKUP) " + JsonConvert.SerializeObject(newData));
-
-            RestRequest request = new RestRequest("/playerPref/v3/savePreference", Method.Put);
-            request.AddHeaders(Utilities.Utils.ConstructHeaders(AuthResponse));
-            request.AddJsonBody(new { type = "Ares.PlayerSettings", data = Utilities.Utils.Compress(newData) });
-
+            
+            RestRequest request = new RestRequest($"{AuthResponse.LockfileData.Protocol}://127.0.0.1:{AuthResponse.LockfileData.Port}/player-preferences/v1/data-json/Ares.PlayerSettings", Method.Put);
+            request.AddJsonBody(newData);
             RestResponse response = await client.ExecuteAsync(request);
             if (!response.IsSuccessful)
             {
@@ -217,40 +221,24 @@ namespace ValorantCC
 
         private void SaveListedSettings(List<Color> Colors, int SelectedIndex)
         {
+            Utilities.Utils.Log("Modifying Selected Profile.");
             if (SelectedIndex == FetchedProfiles.CurrentProfile)
             {
                 try
                 {
-                    UserSettings = Modifier.ChangeActiveProfile(Colors, SelectedIndex, UserSettings, FetchedProfiles);
+                    Utilities.Utils.Log("Modifying active");
+                    UserSettings = CrosshairMain.ChangeActiveProfile(Colors, SelectedIndex, UserSettings, FetchedProfiles);
                 }
                 catch (Exception e)
                 {
                     Utilities.Utils.Log($"Error occured: {e}");
                 }
-
-            }
-            Utilities.Utils.Log("Modifying Selected Profile.");
-            CrosshairProfile currentProfile = FetchedProfiles.Profiles[SelectedIndex];
-
-            currentProfile.bUseAdvancedOptions = true;
-            currentProfile.bUsePrimaryCrosshairForADS = false;
-            currentProfile.Primary.Color = new CrosshairColor { R = Colors[0].R, G = Colors[0].G, B = Colors[0].B, A = 255 };
-            currentProfile.Primary.OutlineColor = new CrosshairColor { R = Colors[1].R, G = Colors[1].G, B = Colors[1].B, A = 255 };
-            currentProfile.aDS.Color = new CrosshairColor { R = Colors[2].R, G = Colors[2].G, B = Colors[2].B, A = 255 };
-            currentProfile.aDS.OutlineColor = new CrosshairColor { R = Colors[3].R, G = Colors[3].G, B = Colors[3].B, A = 255 };
-
-            if (currentProfile.Sniper == null)
-            {
-                currentProfile.Sniper = new SniperSettings
-                {
-                    bDisplayCenterDot = true,
-                    CenterDotColor = new CrosshairColor { R = Colors[4].R, G = Colors[4].G, B = Colors[4].B, A = 255 },
-                    CenterDotOpacity = 1,
-                    CenterDotSize = 1
-                };
             }
             else
-                currentProfile.Sniper.CenterDotColor = new CrosshairColor { R = Colors[4].R, G = Colors[4].G, B = Colors[4].B, A = 255 };
+            {
+                Utilities.Utils.Log("Modifying in-active");
+                UserSettings = CrosshairMain.ChangeInActiveProfile(Colors, SelectedIndex, UserSettings, FetchedProfiles);
+            }
         }
         public async Task<bool> SaveNewColor(List<Color> Colors, int SelectedIndex, string ProfileName)
         {
@@ -281,7 +269,7 @@ namespace ValorantCC
             {
                 Utilities.Utils.Log("Profile type: Enum");
                 Stringsetting profileName = UserSettings.stringSettings.FirstOrDefault(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName");
-                UserSettings = Modifier.ChangeActiveProfile(Colors, SelectedIndex, UserSettings, FetchedProfiles);
+                UserSettings = CrosshairMain.ChangeActiveProfile(Colors, SelectedIndex, UserSettings, FetchedProfiles);
                 profileName.value = ProfileName;
 
             }

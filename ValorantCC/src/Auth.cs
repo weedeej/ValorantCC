@@ -36,19 +36,11 @@ namespace ValorantCC
 
     public partial class VersionResponse
     {
-        public int Status;
-        public VersionData Data;
+        public int Status { get; set; }
+        public string riotClientVersion { get; set; }
 
     }
-    public partial class VersionData
-    {
-        public string RiotClientVersion { get; set; }
-        public string ManifestID { get; set; }
-        public string Version { get; set; }
-        public string BuildVersion { get; set; }
-        public string Branch { get; set; }
-        public string BuildDate { get; set; }
-    }
+
     public class AuthObj
     {
         LockfileData LocalCredentials;
@@ -123,13 +115,14 @@ namespace ValorantCC
         private async static Task<String> GetVersion()
         {
             Utilities.Utils.Log("Obtaining Client Version info");
-            RestRequest request = new RestRequest("https://valorant-api.com/v1/version", Method.Get);
+            RestRequest request = new RestRequest("https://vtools-next.vercel.app/api/skinslist/version", Method.Get);
 
             RestResponse response = await client.ExecuteAsync(request);
-            if (!response.IsSuccessful) return "0.0.0";
+            if (!response.IsSuccessful) return "release-04.04-shipping-15-678808";
 
             VersionResponse RespData = JsonConvert.DeserializeObject<VersionResponse>(response.Content.ToString());
-            return RespData.Data.RiotClientVersion;
+            RespData.Status = ((int)response.StatusCode);
+            return RespData.riotClientVersion;
         }
     }
 }
