@@ -19,6 +19,7 @@ namespace ValorantCC
         public List<string> ProfileNames;
         private ProfileList FetchedProfiles;
         public int CurrentProfile;
+        private Dictionary<string, string> _headers;
         //Haruki's "bug" fix
         private Color[] DefaultColors = new Color[8];
 
@@ -49,6 +50,7 @@ namespace ValorantCC
         {
             Utilities.Utils.Log("Constructing Properties -->");
             client.Authenticator = new RestSharp.Authenticators.HttpBasicAuthenticator("riot", AuthResponse.LockfileData.Key);
+            _headers = Utilities.Utils.ConstructHeaders(AuthResponse);
             UserSettings = await FetchUserSettings();
             if (UserSettings.settingsProfiles == null) return false;
 
@@ -135,9 +137,34 @@ namespace ValorantCC
             RestRequest request = new RestRequest($"{AuthResponse.LockfileData.Protocol}://127.0.0.1:{AuthResponse.LockfileData.Port}/player-preferences/v1/data-json/Ares.PlayerSettings", Method.Get);
             
             RestResponse resp = await client.ExecuteAsync(request);
-            if (!resp.IsSuccessful) return new Data();
-            string responseContent = resp.Content;
             FetchResponseData response;
+            if (!resp.IsSuccessful)
+            {
+                try
+                {
+                    Utilities.Utils.Log("Fetch User Settings failed for WS. Trying playerpref: "+resp.Content.ToString());
+                } catch (NullReferenceException ex)
+                {
+                    Utilities.Utils.Log("WS Failed to fetch settings error: " + ex.StackTrace.ToString());
+                    request = new RestRequest("https://playerpreferences.riotgames.com/playerPref/v3/getPreference/Ares.PlayerSettings", Method.Get);
+                    request.AddHeaders(_headers);
+                    resp = await (new RestClient().ExecuteAsync(request));
+                    if (!resp.IsSuccessful) return new Data();
+                    var responseData = JsonConvert.DeserializeObject<Dictionary<string, object>>(resp.Content);
+                    Data settings;
+                    try
+                    {
+                        settings = Utilities.Utils.Decompress(Convert.ToString(responseData["data"]));
+                    }catch (KeyNotFoundException)
+                    {
+                        Utilities.Utils.Log("Player pref failed to fetch settings");
+                        return new Data();
+                    }
+                    return settings;
+
+                }
+            }
+            string responseContent = resp.Content;
             try
             {
                 response = JsonConvert.DeserializeObject<FetchResponseData>(responseContent);
@@ -159,8 +186,22 @@ namespace ValorantCC
             RestResponse response = await client.ExecuteAsync(request);
             if (!response.IsSuccessful)
             {
-                Utilities.Utils.Log("savePreference Unsuccessfull: " + response.Content.ToString());
-                return false;
+                try
+                {
+                    Utilities.Utils.Log("savePreference Unsuccessfull: " + response.Content.ToString());
+                    return false;
+                } catch (NullReferenceException)
+                {
+                    request = new RestRequest("https://playerpreferences.riotgames.com/playerPref/v3/savePreference", Method.Put);
+                    request.AddJsonBody(new { type = "Ares.PlayerSettings", data = Utilities.Utils.Compress(newData) });
+                    request.AddHeaders(_headers);
+                    response = await (new RestClient().ExecuteAsync(request));
+                    if (!response.IsSuccessful)
+                    {
+                        Utilities.Utils.Log("savePreference Unsuccessfull: " + response.Content.ToString());
+                        return false;
+                    }
+                }
             }
 
             Dictionary<string, object> responseDict = JsonConvert.DeserializeObject<Dictionary<string, object>>(response.Content);

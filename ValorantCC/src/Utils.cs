@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
@@ -97,6 +98,7 @@ namespace Utilities
         public static void Log(string Text)
         {
             StringBuilder.Append($"{DateTimeOffset.Now} | {Text}\n");
+            Trace.WriteLine(StringBuilder.ToString());
             File.AppendAllText(LoggingFile, StringBuilder.ToString());
             StringBuilder.Clear();
         }

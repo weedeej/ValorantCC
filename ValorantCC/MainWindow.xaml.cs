@@ -57,7 +57,6 @@ namespace ValorantCC
 
             if (await DataProcessor.SaveNewColor(SelectedColors, profiles.SelectedIndex, profiles.Text))
             {
-                await DataProcessor.Construct();
                 profiles.Items.Refresh();
                 profiles.SelectedIndex = DataProcessor.CurrentProfile;
                 Utilities.Utils.MessageText("Saved! Restart Valorant.", Brushes.Lime);

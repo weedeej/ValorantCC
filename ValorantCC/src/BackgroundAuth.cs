@@ -5,13 +5,22 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using RestSharp;
+using Newtonsoft.Json;
 
 namespace ValorantCC
 {
+    public partial class FlagObject
+    {
+        public string errorCode { get; init; }
+        public int httpStatus { get; init; }
+        public string message { get; init; }
+    }
     class BackgroundAuth
     {
         MainWindow main = (MainWindow)Application.Current.MainWindow;
         Processor processor;
+        LockfileData _lockfileData;
         public BackgroundAuth(Processor processor1)
         {
             processor = processor1;
@@ -31,6 +40,7 @@ namespace ValorantCC
                 {
                     main.StatusTxt.Foreground = Brushes.Yellow;
                     main.StatusTxt.Text = "Waiting for session. . .";
+                    _lockfileData = AuthObj.ObtainLockfileData(LockfilePath);
                     lockfilexists = true;
                 }
                 if (!await LoginFlagExists() && !main.PressedForceLogin)
@@ -41,7 +51,7 @@ namespace ValorantCC
                         main.ForceLoginBtn.Visibility = Visibility.Visible;
                     continue;
                 }
-                if (lockfilexists && AuthObj.ObtainLockfileData(LockfilePath).Success)
+                if (lockfilexists && _lockfileData.Success)
                 {
                     main.StatusTxt.Text = "Logging in. . .";
                     AuthResponse AuthResponse = await processor.Login();
@@ -85,22 +95,25 @@ namespace ValorantCC
             }
         }
 
-        public async static Task<bool> LoginFlagExists()
+        public async Task<bool> LoginFlagExists()
         {
-            DirectoryInfo LogDir = new DirectoryInfo(Environment.GetEnvironmentVariable("LocalAppData") + "\\Riot Games\\Riot Client\\Logs\\Riot Client Logs");
-            var log = LogDir.GetFiles().OrderByDescending(f => f.LastWriteTime).First();
-
-            string content;
-            using (FileStream fileStream = File.Open(log.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
-                using (StreamReader sr = new StreamReader(fileStream))
-                    content = (String)sr.ReadToEnd().Clone();
-
-            bool t = false;
-            if (content.Contains("riot-messaging-service: State is now Connected"))
-                t = true;
-
-            await Task.Delay(1);
-            return t;
+            RestClient wsClient = new RestClient(new RestClientOptions() { RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true });
+            wsClient.Authenticator = new RestSharp.Authenticators.HttpBasicAuthenticator("riot",_lockfileData.Key);
+            RestRequest entitlementsReq = new RestRequest($"{_lockfileData.Protocol}://127.0.0.1:{_lockfileData.Port}/entitlements/v1/token");
+            var resp = await wsClient.ExecuteAsync(entitlementsReq);
+            if (!resp.IsSuccessful)
+            {
+                try
+                {
+                    var err = JsonConvert.DeserializeObject<FlagObject>(resp.Content.ToString());
+                    Utilities.Utils.Log($"FETCH AUTH - {err.errorCode}: {err.message}");
+                }catch (NullReferenceException)
+                {
+                    Utilities.Utils.Log("User exited the client");
+                }
+                return false;
+            }
+            return true;
         }
     }
 }
