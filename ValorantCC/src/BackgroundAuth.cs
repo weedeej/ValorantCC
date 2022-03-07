@@ -97,6 +97,7 @@ namespace ValorantCC
 
         public async Task<bool> LoginFlagExists()
         {
+            if (_lockfileData == null) return false;
             RestClient wsClient = new RestClient(new RestClientOptions() { RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true });
             wsClient.Authenticator = new RestSharp.Authenticators.HttpBasicAuthenticator("riot",_lockfileData.Key);
             RestRequest entitlementsReq = new RestRequest($"{_lockfileData.Protocol}://127.0.0.1:{_lockfileData.Port}/entitlements/v1/token");
