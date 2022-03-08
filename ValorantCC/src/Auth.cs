@@ -114,13 +114,20 @@ namespace ValorantCC
 
         private async static Task<String> GetVersion()
         {
+            string ver = "release-04.04-shipping-15-678808";
             Utilities.Utils.Log("Obtaining Client Version info");
             RestRequest request = new RestRequest("https://vtools-next.vercel.app/api/skinslist/version", Method.Get);
 
             RestResponse response = await client.ExecuteAsync(request);
-            if (!response.IsSuccessful) return "release-04.04-shipping-15-678808";
-
-            VersionResponse RespData = JsonConvert.DeserializeObject<VersionResponse>(response.Content.ToString());
+            if (!response.IsSuccessful) return ver;
+            VersionResponse RespData;
+            try
+            {
+                RespData = JsonConvert.DeserializeObject<VersionResponse>(response.Content.ToString());
+            } catch (JsonReaderException)
+            {
+                return ver;
+            }
             RespData.Status = ((int)response.StatusCode);
             return RespData.riotClientVersion;
         }
