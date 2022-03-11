@@ -26,12 +26,8 @@
                     <Button Style="{DynamicResource MahApps.Styles.Button}" Name="btnSearchCode" Content="Search Code" MinWidth="85" Background="#FF393B44" Margin="0,5,5,0" Foreground="White" Cursor="Hand"  Click="btnSearchCode_Click" BorderBrush="#FF393B44"/>
                 </StackPanel>
                 <TextBlock Foreground="White" HorizontalAlignment="Center" Visibility="Collapsed" Name="fetchErrorTxt">An error has occured while fetching profiles.</TextBlock>
-                <DockPanel x:Name="Pagination">
-                    <Label Content="Previous" FontWeight="Normal" FontStyle="Italic" Cursor="Hand" x:Name="btnPreviousOffset" MouseUp="btnPreviousOffset_MouseUp"/>
-                    <Label Content="Next" HorizontalAlignment="Right" FontStyle="Italic" Cursor="Hand" x:Name="btnNextOffset" MouseUp="btnNextOffset_MouseUp"/>
-                </DockPanel>
                 <Image gif:ImageBehavior.AnimatedSource="../Resources/vtspinner optimized.gif" Width="50" Height="52" Margin="0,155,0,0" x:Name="LoadingPlaceHolder" Visibility="Visible" IsVisibleChanged="LoadingPlaceHolder_IsVisibleChanged"/>
-                <ScrollViewer  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,5,0,0" Height="405" Width="338">
+                <ScrollViewer Name="ScrollContainer"  VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled" Margin="0,5,0,0" Height="405" Width="338" ScrollChanged="ScrollViewer_ScrollChanged">
 
                     <StackPanel Name="ShareablesContainer" HorizontalAlignment="Center" Loaded="ShareablesContainer_Loaded">
                     </StackPanel>

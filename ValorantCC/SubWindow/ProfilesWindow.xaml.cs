@@ -2,6 +2,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,9 +27,11 @@ namespace ValorantCC
     public partial class ProfilesWindow : MetroWindow
     {
         public CrosshairProfile selected;
+        private static bool SearchButtonPressed = false;
         private static API ValCCApi;
         private static MainWindow main;
         private static List<PublicProfile> PublicProfiles = new List<PublicProfile>();
+        private bool AlreadyFetching = false;
         private int _offset = 0;
         public ProfilesWindow(CrosshairProfile current, API ValCCAPI)
         {
@@ -42,7 +45,6 @@ namespace ValorantCC
         private async void ShareablesContainer_Loaded(object sender, RoutedEventArgs e)
         {
             LoadingPlaceHolder.Visibility = Visibility.Visible;
-            Pagination.Visibility = Visibility.Collapsed;
             fetchErrorTxt.Visibility = Visibility.Collapsed;
             try
             {
@@ -50,6 +52,7 @@ namespace ValorantCC
                 if (!fetchSucc) fetchErrorTxt.Visibility = Visibility.Visible;
                 else
                 {
+                    LoadingPlaceHolder.Visibility = Visibility.Collapsed;
                     await RenderProfiles();
                 }
             }
@@ -58,20 +61,21 @@ namespace ValorantCC
                 Utilities.Utils.Log(ex.StackTrace.ToString());
             }
             LoadingPlaceHolder.Visibility = Visibility.Collapsed;
-            Pagination.Visibility = Visibility.Visible;
         }
 
         /// <summary>
         /// Returns the searched sharecode or the list of shareables depending if sharecode is provided or not.
         /// </summary>
         /// <param name="sharecode">Nullable. Searched Code</param>
-        private async Task<bool> InitialFetch(String sharecode = null)
+        private async Task<bool> InitialFetch(String sharecode = null, bool ClearArrays = true)
         {
             Utilities.Utils.Log("Disabling Search button.");
             btnSearchCode.IsEnabled = false;
-            Utilities.Utils.Log("Clearing arrays.");
-            PublicProfiles.Clear();
-            ShareablesContainer.Children.Clear();
+            if (ClearArrays)
+            {
+                Utilities.Utils.Log("Clearing arrays.");
+                PublicProfiles.Clear();
+            }
             List<ShareableProfile> Shareables;
             if (!string.IsNullOrWhiteSpace(sharecode))
             {
@@ -92,10 +96,13 @@ namespace ValorantCC
                 FetchResponse fetchResponse = await ValCCApi.Fetch(Offset: _offset);
                 if (!fetchResponse.success) return false;
                 Shareables = fetchResponse.data;
-                Pagination.Visibility = Visibility.Visible;
             }
 
-            if (Shareables.Count == 0) return true;
+            if (Shareables == null || Shareables.Count == 0)
+            {
+                btnSearchCode.IsEnabled = true;
+                return true;
+            }
 
             for (int i = 0; i < Shareables.Count; i++)
             {
@@ -111,13 +118,21 @@ namespace ValorantCC
         /// <summary>
         /// Render the PublicProfiles var into frontend.
         /// </summary>
-        private async Task<bool> RenderProfiles()
+        private async Task<bool> RenderProfiles(bool clearChildren = true)
         {
             UIElementCollection shareablesElement = ShareablesContainer.Children;
             if (PublicProfiles.Count == 0) return true;
 
-            for (int i = 0; i < PublicProfiles.Count; i++)
+            int positionToRender = _offset;
+            if (clearChildren)
             {
+                positionToRender = 0;
+                shareablesElement.Clear();
+            }
+            for (int i = positionToRender; i < PublicProfiles.Count; i++)
+            {
+                if (SearchButtonPressed)
+                    return true;
                 PublicProfile profile = PublicProfiles[i];
                 shareablesElement.Add(await this.GenerateRender(profile));
             }
@@ -125,15 +140,18 @@ namespace ValorantCC
         }
         private async void btnSearchCode_Click(object sender, RoutedEventArgs e)
         {
+            SearchButtonPressed = true;
             LoadingPlaceHolder.Visibility = Visibility.Visible;
-            Pagination.Visibility = Visibility.Collapsed;
             fetchErrorTxt.Visibility = Visibility.Collapsed;
             try
             {
                 bool fetchSucc = await InitialFetch(SearchCode.Text);
                 if (!fetchSucc) fetchErrorTxt.Visibility = Visibility.Visible;
                 else
+                {
+                    SearchButtonPressed = false;
                     await RenderProfiles();
+                }
             }
             catch (Exception ex)
             {
@@ -212,50 +230,42 @@ namespace ValorantCC
                 WpfAnimatedGif.ImageBehavior.GetAnimationController(LoadingPlaceHolder)?.Pause();
         }
 
-        private async void btnNextOffset_MouseUp(object sender, MouseButtonEventArgs e)
+        private async void ScrollViewer_ScrollChanged(object sender, ScrollChangedEventArgs e)
         {
-            LoadingPlaceHolder.Visibility = Visibility.Visible;
-            Pagination.Visibility = Visibility.Collapsed;
-            fetchErrorTxt.Visibility = Visibility.Collapsed;
-            _offset += 20;
-            try
+            var MaxHeight = ScrollContainer.ScrollableHeight;
+            var ScrollPercentage = ((MaxHeight - ScrollContainer.VerticalOffset) / MaxHeight) *100;
+            var MaxScrollPercentage = 12 - .025*_offset;
+            if(MaxScrollPercentage <= 0) MaxScrollPercentage = .5;
+            System.Diagnostics.Trace.WriteLine(ScrollPercentage);
+            if (ScrollPercentage < MaxScrollPercentage && !AlreadyFetching)
             {
-                bool fetchSucc = await InitialFetch();
-                if (!fetchSucc) fetchErrorTxt.Visibility = Visibility.Visible;
-                else
+                AlreadyFetching = true;
+                mouse_event(MOUSEEVENTF_LEFTUP, (uint)Mouse.GetPosition(this).X, (uint)Mouse.GetPosition(this).Y, 0, 0);
+                fetchErrorTxt.Visibility = Visibility.Collapsed;
+                _offset += 20;
+                try
                 {
-                    await RenderProfiles();
+                    bool fetchSucc = await InitialFetch(null, false);
+                    if (!fetchSucc) fetchErrorTxt.Visibility = Visibility.Visible;
+                    else
+                    {
+                        await RenderProfiles(false);
+                    }
                 }
+                catch (Exception ex)
+                {
+                    Utilities.Utils.Log(ex.StackTrace.ToString());
+                }
+                AlreadyFetching = false;
             }
-            catch (Exception ex)
-            {
-                Utilities.Utils.Log(ex.StackTrace.ToString());
-            }
-            LoadingPlaceHolder.Visibility = Visibility.Collapsed;
-            Pagination.Visibility = Visibility.Visible;
         }
 
-        private async void btnPreviousOffset_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            LoadingPlaceHolder.Visibility = Visibility.Visible;
-            Pagination.Visibility = Visibility.Collapsed;
-            fetchErrorTxt.Visibility = Visibility.Collapsed;
-            if (_offset >= 20) _offset -= 20;
-            try
-            {
-                bool fetchSucc = await InitialFetch();
-                if (!fetchSucc) fetchErrorTxt.Visibility = Visibility.Visible;
-                else
-                {
-                    await RenderProfiles();
-                }
-            }
-            catch (Exception ex)
-            {
-                Utilities.Utils.Log(ex.StackTrace.ToString());
-            }
-            LoadingPlaceHolder.Visibility = Visibility.Collapsed;
-            Pagination.Visibility = Visibility.Visible;
-        }
+        //For making left click up, so it doesnt make trouble with auto-fetching
+        [DllImport("user32.dll", CharSet = CharSet.Auto, CallingConvention = CallingConvention.StdCall)]
+        public static extern void mouse_event(uint dwFlags, uint dx, uint dy, uint cButtons, uint dwExtraInfo);
+        private const int MOUSEEVENTF_LEFTDOWN = 0x02;
+        private const int MOUSEEVENTF_LEFTUP = 0x04;
+        private const int MOUSEEVENTF_RIGHTDOWN = 0x08;
+        private const int MOUSEEVENTF_RIGHTUP = 0x10;
     }
 }

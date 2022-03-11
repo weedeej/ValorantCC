@@ -141,7 +141,7 @@ namespace ValorantCC.src
             if (Rect.Name.Contains("OL"))
                 line = settings.OuterLines;
 
-            if (line.bShowShootingError)
+            if ((bool)(line?.bShowShootingError))
                 Margin += 8;
 
             switch (pos)
