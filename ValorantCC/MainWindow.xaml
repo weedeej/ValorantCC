@@ -248,7 +248,7 @@
                     </Grid>
                 </Border>
             </Grid>
-            <Border Width="auto" MinHeight="18" Background="#FF44464F" Margin="-2,2,-2,2">
+            <Border Width="auto" MinHeight="18" Background="#FF44464F" Margin="-2,2,-2,0">
                 <DockPanel>
                     <TextBlock FontWeight="Bold" Margin="6,0,2,2" Foreground="White" FontFamily="Segoe UI Semibold" FontSize="10" Text="Message: "/>
                     <TextBlock FontWeight="Bold" Margin="0,0,2,2" Foreground="Yellow" FontFamily="Segoe UI Semibold" TextWrapping="Wrap" Name="MessageTxt" FontSize="10" Text="Waiting for Valorant or Riot Client. . ."/>

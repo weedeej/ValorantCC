@@ -24,16 +24,17 @@ namespace ValorantCC
         public BackgroundAuth(Processor processor1)
         {
             processor = processor1;
+            main.ch_display.Visibility = Visibility.Collapsed;
+            main.buttons_group.Visibility = Visibility.Collapsed;
+            main.controls_group.Visibility = Visibility.Collapsed;
+            main.ForceLoginBtn.Visibility = Visibility.Collapsed;
         }
         public async void LoopCheck()
         {
             string LockfilePath = Environment.GetEnvironmentVariable("LocalAppData") + "\\Riot Games\\Riot Client\\Config\\lockfile"; //Copy pasted from Auth.cs because why not?
             bool lockfilexists = false;
             int FlagExistsCount = 0;
-            main.ch_display.Visibility = Visibility.Collapsed;
-            main.buttons_group.Visibility = Visibility.Collapsed;
-            main.controls_group.Visibility = Visibility.Collapsed;
-            main.ForceLoginBtn.Visibility = Visibility.Collapsed;
+
             while (true)
             {
                 if (AuthObj.CheckLockFile(LockfilePath) && !lockfilexists)

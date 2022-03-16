@@ -7,6 +7,8 @@ namespace ValorantCC
 {
     public partial class UpdateWindow : Window
     {
+        private bool _OKpressed = false;
+
         public UpdateWindow()
         {
             InitializeComponent();
@@ -31,9 +33,22 @@ namespace ValorantCC
             }
         }
 
+        private void StackPanel_Loaded(object sender, RoutedEventArgs e)
+        {
+            UpdateLayout();
+            Top = Top + 14;
+        }
+
         private void OKbtn_Click(object sender, RoutedEventArgs e)
         {
+            _OKpressed = true;
             Close();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            if (!_OKpressed)
+                e.Cancel = true;
         }
     }
 }

@@ -109,7 +109,10 @@ namespace ValorantCC
                 ShareableProfile currentShareable = Shareables[i];
                 CrosshairProfile profile;
                 profile = JsonConvert.DeserializeObject<CrosshairProfile>(Regex.Unescape(currentShareable.settings));
-                PublicProfiles.Add(new PublicProfile() { owner = currentShareable.displayName, settings = profile, sharecode = currentShareable.shareCode, ID = i });
+                int id = i;
+                if (!ClearArrays)
+                    id += _offset;
+                PublicProfiles.Add(new PublicProfile() { owner = currentShareable.displayName, settings = profile, sharecode = currentShareable.shareCode, ID = id });
             }
             btnSearchCode.IsEnabled = true;
             return true;
@@ -181,8 +184,8 @@ namespace ValorantCC
             Utilities.Utils.Log("Apply button clicked.");
             PublicProfile pressedPubProfile = PublicProfiles[Int32.Parse(((Button)sender).Name.Split('_')[1])];
             CrosshairProfile pressedProfile = pressedPubProfile.settings;
-            selected.aDS = pressedProfile.aDS;
             selected.Primary = pressedProfile.Primary;
+            selected.aDS = pressedProfile.aDS;
             selected.Sniper = pressedProfile.Sniper;
             selected.bUseAdvancedOptions = pressedProfile.bUseAdvancedOptions;
             selected.bUseCustomCrosshairOnAllPrimary = pressedProfile.bUseCustomCrosshairOnAllPrimary;
@@ -236,7 +239,7 @@ namespace ValorantCC
             var ScrollPercentage = ((MaxHeight - ScrollContainer.VerticalOffset) / MaxHeight) *100;
             var MaxScrollPercentage = 12 - .025*_offset;
             if(MaxScrollPercentage <= 0) MaxScrollPercentage = .5;
-            System.Diagnostics.Trace.WriteLine(ScrollPercentage);
+            //System.Diagnostics.Trace.WriteLine(ScrollPercentage);
             if (ScrollPercentage < MaxScrollPercentage && !AlreadyFetching)
             {
                 AlreadyFetching = true;

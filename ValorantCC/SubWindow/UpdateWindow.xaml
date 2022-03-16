@@ -5,12 +5,12 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ValorantCC"
         mc:Ignorable="d"
-        Title="UpdateWindow" Height="126" Width="395" Background="#FF232429" WindowStyle="None" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" ShowInTaskbar="False">
-    <Border BorderBrush="White" BorderThickness="1">
-        <StackPanel VerticalAlignment="Center">
+        Title="UpdateWindow" Height="104" Width="899" Background="#FF232429" WindowStyle="None" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" ShowInTaskbar="False" Closing="Window_Closing">
+    <Border BorderBrush="White" BorderThickness="0">
+        <StackPanel VerticalAlignment="Center" Loaded="StackPanel_Loaded">
             <Label x:Name="Messagelbl" Content="Downloading Update..." Foreground="White" FontSize="18" HorizontalContentAlignment="Center"/>
-            <ProgressBar x:Name="progressBar1" Height="21" Margin="0,0,0,5"  Width="368"/>
-            <Button x:Name="OKbtn" Style="{DynamicResource RoundButton}"  Content="Confirm" Click="OKbtn_Click" Cursor="Hand" Height="22"  Width="84" Background="#FF295FFE" FontFamily="Quicksand" FontSize="14" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Margin="0,0,0,0"/>
+            <ProgressBar x:Name="progressBar1" Height="21" Margin="0,0,0,5"  Width="850"/>
+            <Button x:Name="OKbtn" Style="{DynamicResource RoundButton}"  Content="Confirm" Click="OKbtn_Click" Cursor="Hand" Height="22"  Width="84" Background="#FF295FFE" FontFamily="Quicksand" FontSize="14" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Margin="0,4,0,0"/>
         </StackPanel>
     </Border>
 </Window>

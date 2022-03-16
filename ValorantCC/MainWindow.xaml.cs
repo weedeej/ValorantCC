@@ -38,9 +38,7 @@ namespace ValorantCC
 
             InitializeComponent();
             Utilities.Utils.Log($"App Started | v{ProgramFileVersion}. Replaced old logfile.");
-            this.Title = $"ValorantCC v{ProgramFileVersion}";
-            BackgroundAuth auth = new BackgroundAuth(DataProcessor);
-            auth.LoopCheck();
+            Title = $"ValorantCC v{ProgramFileVersion}";
             Random nClicks = new Random();
             for (int i = 0; i < nClicks.Next(0, Resources.MergedDictionaries[0].Count - 1); i++)
                 next_Click(null, null);
@@ -125,6 +123,7 @@ namespace ValorantCC
 
             profiles.ItemsSource = DataProcessor.ProfileNames;
             profiles.Items.Refresh();
+            profiles_SelectionChanged(null, null);
             profiles.SelectedIndex = DataProcessor.CurrentProfile;
         }
 
@@ -350,8 +349,15 @@ namespace ValorantCC
 
         private async void spinner_Loaded(object sender, RoutedEventArgs e)
         {
+            BackgroundAuth auth = new BackgroundAuth(DataProcessor);
+
+            if (Directory.Exists(Path.GetTempPath() + $"EZ_Updater0"))
+            {
+                Directory.CreateDirectory(Path.GetTempPath() + $"EZ_Updater0{Updater.OriginalFileName}");
+                Directory.Delete(Path.GetTempPath() + $"EZ_Updater0");
+            }
+
             Updater.CustomLogger = Utilities.Utils.Log;
-            Updater.OriginalFileName = "ValorantCC";
             Updater.LogInterfix = "  | ";
             if (await Updater.CheckUpdateAsync("weedeej", "ValorantCC"))
             {
@@ -365,6 +371,8 @@ namespace ValorantCC
                 update.Owner = this;
                 update.ShowDialog();
             }
+
+            auth.LoopCheck();
         }
 
         private void btnCopyShareCode_Click(object sender, RoutedEventArgs e)
