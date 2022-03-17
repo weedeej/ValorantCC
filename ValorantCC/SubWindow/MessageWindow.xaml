@@ -12,7 +12,12 @@
             <Border BorderBrush="White" BorderThickness="0 0.5 0 0" Padding="0,10,0,10">
                 <StackPanel VerticalAlignment="Center">
                     <TextBlock x:Name="Messagetxtbox" TextWrapping="Wrap" Text="Here goes the text to be displayed" Width="Auto" Height="Auto" Foreground="White" FontSize="14" HorizontalAlignment="Left" Background="#FF232429" VerticalAlignment="Center" Padding="10,0,10,0"/>
-                    <Button x:Name="OKbtn" Style="{DynamicResource RoundButton}"  Content="OK" Cursor="Hand" Height="22"  Width="84" Background="#FF295FFE" FontFamily="Quicksand" FontSize="14" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Margin="0,10,0,0" Click="OKbtn_Click"/>
+                    <Border Padding="5,0,5,0">
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Name="ButtonGroup">
+                            <Button x:Name="OKbtn" Style="{DynamicResource RoundButton}"  Content="OK" Cursor="Hand" Height="22"  Width="84" Background="#FF295FFE" FontFamily="Quicksand" FontSize="14" FontWeight="DemiBold" TextBlock.FontFamily="Segoe UI Semibold" TextBlock.FontWeight="Bold" Margin="0,10,0,0" Click="OKbtn_Click"/>
+
+                        </StackPanel>
+                    </Border>
                 </StackPanel>
             </Border>
         </StackPanel>

@@ -351,27 +351,43 @@ namespace ValorantCC
         {
             BackgroundAuth auth = new BackgroundAuth(DataProcessor);
 
-            if (Directory.Exists(Path.GetTempPath() + $"EZ_Updater0"))
+            try
             {
-                Directory.CreateDirectory(Path.GetTempPath() + $"EZ_Updater0{Updater.OriginalFileName}");
-                Directory.Delete(Path.GetTempPath() + $"EZ_Updater0");
-            }
-
-            Updater.CustomLogger = Utilities.Utils.Log;
-            Updater.LogInterfix = "  | ";
-            if (await Updater.CheckUpdateAsync("weedeej", "ValorantCC"))
-            {
-                if (Updater.CannotWriteOnDir)
+                if (Directory.Exists(Path.GetTempPath() + $"EZ_Updater0"))
+                    Directory.Move(Path.GetTempPath() + $"EZ_Updater0", Path.GetTempPath() + $"EZ_Updater0{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}");
+                Updater.CustomLogger = Utilities.Utils.Log;
+                Updater.LogInterfix = "  | ";
+                if (await Updater.CheckUpdateAsync("weedeej", "ValorantCC"))
                 {
-                    Utilities.Utils.Log("User is not authorized to create a file on current valcc dir. Consider moving.");
-                    MessageWindow.Show("There's an update available but you have no access to write on this folder.\nPlease consider moving the app to a folder created by you or running the app as administrator.");
-                    this.Close();
+                    if (Updater.CannotWriteOnDir)
+                    {
+                        Utilities.Utils.Log("User is not authorized to create a file on current valcc dir. Consider moving.");
+                        MessageWindow.Show("There's an update available but you have no access to write on this folder.\nPlease consider moving the app to a folder created by you or running the app as administrator.");
+                        this.Close();
+                    }
+                    bool UpdateMessage = MessageWindow.Show($"There is an update available. Would you like to update to {Updater.ReleaseVersion}?", Updater.ReleaseName, true);
+                    if (!UpdateMessage)
+                    {
+                        if (Updater.ReleaseName.Contains("[!]"))
+                        {
+                            MessageWindow.Show("This update can't be skipped as it contains important patches.");
+                            var update = new UpdateWindow();
+                            update.Owner = this;
+                            update.ShowDialog();
+                        }
+                        else Utilities.Utils.Log($"User skipped release: {Updater.ReleaseName}");
+                    }
+                    else
+                    {
+                        var update = new UpdateWindow();
+                        update.Owner = this;
+                        update.ShowDialog();
+                    }
                 }
-                var update = new UpdateWindow();
-                update.Owner = this;
-                update.ShowDialog();
+            } catch (Exception ex)
+            {
+                Utilities.Utils.Log($"{ex.Message}: {ex.StackTrace}");
             }
-
             auth.LoopCheck();
         }
 
