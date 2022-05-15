@@ -354,7 +354,11 @@ namespace ValorantCC
             try
             {
                 if (Directory.Exists(Path.GetTempPath() + $"EZ_Updater0"))
+                {
+                    if (Directory.Exists(Path.GetTempPath() + $"EZ_Updater0{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}"))
+                        Directory.Delete(Path.GetTempPath() + $"EZ_Updater0{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}", true);
                     Directory.Move(Path.GetTempPath() + $"EZ_Updater0", Path.GetTempPath() + $"EZ_Updater0{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}");
+                }
                 Updater.CustomLogger = Utilities.Utils.Log;
                 Updater.LogInterfix = "  | ";
                 if (await Updater.CheckUpdateAsync("weedeej", "ValorantCC"))

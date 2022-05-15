@@ -14,7 +14,7 @@
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <AssemblyVersion></AssemblyVersion>
     <FileVersion></FileVersion>
-    <Version>3.2.0</Version>
+    <Version>3.2.1</Version>
     <SignAssembly>true</SignAssembly>
     <AssemblyName>$(MSBuildProjectName)</AssemblyName>
   </PropertyGroup>

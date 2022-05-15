@@ -98,6 +98,19 @@ namespace ValorantCC
 
         public async Task<bool> LoginFlagExists()
         {
+            DirectoryInfo LogDir = new DirectoryInfo(Environment.GetEnvironmentVariable("LocalAppData") + "\\Riot Games\\Riot Client\\Logs\\Riot Client Logs");
+            var log = LogDir.GetFiles().OrderByDescending(f => f.LastWriteTime).First();
+
+            string content;
+            using (FileStream fileStream = File.Open(log.FullName, FileMode.Open, FileAccess.Read, FileShare.ReadWrite))
+            using (StreamReader sr = new StreamReader(fileStream))
+                content = (String)sr.ReadToEnd().Clone();
+
+            if (content.Contains("riot-messaging-service: State is now Connected"))
+                return true;
+
+            await Task.Delay(1);
+            
             if (_lockfileData == null) return false;
             RestClient wsClient = new RestClient(new RestClientOptions() { RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true });
             wsClient.Authenticator = new RestSharp.Authenticators.HttpBasicAuthenticator("riot",_lockfileData.Key);

@@ -135,7 +135,7 @@ namespace ValorantCC
         {
             Utilities.Utils.Log("Obtaining User Settings using WS");
             RestRequest request = new RestRequest($"{AuthResponse.LockfileData.Protocol}://127.0.0.1:{AuthResponse.LockfileData.Port}/player-preferences/v1/data-json/Ares.PlayerSettings", Method.Get);
-            
+
             RestResponse resp = await client.ExecuteAsync(request);
             FetchResponseData response;
             if (!resp.IsSuccessful)
@@ -146,23 +146,24 @@ namespace ValorantCC
                 } catch (NullReferenceException ex)
                 {
                     Utilities.Utils.Log("WS Failed to fetch settings error: " + ex.StackTrace.ToString());
-                    request = new RestRequest("https://playerpreferences.riotgames.com/playerPref/v3/getPreference/Ares.PlayerSettings", Method.Get);
-                    request.AddHeaders(_headers);
-                    resp = await (new RestClient().ExecuteAsync(request));
-                    if (!resp.IsSuccessful) return new Data();
-                    var responseData = JsonConvert.DeserializeObject<Dictionary<string, object>>(resp.Content);
-                    Data settings;
-                    try
-                    {
-                        settings = Utilities.Utils.Decompress(Convert.ToString(responseData["data"]));
-                    }catch (KeyNotFoundException)
-                    {
-                        Utilities.Utils.Log("Player pref failed to fetch settings");
-                        return new Data();
-                    }
-                    return settings;
-
                 }
+
+                request = new RestRequest("https://playerpreferences.riotgames.com/playerPref/v3/getPreference/Ares.PlayerSettings", Method.Get);
+                request.AddHeaders(_headers);
+                resp = await (new RestClient().ExecuteAsync(request));
+                if (!resp.IsSuccessful) return new Data();
+                var responseData = JsonConvert.DeserializeObject<Dictionary<string, object>>(resp.Content);
+                Data settings;
+                try
+                {
+                    settings = Utilities.Utils.Decompress(Convert.ToString(responseData["data"]));
+                }
+                catch (KeyNotFoundException)
+                {
+                    Utilities.Utils.Log("Player pref failed to fetch settings");
+                    return new Data();
+                }
+                return settings;
             }
             string responseContent = resp.Content;
             try
@@ -189,17 +190,26 @@ namespace ValorantCC
                 try
                 {
                     Utilities.Utils.Log("savePreference Unsuccessfull: " + response.Content.ToString());
-                    return false;
-                } catch (NullReferenceException)
+                } catch (NullReferenceException ex)
                 {
-                    request = new RestRequest("https://playerpreferences.riotgames.com/playerPref/v3/savePreference", Method.Put);
-                    request.AddJsonBody(new { type = "Ares.PlayerSettings", data = Utilities.Utils.Compress(newData) });
-                    request.AddHeaders(_headers);
-                    response = await (new RestClient().ExecuteAsync(request));
-                    if (!response.IsSuccessful)
+                    Utilities.Utils.Log("WS savePreference Unsuccessfull: " + ex.StackTrace.ToString());
+                }
+
+                request = new RestRequest("https://playerpreferences.riotgames.com/playerPref/v3/savePreference", Method.Put);
+                request.AddJsonBody(new { type = "Ares.PlayerSettings", data = Utilities.Utils.Compress(newData) });
+                request.AddHeaders(_headers);
+                response = await (new RestClient().ExecuteAsync(request));
+
+                if (!response.IsSuccessful)
+                {
+                    try
                     {
                         Utilities.Utils.Log("savePreference Unsuccessfull: " + response.Content.ToString());
                         return false;
+                    }
+                    catch (NullReferenceException ex)
+                    {
+                        Utilities.Utils.Log("Player pref savePreference Unsuccessfull: " + ex.StackTrace.ToString());
                     }
                 }
             }

@@ -114,7 +114,7 @@ namespace ValorantCC
 
         private async static Task<String> GetVersion()
         {
-            string ver = "release-04.04-shipping-15-678808";
+            string ver = "release-04.04-shipping-16-679250";
             Utilities.Utils.Log("Obtaining Client Version info");
             RestRequest request = new RestRequest("https://vtools-next.vercel.app/api/skinslist/version", Method.Get);
 
