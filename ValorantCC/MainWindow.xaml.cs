@@ -72,13 +72,18 @@ namespace ValorantCC
             SelectedIndex = profiles.SelectedIndex;
             SelectedProfile = DataProcessor.ProfileFromIndex(SelectedIndex);
 
-            primary_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.Color.R, SelectedProfile.Primary.Color.G, SelectedProfile.Primary.Color.B);
+            CrosshairColor primColor = SelectedProfile.Primary.bUseCustomColor ? SelectedProfile.Primary.colorCustom : SelectedProfile.Primary.Color;
+            primary_color.SelectedColor = Color.FromRgb(primColor.R, primColor.G, primColor.B);
             prim_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.OutlineColor.R, SelectedProfile.Primary.OutlineColor.G, SelectedProfile.Primary.OutlineColor.B);
+            
             if (SelectedProfile.aDS == null) SelectedProfile.aDS = SelectedProfile.Primary;
             if (SelectedProfile.bUsePrimaryCrosshairForADS) SelectedProfile.aDS.Color = SelectedProfile.Primary.Color;
-            ads_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.Color.R, SelectedProfile.aDS.Color.G, SelectedProfile.aDS.Color.B);
+            CrosshairColor adsColor = SelectedProfile.aDS.bUseCustomColor ? SelectedProfile.aDS.colorCustom : SelectedProfile.aDS.Color;
+            ads_color.SelectedColor = Color.FromRgb(adsColor.R, adsColor.G, adsColor.B);
             ads_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.aDS.OutlineColor.R, SelectedProfile.aDS.OutlineColor.G, SelectedProfile.aDS.OutlineColor.B);
-            sniper_dot_color.SelectedColor = Color.FromRgb(SelectedProfile.Sniper.CenterDotColor.R, SelectedProfile.Sniper.CenterDotColor.G, SelectedProfile.Sniper.CenterDotColor.B);
+
+            CrosshairColor sniperColor = SelectedProfile.Sniper.bUseCustomCenterDotColor ? SelectedProfile.Sniper.centerDotColorCustom : SelectedProfile.Sniper.CenterDotColor;
+            sniper_dot_color.SelectedColor = Color.FromRgb(sniperColor.R, sniperColor.G, sniperColor.B);
             /*if (!sharedProfileResp.HasValue)
             {
                 if (ValCCAPI != null) sharedProfileResp = await ValCCAPI.ObtainSelfSaved();
