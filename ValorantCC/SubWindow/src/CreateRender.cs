@@ -44,7 +44,7 @@ namespace ValorantCC
             Border template = new Border()
             {
                 Background = RandomBGC,
-                CornerRadius = new CornerRadius(7, 7, 25, 25),
+                CornerRadius = new CornerRadius(7, 7, 0, 0),
                 MinHeight = 95,
                 MaxHeight = 95,
                 MinWidth = 300,
@@ -68,7 +68,6 @@ namespace ValorantCC
             Border rect = new()
             {
                 Background = (Brush)bc.ConvertFromString("#282A36"),
-                CornerRadius = new CornerRadius(0, 0, 7, 7),
                 MinWidth = 300,
                 MaxWidth = 300,
                 MinHeight = 27,

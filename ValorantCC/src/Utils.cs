@@ -88,6 +88,7 @@ namespace Utilities
         {
             Log("Constructing Headers");
             Dictionary<string, string> headers = new Dictionary<string, string>();
+            headers.Add("Content-Type", "application/json");
             headers.Add("Authorization", $"Bearer {auth.AuthTokens.AccessToken}");
             headers.Add("X-Riot-Entitlements-JWT", auth.AuthTokens.Token);
             headers.Add("X-Riot-ClientVersion", auth.Version);

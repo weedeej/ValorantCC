@@ -220,21 +220,21 @@ namespace ValorantCC
             return false;
         }
 
-
+#nullable enable
         private ProfileList FetchProfiles(string SettingValue, string? PrimOutlineColor, string? ADSColorValue, string? ADSOutlineColor, string? SniperCenterdotColor)
         {
             string DefaultUserSettings = JsonConvert.SerializeObject(UserSettings);
             Utilities.Utils.Log("Fetching/Creating Profile/s");
             Utilities.Utils.Log($"Setting Value: {DefaultUserSettings}");
-            if (ProfileListed) return JsonConvert.DeserializeObject<ProfileList>(SettingValue);
+            if (ProfileListed) return JsonConvert.DeserializeObject<ProfileList>(SettingValue)!;
             CrosshairColor PrimaryColor = Utilities.Utils.parseCrosshairColor(SettingValue);
-#nullable enable
+
             CrosshairColor PrimaryOutlineColor = Utilities.Utils.parseCrosshairColor(PrimOutlineColor);
             CrosshairColor ADSColor = Utilities.Utils.parseCrosshairColor(ADSColorValue);
             CrosshairColor aDSOutlineColor = Utilities.Utils.parseCrosshairColor(ADSOutlineColor);
             CrosshairColor sniperCenterdotColor = Utilities.Utils.parseCrosshairColor(SniperCenterdotColor);
-#nullable disable
-            string profileName = UserSettings.stringSettings.FirstOrDefault(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName").value;
+
+            string profileName = UserSettings.stringSettings.FirstOrDefault(setting => setting.settingEnum == "EAresStringSettingName::CrosshairProfileName")!.value;
 
             return new ProfileList
             {
@@ -252,6 +252,7 @@ namespace ValorantCC
                 }
             };
         }
+#nullable disable
 
 
         private List<string> FetchProfileNames(ProfileList ProfileList)
