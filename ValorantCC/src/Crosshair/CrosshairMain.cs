@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace ValorantCC.src.Crosshair
@@ -16,17 +13,9 @@ namespace ValorantCC.src.Crosshair
 
             var SelectedProfile = FetchedProfiles.Profiles[SelectedIndex];
             if (!SelectedProfile.bUseAdvancedOptions) SelectedProfile.bUseAdvancedOptions = true;
-            SelectedProfile.Primary.bUseCustomColor = true;
-            SelectedProfile.Primary.Color.R = Colors[0].R; SelectedProfile.Primary.Color.G = Colors[0].G; SelectedProfile.Primary.Color.B = Colors[0].B; SelectedProfile.Primary.Color.A = Colors[0].A;
-            SelectedProfile.Primary.colorCustom.R = Colors[0].R; SelectedProfile.Primary.colorCustom.G = Colors[0].G; SelectedProfile.Primary.colorCustom.B = Colors[0].B; SelectedProfile.Primary.colorCustom.A = Colors[0].A;
-            SelectedProfile.Primary.OutlineColor.R = Colors[1].R; SelectedProfile.Primary.OutlineColor.G = Colors[1].G; SelectedProfile.Primary.OutlineColor.B = Colors[1].B; SelectedProfile.Primary.OutlineColor.A = Colors[1].A;
-            SelectedProfile.aDS.bUseCustomColor = true;
-            SelectedProfile.aDS.Color.R = Colors[2].R; SelectedProfile.aDS.Color.G = Colors[2].G; SelectedProfile.aDS.Color.B = Colors[2].B; SelectedProfile.aDS.Color.A = Colors[2].A;
-            SelectedProfile.aDS.colorCustom.R = Colors[2].R; SelectedProfile.aDS.colorCustom.G = Colors[2].G; SelectedProfile.aDS.colorCustom.B = Colors[2].B; SelectedProfile.aDS.colorCustom.A = Colors[2].A;
-            SelectedProfile.aDS.OutlineColor.R = Colors[3].R; SelectedProfile.aDS.OutlineColor.G = Colors[3].G; SelectedProfile.aDS.OutlineColor.B = Colors[3].B; SelectedProfile.aDS.OutlineColor.A = Colors[3].A;
-            SelectedProfile.Sniper.bUseCustomCenterDotColor = true;
-            SelectedProfile.Sniper.CenterDotColor.R = Colors[4].R; SelectedProfile.Sniper.CenterDotColor.G = Colors[4].G; SelectedProfile.Sniper.CenterDotColor.B = Colors[4].B; SelectedProfile.Sniper.CenterDotColor.A = Colors[4].A;
-            SelectedProfile.Sniper.centerDotColorCustom.R = Colors[4].R; SelectedProfile.Sniper.centerDotColorCustom.G = Colors[4].G; SelectedProfile.Sniper.centerDotColorCustom.B = Colors[4].B; SelectedProfile.Sniper.centerDotColorCustom.A = Colors[4].A;
+
+            ChangeProfileColors(SelectedProfile, Colors);
+
             return UserSettings;
         }
 
@@ -76,19 +65,31 @@ namespace ValorantCC.src.Crosshair
                 UserSettings.boolSettings.Add(new Boolsetting { settingEnum = "EAresBoolSettingName::CrosshairADSUseCustomColor", value = true });
                 UserSettings.boolSettings.Add(new Boolsetting { settingEnum = "EAresBoolSettingName::CrosshairSniperUseCustomColor", value = true });
                 Utilities.Utils.Log("Modifying profile colors.");
-                SelectedProfile.Primary.bUseCustomColor = true;
-                SelectedProfile.Primary.Color.R = Colors[0].R; SelectedProfile.Primary.Color.G = Colors[0].G; SelectedProfile.Primary.Color.B = Colors[0].B; SelectedProfile.Primary.Color.A = Colors[0].A;
-                SelectedProfile.Primary.colorCustom.R = Colors[0].R; SelectedProfile.Primary.colorCustom.G = Colors[0].G; SelectedProfile.Primary.colorCustom.B = Colors[0].B; SelectedProfile.Primary.colorCustom.A = Colors[0].A;
-                SelectedProfile.Primary.OutlineColor.R = Colors[1].R; SelectedProfile.Primary.OutlineColor.G = Colors[1].G; SelectedProfile.Primary.OutlineColor.B = Colors[1].B; SelectedProfile.Primary.OutlineColor.A = Colors[1].A;
-                SelectedProfile.aDS.bUseCustomColor = true;
-                SelectedProfile.aDS.Color.R = Colors[2].R; SelectedProfile.aDS.Color.G = Colors[2].G; SelectedProfile.aDS.Color.B = Colors[2].B; SelectedProfile.aDS.Color.A = Colors[2].A;
-                SelectedProfile.aDS.colorCustom.R = Colors[2].R; SelectedProfile.aDS.colorCustom.G = Colors[2].G; SelectedProfile.aDS.colorCustom.B = Colors[2].B; SelectedProfile.aDS.colorCustom.A = Colors[2].A;
-                SelectedProfile.aDS.OutlineColor.R = Colors[3].R; SelectedProfile.aDS.OutlineColor.G = Colors[3].G; SelectedProfile.aDS.OutlineColor.B = Colors[3].B; SelectedProfile.aDS.OutlineColor.A = Colors[3].A;
-                SelectedProfile.Sniper.bUseCustomCenterDotColor = true;
-                SelectedProfile.Sniper.CenterDotColor.R = Colors[4].R; SelectedProfile.Sniper.CenterDotColor.G = Colors[4].G; SelectedProfile.Sniper.CenterDotColor.B = Colors[4].B; SelectedProfile.Sniper.CenterDotColor.A = Colors[4].A;
-                SelectedProfile.Sniper.centerDotColorCustom.R = Colors[4].R; SelectedProfile.Sniper.centerDotColorCustom.G = Colors[4].G; SelectedProfile.Sniper.centerDotColorCustom.B = Colors[4].B; SelectedProfile.Sniper.centerDotColorCustom.A = Colors[4].A;
+
+                ChangeProfileColors(SelectedProfile, Colors);
             }
             return UserSettings;
+        }
+
+        private static CrosshairProfile ChangeProfileColors(CrosshairProfile SelectedProfile, List<Color> Colors)
+        {
+            SelectedProfile.Primary.bUseCustomColor = true;
+            SelectedProfile.Primary.colorCustom = SelectedProfile.Primary.Color = Colors[0];
+            SelectedProfile.Primary.OutlineColor = Colors[1];
+
+            SelectedProfile.aDS.bUseCustomColor = true;
+            SelectedProfile.aDS.colorCustom = SelectedProfile.aDS.Color = Colors[2];
+            SelectedProfile.Primary.OutlineColor = Colors[3];
+
+            SelectedProfile.Sniper.bUseCustomCenterDotColor = true;
+            SelectedProfile.Sniper.CenterDotColor = SelectedProfile.Sniper.centerDotColorCustom = Colors[4];
+            return SelectedProfile;
+        }
+
+        private static CrosshairProfile ChangeProfileParams(CrosshairProfile SelectedProfile, CrosshairProfile CommunityProfile)
+        {
+            // TODO: Implement changing of CRosshair Params such as Length, Opacity, etc
+            return SelectedProfile;
         }
     }
 }

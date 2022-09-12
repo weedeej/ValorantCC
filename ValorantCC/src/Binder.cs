@@ -89,6 +89,17 @@ namespace ValorantCC
         public byte G { get; set; } = 254;
         public byte B { get; set; } = 254;
         public byte A { get; set; } = 255;
+
+        public static implicit operator CrosshairColor(Color v)
+        {
+            return new CrosshairColor()
+            {
+                R = v.R,
+                G = v.G,
+                B = v.B,
+                A = v.A,
+            };
+        }
     }
 
     public partial class LineSettings
