@@ -71,7 +71,7 @@ namespace ValorantCC.src.Crosshair
             return UserSettings;
         }
 
-        private static CrosshairProfile ChangeProfileColors(CrosshairProfile SelectedProfile, List<Color> Colors)
+        public static CrosshairProfile ChangeProfileColors(CrosshairProfile SelectedProfile, List<Color> Colors)
         {
             SelectedProfile.Primary.bUseCustomColor = true;
             SelectedProfile.Primary.colorCustom = SelectedProfile.Primary.Color = Colors[0];
@@ -86,10 +86,11 @@ namespace ValorantCC.src.Crosshair
             return SelectedProfile;
         }
 
-        private static CrosshairProfile ChangeProfileParams(CrosshairProfile SelectedProfile, CrosshairProfile CommunityProfile)
+        public static CrosshairProfile ChangeProfileParams(CrosshairProfile SelectedProfile, CrosshairProfile CommunityProfile)
         {
             // TODO: Implement changing of CRosshair Params such as Length, Opacity, etc
-            return SelectedProfile;
+            CommunityProfile.ProfileName = SelectedProfile.ProfileName;
+            return CommunityProfile;
         }
     }
 }

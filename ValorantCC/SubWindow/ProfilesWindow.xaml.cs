@@ -9,6 +9,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using ValorantCC.src.Crosshair;
 using ValorantCC.SubWindow;
 namespace ValorantCC
 {
@@ -198,7 +199,7 @@ namespace ValorantCC
             main.ads_outline_color.SelectedColor = new Color() { R = selected.aDS.OutlineColor.R, G = selected.aDS.OutlineColor.G, B = selected.aDS.OutlineColor.B, A = selected.aDS.OutlineColor.A };
 
             main.sniper_dot_color.SelectedColor = new Color() { R = selected.Sniper.CenterDotColor.R, G = selected.Sniper.CenterDotColor.G, B = selected.Sniper.CenterDotColor.B, A = selected.Sniper.CenterDotColor.A };
-            main.SelectedProfile = selected;
+            main.SelectedProfile = CrosshairMain.ChangeProfileParams(selected, pressedProfile);
             main.Crosshair_load();
         }
 
