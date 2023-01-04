@@ -134,6 +134,7 @@ namespace ValorantCC
         public int roamingSetttingsVersion { get; set; }
         public List<Stringsetting> stringSettings { get; set; }
         public List<string> settingsProfiles { get; set; }
+        public int modified { get;set; }
     }
 
     public partial class FetchResponseData
