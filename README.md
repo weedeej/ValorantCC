@@ -28,8 +28,8 @@ Share your crosshair across the ValorantCC comunity!<br/>
 
 ##
 - If you experience any Issues such as not working, Join us on [Discord](https://discord.gg/ME5EdK8U9v) and we'll try to fix it.
-- You don't need to keep this app running in the background. Once you saved it, It will stay there.
-- This does not change the game files nor touch Valorant's memory related stuff. The app only uses the Client API and send it directly to Valorant's Server.
+- You don't need to keep this app running in the background. Once you save it, It will stay there.
+- This does not change the game files nor touch Valorant's memory related stuff. The app only uses the Client API and sends it directly to Valorant's Server.
 - Yes. Other players can see it too as it is saved server side.
 - THIS IS **NOT** AN OVERLAY/HACK/CHEAT/AIMBOT. 
 
