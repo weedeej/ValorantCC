@@ -40,9 +40,11 @@ namespace ValorantCC.src.Crosshair
                 UserSettings.stringSettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColor");
                 UserSettings.stringSettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairColorCustom");
                 UserSettings.stringSettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairOutlineColor");
+
                 UserSettings.stringSettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairADSColor");
                 UserSettings.stringSettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairADSColorCustom");
                 UserSettings.stringSettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairADSOutlineColor");
+
                 UserSettings.stringSettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairSniperCenterDotColor");
                 UserSettings.stringSettings.RemoveAll(setting => setting.settingEnum == "EAresStringSettingName::CrosshairSniperCenterDotColorCustom");
 
@@ -74,15 +76,18 @@ namespace ValorantCC.src.Crosshair
         public static CrosshairProfile ChangeProfileColors(CrosshairProfile SelectedProfile, List<Color> Colors)
         {
             SelectedProfile.Primary.bUseCustomColor = true;
-            SelectedProfile.Primary.colorCustom = SelectedProfile.Primary.Color = Colors[0];
+            SelectedProfile.Primary.colorCustom = Colors[0];
+            SelectedProfile.Primary.Color = Colors[0];
             SelectedProfile.Primary.OutlineColor = Colors[1];
 
             SelectedProfile.aDS.bUseCustomColor = true;
-            SelectedProfile.aDS.colorCustom = SelectedProfile.aDS.Color = Colors[2];
-            SelectedProfile.Primary.OutlineColor = Colors[3];
+            SelectedProfile.aDS.colorCustom = Colors[2];
+            SelectedProfile.aDS.Color = Colors[2];
+            SelectedProfile.aDS.OutlineColor = Colors[3];
 
             SelectedProfile.Sniper.bUseCustomCenterDotColor = true;
-            SelectedProfile.Sniper.CenterDotColor = SelectedProfile.Sniper.centerDotColorCustom = Colors[4];
+            SelectedProfile.Sniper.CenterDotColor = Colors[4];
+            SelectedProfile.Sniper.centerDotColorCustom = Colors[4];
             return SelectedProfile;
         }
 
