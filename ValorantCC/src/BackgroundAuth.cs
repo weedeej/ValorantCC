@@ -127,7 +127,7 @@ namespace ValorantCC
                 {
                     var err = JsonConvert.DeserializeObject<FlagObject>(resp.Content.ToString());
                     Utilities.Utils.Log($"FETCH AUTH - {err.errorCode}: {err.message}");
-                } catch (NullReferenceException e)
+                } catch (NullReferenceException)
                 {
                     Utilities.Utils.Log("User exited the client");
                 }
