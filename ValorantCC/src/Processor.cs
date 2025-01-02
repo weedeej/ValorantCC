@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
+using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,6 +13,7 @@ namespace ValorantCC
     public class Processor
     {
         private AuthResponse AuthResponse;
+        private String Region = "https://player-preferences-euc1.pp.sgp.pvp.net";
         public bool isLoggedIn = false;
         private RestClient client = new RestClient(new RestClientOptions() { RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true });
         private Data UserSettings;
@@ -35,21 +37,25 @@ namespace ValorantCC
             DefaultColors[7] = new Color { R = 255, G = 255, B = 255 }; //White
         }
 
-        public async Task<AuthResponse> Login()
+        public async Task<AuthResponse> Login(MainWindow main = null)
         {
+            main.StatusTxt.Text = "Login Started";
             Utilities.Utils.Log("Login started");
             AuthObj AuthObj = new AuthObj();
             AuthResponse = await AuthObj.StartAuth();
+            main.StatusTxt.Text = $"Auth Complete: {AuthResponse.Success}";
             if (!AuthResponse.Success) return AuthResponse;
             Utilities.Utils.Log("Auth Success");
-            await Construct();
+            await Construct(main);
             return AuthResponse;
         }
 
-        public async Task<bool> Construct()
+        public async Task<bool> Construct(MainWindow main = null)
         {
+            main.StatusTxt.Text = "Construct Method Started. . .";
             Utilities.Utils.Log("Constructing Properties -->");
-            client.Authenticator = new RestSharp.Authenticators.HttpBasicAuthenticator("riot", AuthResponse.LockfileData.Key);
+            var client = new RestClientOptions() { RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true };
+            client.Authenticator = new HttpBasicAuthenticator("riot", AuthResponse.LockfileData.Key);
             _headers = Utilities.Utils.ConstructHeaders(AuthResponse);
             UserSettings = await FetchUserSettings();
             if (UserSettings.settingsProfiles == null) return false;
@@ -148,7 +154,7 @@ namespace ValorantCC
                     Utilities.Utils.Log("WS Failed to fetch settings error: " + ex.StackTrace.ToString());
                 }
 
-                request = new RestRequest("https://playerpreferences.riotgames.com/playerPref/v3/getPreference/Ares.PlayerSettings", Method.Get);
+                request = new RestRequest($"{Region}/playerPref/v3/getPreference/Ares.PlayerSettings", Method.Get);
                 request.AddHeaders(_headers);
                 resp = await (new RestClient().ExecuteAsync(request));
                 if (!resp.IsSuccessful) return new Data();
@@ -195,7 +201,7 @@ namespace ValorantCC
                     Utilities.Utils.Log("WS savePreference Unsuccessfull: " + ex.StackTrace.ToString());
                 }
 
-                request = new RestRequest("https://playerpreferences.riotgames.com/playerPref/v3/savePreference", Method.Put);
+                request = new RestRequest($"{Region}/playerPref/v3/savePreference", Method.Put);
                 request.AddJsonBody(new { type = "Ares.PlayerSettings", data = Utilities.Utils.Compress(newData) });
                 request.AddHeaders(_headers);
                 response = await (new RestClient().ExecuteAsync(request));

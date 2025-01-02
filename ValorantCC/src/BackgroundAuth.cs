@@ -7,6 +7,9 @@ using System.Windows;
 using System.Windows.Media;
 using RestSharp;
 using Newtonsoft.Json;
+using RestSharp.Authenticators;
+using System.Text;
+using MahApps.Metro.Converters;
 
 namespace ValorantCC
 {
@@ -31,7 +34,7 @@ namespace ValorantCC
         }
         public async void LoopCheck()
         {
-            string LockfilePath = Environment.GetEnvironmentVariable("LocalAppData") + "\\Riot Games\\Riot Client\\Config\\lockfile"; //Copy pasted from Auth.cs because why not?
+            string LockfilePath = Environment.GetEnvironmentVariable("LocalAppData") + "\\Riot Games\\Riot Client\\Config\\lockfile"; //Copy pasted from Auth.cs because why not? ..MJF-18/11/24: Because this should be in a variables file, that's why not. TODO: See comment
             bool lockfilexists = false;
             int FlagExistsCount = 0;
 
@@ -55,7 +58,7 @@ namespace ValorantCC
                 if (lockfilexists && _lockfileData.Success)
                 {
                     main.StatusTxt.Text = "Logging in. . .";
-                    AuthResponse AuthResponse = await processor.Login();
+                    AuthResponse AuthResponse = await processor.Login(main);
                     main.DataProcessor = processor;
                     main.LoggedIn = AuthResponse.Success;
                     if (!main.LoggedIn)
@@ -112,8 +115,10 @@ namespace ValorantCC
             await Task.Delay(1);
             
             if (_lockfileData == null) return false;
-            RestClient wsClient = new RestClient(new RestClientOptions() { RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true });
-            wsClient.Authenticator = new RestSharp.Authenticators.HttpBasicAuthenticator("riot",_lockfileData.Key);
+
+            var clientOptions = new RestClientOptions() { RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true };
+            clientOptions.Authenticator = new HttpBasicAuthenticator("riot", _lockfileData.Key);
+            var wsClient = new RestClient(clientOptions);
             RestRequest entitlementsReq = new RestRequest($"{_lockfileData.Protocol}://127.0.0.1:{_lockfileData.Port}/entitlements/v1/token");
             var resp = await wsClient.ExecuteAsync(entitlementsReq);
             if (!resp.IsSuccessful)
@@ -122,7 +127,7 @@ namespace ValorantCC
                 {
                     var err = JsonConvert.DeserializeObject<FlagObject>(resp.Content.ToString());
                     Utilities.Utils.Log($"FETCH AUTH - {err.errorCode}: {err.message}");
-                }catch (NullReferenceException)
+                } catch (NullReferenceException e)
                 {
                     Utilities.Utils.Log("User exited the client");
                 }
