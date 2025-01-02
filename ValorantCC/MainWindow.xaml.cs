@@ -35,7 +35,7 @@ namespace ValorantCC
             // Replace old logs
             
             if (File.Exists(Utilities.Utils.LoggingFile)) File.Move(Utilities.Utils.LoggingFile, Path.GetDirectoryName(Utilities.Utils.LoggingFile) + "\\" + Path.GetFileNameWithoutExtension(Utilities.Utils.LoggingFile) + "-old" + Path.GetExtension(Utilities.Utils.LoggingFile), true);
-            Version ProgramFileVersion = new Version("3.7");
+            Version ProgramFileVersion = new Version(FileVersionInfo.GetVersionInfo(Process.GetCurrentProcess().MainModule.FileName).FileVersion);
 
             InitializeComponent();
             Utilities.Utils.Log($"App Started | v{ProgramFileVersion}. Replaced old logfile.");
