@@ -1,6 +1,5 @@
 ﻿using EZ_Updater;
 using MahApps.Metro.Controls;
-using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -33,8 +32,9 @@ namespace ValorantCC
             // Create logging dir
             if (!Directory.Exists(Path.GetDirectoryName(Utilities.Utils.LoggingFile))) Directory.CreateDirectory(Path.GetDirectoryName(Utilities.Utils.LoggingFile));
             // Replace old logs
+
             if (File.Exists(Utilities.Utils.LoggingFile)) File.Move(Utilities.Utils.LoggingFile, Path.GetDirectoryName(Utilities.Utils.LoggingFile) + "\\" + Path.GetFileNameWithoutExtension(Utilities.Utils.LoggingFile) + "-old" + Path.GetExtension(Utilities.Utils.LoggingFile), true);
-            Version ProgramFileVersion = new Version(FileVersionInfo.GetVersionInfo(Process.GetCurrentProcess().MainModule.FileName).ProductVersion);
+            Version ProgramFileVersion = new Version(FileVersionInfo.GetVersionInfo(Process.GetCurrentProcess().MainModule.FileName).FileVersion);
 
             InitializeComponent();
             Utilities.Utils.Log($"App Started | v{ProgramFileVersion}. Replaced old logfile.");
@@ -75,7 +75,7 @@ namespace ValorantCC
             CrosshairColor primColor = SelectedProfile.Primary.bUseCustomColor ? SelectedProfile.Primary.colorCustom : SelectedProfile.Primary.Color;
             primary_color.SelectedColor = Color.FromRgb(primColor.R, primColor.G, primColor.B);
             prim_outline_color.SelectedColor = Color.FromRgb(SelectedProfile.Primary.OutlineColor.R, SelectedProfile.Primary.OutlineColor.G, SelectedProfile.Primary.OutlineColor.B);
-            
+
             if (SelectedProfile.aDS == null) SelectedProfile.aDS = SelectedProfile.Primary;
             if (SelectedProfile.bUsePrimaryCrosshairForADS) SelectedProfile.aDS.Color = SelectedProfile.Primary.Color;
             CrosshairColor adsColor = SelectedProfile.aDS.bUseCustomColor ? SelectedProfile.aDS.colorCustom : SelectedProfile.aDS.Color;
@@ -393,7 +393,8 @@ namespace ValorantCC
                         update.ShowDialog();
                     }
                 }
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 Utilities.Utils.Log($"{ex.Message}: {ex.StackTrace}");
             }

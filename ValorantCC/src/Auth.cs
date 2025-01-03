@@ -50,10 +50,10 @@ namespace ValorantCC
             string LockfilePath = Environment.GetEnvironmentVariable("LocalAppData") + "\\Riot Games\\Riot Client\\Config\\lockfile";
 
             LocalCredentials = ObtainLockfileData(LockfilePath);
-            if (!LocalCredentials.Success) return new AuthResponse() { Success = false, Response = "Please login to Riot Client or Start Valorant." };
+            if (!LocalCredentials.Success) return new AuthResponse() { Success = false, Response = "Credentials Failure: Please login to Riot Client or Start Valorant." };
 
             AuthTokens Tokens = await ObtainAuthTokens();
-            if (!Tokens.Success) return new AuthResponse() { Success = false, Response = "Please login to Riot Client or Start Valorant." };
+            if (!Tokens.Success) return new AuthResponse() { Success = false, Response = "Auth Token Failure: Please login to Riot Client or Start Valorant." };
             return new AuthResponse() { Success = true, AuthTokens = Tokens, LockfileData = LocalCredentials, Version = await GetVersion() };
 
         }
@@ -124,7 +124,8 @@ namespace ValorantCC
             try
             {
                 RespData = JsonConvert.DeserializeObject<VersionResponse>(response.Content.ToString());
-            } catch (JsonReaderException)
+            }
+            catch (JsonReaderException)
             {
                 return ver;
             }

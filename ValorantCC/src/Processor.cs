@@ -1,17 +1,18 @@
 ﻿using Newtonsoft.Json;
 using RestSharp;
+using RestSharp.Authenticators;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using ValorantCC.src;
 using ValorantCC.src.Crosshair;
 namespace ValorantCC
 {
     public class Processor
     {
         private AuthResponse AuthResponse;
+        private String Region = "https://player-preferences-euc1.pp.sgp.pvp.net";
         public bool isLoggedIn = false;
         private RestClient client = new RestClient(new RestClientOptions() { RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true });
         private Data UserSettings;
@@ -40,16 +41,16 @@ namespace ValorantCC
             Utilities.Utils.Log("Login started");
             AuthObj AuthObj = new AuthObj();
             AuthResponse = await AuthObj.StartAuth();
-            if (!AuthResponse.Success) return AuthResponse;
-            Utilities.Utils.Log("Auth Success");
-            await Construct();
+            if (AuthResponse.Success)
+                Utilities.Utils.Log("Auth Success");
             return AuthResponse;
         }
 
         public async Task<bool> Construct()
         {
             Utilities.Utils.Log("Constructing Properties -->");
-            client.Authenticator = new RestSharp.Authenticators.HttpBasicAuthenticator("riot", AuthResponse.LockfileData.Key);
+            var client = new RestClientOptions() { RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true };
+            client.Authenticator = new HttpBasicAuthenticator("riot", AuthResponse.LockfileData.Key);
             _headers = Utilities.Utils.ConstructHeaders(AuthResponse);
             UserSettings = await FetchUserSettings();
             if (UserSettings.settingsProfiles == null) return false;
@@ -60,7 +61,7 @@ namespace ValorantCC
             if (ProfileListed)
             {
                 SavedProfiles = UserSettings.stringSettings.FirstOrDefault(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
-                FetchedProfiles = FetchProfiles(SavedProfiles.value, null, null ,null ,null);
+                FetchedProfiles = FetchProfiles(SavedProfiles.value, null, null, null, null);
             }
             else
             {
@@ -142,13 +143,14 @@ namespace ValorantCC
             {
                 try
                 {
-                    Utilities.Utils.Log("Fetch User Settings failed for WS. Trying playerpref: "+resp.Content.ToString());
-                } catch (NullReferenceException ex)
+                    Utilities.Utils.Log("Fetch User Settings failed for WS. Trying playerpref: " + resp.Content.ToString());
+                }
+                catch (NullReferenceException ex)
                 {
                     Utilities.Utils.Log("WS Failed to fetch settings error: " + ex.StackTrace.ToString());
                 }
 
-                request = new RestRequest("https://playerpreferences.riotgames.com/playerPref/v3/getPreference/Ares.PlayerSettings", Method.Get);
+                request = new RestRequest($"{Region}/playerPref/v3/getPreference/Ares.PlayerSettings", Method.Get);
                 request.AddHeaders(_headers);
                 resp = await (new RestClient().ExecuteAsync(request));
                 if (!resp.IsSuccessful) return new Data();
@@ -181,7 +183,7 @@ namespace ValorantCC
         private async Task<bool> putUserSettings(Data newData)
         {
             Utilities.Utils.Log("Saving New Data: (BACKUP) " + JsonConvert.SerializeObject(newData));
-            
+
             RestRequest request = new RestRequest($"{AuthResponse.LockfileData.Protocol}://127.0.0.1:{AuthResponse.LockfileData.Port}/player-preferences/v1/data-json/Ares.PlayerSettings", Method.Put);
             request.AddJsonBody(newData);
             RestResponse response = await client.ExecuteAsync(request);
@@ -190,12 +192,13 @@ namespace ValorantCC
                 try
                 {
                     Utilities.Utils.Log("savePreference Unsuccessfull: " + response.Content.ToString());
-                } catch (NullReferenceException ex)
+                }
+                catch (NullReferenceException ex)
                 {
                     Utilities.Utils.Log("WS savePreference Unsuccessfull: " + ex.StackTrace.ToString());
                 }
 
-                request = new RestRequest("https://playerpreferences.riotgames.com/playerPref/v3/savePreference", Method.Put);
+                request = new RestRequest($"{Region}/playerPref/v3/savePreference", Method.Put);
                 request.AddJsonBody(new { type = "Ares.PlayerSettings", data = Utilities.Utils.Compress(newData) });
                 request.AddHeaders(_headers);
                 response = await (new RestClient().ExecuteAsync(request));
