@@ -1,15 +1,13 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using RestSharp;
+using RestSharp.Authenticators;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
-using RestSharp;
-using Newtonsoft.Json;
-using RestSharp.Authenticators;
-using System.Text;
-using MahApps.Metro.Converters;
 
 namespace ValorantCC
 {
@@ -118,7 +116,7 @@ namespace ValorantCC
                 return true;
 
             await Task.Delay(1);
-            
+
             if (_lockfileData == null) return false;
 
             var clientOptions = new RestClientOptions() { RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true };
@@ -132,7 +130,8 @@ namespace ValorantCC
                 {
                     var err = JsonConvert.DeserializeObject<FlagObject>(resp.Content.ToString());
                     Utilities.Utils.Log($"FETCH AUTH - {err.errorCode}: {err.message}");
-                } catch (NullReferenceException)
+                }
+                catch (NullReferenceException)
                 {
                     Utilities.Utils.Log("User exited the client");
                 }

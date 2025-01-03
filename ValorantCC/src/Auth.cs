@@ -124,7 +124,8 @@ namespace ValorantCC
             try
             {
                 RespData = JsonConvert.DeserializeObject<VersionResponse>(response.Content.ToString());
-            } catch (JsonReaderException)
+            }
+            catch (JsonReaderException)
             {
                 return ver;
             }

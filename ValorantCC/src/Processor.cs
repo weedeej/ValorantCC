@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Media;
-using ValorantCC.src;
 using ValorantCC.src.Crosshair;
 namespace ValorantCC
 {
@@ -42,7 +41,7 @@ namespace ValorantCC
             Utilities.Utils.Log("Login started");
             AuthObj AuthObj = new AuthObj();
             AuthResponse = await AuthObj.StartAuth();
-            if (AuthResponse.Success) 
+            if (AuthResponse.Success)
                 Utilities.Utils.Log("Auth Success");
             return AuthResponse;
         }
@@ -62,7 +61,7 @@ namespace ValorantCC
             if (ProfileListed)
             {
                 SavedProfiles = UserSettings.stringSettings.FirstOrDefault(setting => setting.settingEnum == "EAresStringSettingName::SavedCrosshairProfileData");
-                FetchedProfiles = FetchProfiles(SavedProfiles.value, null, null ,null ,null);
+                FetchedProfiles = FetchProfiles(SavedProfiles.value, null, null, null, null);
             }
             else
             {
@@ -144,8 +143,9 @@ namespace ValorantCC
             {
                 try
                 {
-                    Utilities.Utils.Log("Fetch User Settings failed for WS. Trying playerpref: "+resp.Content.ToString());
-                } catch (NullReferenceException ex)
+                    Utilities.Utils.Log("Fetch User Settings failed for WS. Trying playerpref: " + resp.Content.ToString());
+                }
+                catch (NullReferenceException ex)
                 {
                     Utilities.Utils.Log("WS Failed to fetch settings error: " + ex.StackTrace.ToString());
                 }
@@ -183,7 +183,7 @@ namespace ValorantCC
         private async Task<bool> putUserSettings(Data newData)
         {
             Utilities.Utils.Log("Saving New Data: (BACKUP) " + JsonConvert.SerializeObject(newData));
-            
+
             RestRequest request = new RestRequest($"{AuthResponse.LockfileData.Protocol}://127.0.0.1:{AuthResponse.LockfileData.Port}/player-preferences/v1/data-json/Ares.PlayerSettings", Method.Put);
             request.AddJsonBody(newData);
             RestResponse response = await client.ExecuteAsync(request);
@@ -192,7 +192,8 @@ namespace ValorantCC
                 try
                 {
                     Utilities.Utils.Log("savePreference Unsuccessfull: " + response.Content.ToString());
-                } catch (NullReferenceException ex)
+                }
+                catch (NullReferenceException ex)
                 {
                     Utilities.Utils.Log("WS savePreference Unsuccessfull: " + ex.StackTrace.ToString());
                 }
