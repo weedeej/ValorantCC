@@ -37,22 +37,18 @@ namespace ValorantCC
             DefaultColors[7] = new Color { R = 255, G = 255, B = 255 }; //White
         }
 
-        public async Task<AuthResponse> Login(MainWindow main = null)
+        public async Task<AuthResponse> Login()
         {
-            main.StatusTxt.Text = "Login Started";
             Utilities.Utils.Log("Login started");
             AuthObj AuthObj = new AuthObj();
             AuthResponse = await AuthObj.StartAuth();
-            main.StatusTxt.Text = $"Auth Complete: {AuthResponse.Success}";
-            if (!AuthResponse.Success) return AuthResponse;
-            Utilities.Utils.Log("Auth Success");
-            await Construct(main);
+            if (AuthResponse.Success) 
+                Utilities.Utils.Log("Auth Success");
             return AuthResponse;
         }
 
-        public async Task<bool> Construct(MainWindow main = null)
+        public async Task<bool> Construct()
         {
-            main.StatusTxt.Text = "Construct Method Started. . .";
             Utilities.Utils.Log("Constructing Properties -->");
             var client = new RestClientOptions() { RemoteCertificateValidationCallback = (sender, certificate, chain, sslPolicyErrors) => true };
             client.Authenticator = new HttpBasicAuthenticator("riot", AuthResponse.LockfileData.Key);

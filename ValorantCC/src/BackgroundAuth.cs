@@ -58,7 +58,7 @@ namespace ValorantCC
                 if (lockfilexists && _lockfileData.Success)
                 {
                     main.StatusTxt.Text = "Logging in. . .";
-                    AuthResponse AuthResponse = await processor.Login(main);
+                    AuthResponse AuthResponse = await processor.Login();
                     main.DataProcessor = processor;
                     main.LoggedIn = AuthResponse.Success;
                     if (!main.LoggedIn)
@@ -68,6 +68,11 @@ namespace ValorantCC
                         await Task.Delay(1500);
                         continue;
                     }
+
+                    // If we could login the user, then we contruct the properties
+                    main.StatusTxt.Text = "Constructing profiles properties. . .";
+                    await processor.Construct();
+
                     main.profiles.ItemsSource = processor.ProfileNames;
                     main.profiles.SelectedIndex = processor.CurrentProfile;
                     main.profiles.IsReadOnly = false;
