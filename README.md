@@ -9,7 +9,7 @@
 </p>
 
 # ValorantCC (Valorant Crosshair Changer)
-Change your crosshair **ANY** color you want, for style and/or visiblity.
+Change your crosshair to **ANY** color you want, for style and/or visiblity.
 ![image](https://user-images.githubusercontent.com/87055977/155284250-d01577c2-5661-43b1-8759-a6a8525e7709.png)
 
 Share your crosshair across the ValorantCC comunity!
