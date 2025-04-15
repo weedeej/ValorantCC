@@ -9,38 +9,35 @@
 </p>
 
 # ValorantCC (Valorant Crosshair Changer)
-Change your Crosshair's color to **ANY** color you want for style and/or visiblity.
+Change your crosshair to **ANY** color you want, for style and/or visiblity.
 ![image](https://user-images.githubusercontent.com/87055977/155284250-d01577c2-5661-43b1-8759-a6a8525e7709.png)
 
-Share your crosshair across the ValorantCC comunity!<br/>
+Share your crosshair across the ValorantCC comunity!
 ![image](https://user-images.githubusercontent.com/87055977/155284365-c802a73e-5062-4d36-b089-4116c2d85e9a.png)
 
-## Requirement
-- .NET6.0 (This comes with windows updates. If you have the latest version of windows, This should be installed automatically. if not, download .NET6.0 **DESKTOP RUNTIME**.
+## Requirements
+- .NET 6.0
+	- If you have the latest version of Windows, this *should* be installed automatically. If not, you can download it directly from [here](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.36-windows-x64-installer).
 
 ## Usage
-- Either Open this first or Riot client or Valorant it doesn't matter.
-- Wait for the app to login itself.
-- Select the profile you want to change color via the dropdown on top-right.
-- Change the colors.
-- Save.
-- Restart Valorant if Valorant is running \*(**IMPORTANT**)\*.
-
-##
-- If you experience any Issues such as not working, Join us on [Discord](https://discord.gg/ME5EdK8U9v) and we'll try to fix it.
-- You don't need to keep this app running in the background. Once you save it, It will stay there.
-- This does not change the game files nor touch Valorant's memory related stuff. The app only uses the Client API and sends it directly to Valorant's Server.
-- Yes. Other players can see it too as it is saved server side.
-- THIS IS **NOT** AN OVERLAY/HACK/CHEAT/AIMBOT. 
-
-## Disclaimer
-The images, endpoints and other material used in this project are owned by Riot Games.
-I am not to be held responsible for any misuse of this project.
-
-###### *Note:*
-*This is my first app written in C# so please do suggest :)*
-For takedowns, concerns, issues and suggestions,
-Please do open an issue or Join my [Discord](https://discord.gg/ME5EdK8U9v).
+- Open the app, and then Riot Client/Valorant - it doesn't really matter in which order.
+- Wait for the app to log itself in.
+- Select the profile that you want to change color for, via the dropdown in the top-right.
+- Change the colors to however you like!
+- Save & restart Valorant if it's running (**make sure to restart it!!**)
 
 ## License
-This project uses the [MIT License.](https://github.com/weedeej/ValorantCC/blob/master/LICENSE)
+This project uses the [MIT License](https://github.com/weedeej/ValorantCC/blob/master/LICENSE).
+
+## Reporting bugs
+If you are encountering issues or bugs, you can report them on the [Discord server](https://discord.gg/ME5EdK8U9v), or via GitHub's Issues tab.
+
+## Notes
+- THIS IS **NOT** AN OVERLAY/HACK/CHEAT/AIMBOT.
+- You don't need to keep this app running in the background. Once you save, your crosshair changes will stay there.
+- This does not change the game files nor touch Valorant's memory related stuff. The app only uses the client API and sends data directly to Valorant's server.
+- Other players can see the crosshair, as it is saved server-side.
+- *This is my first app written in C#, so feel free to make suggestions or make PRs!*
+
+The images, endpoints and other material used in this project are owned by Riot Games.
+I am not to be held responsible for any misuse of this project.
