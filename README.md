@@ -10,14 +10,16 @@
 
 # ValorantCC (Valorant Crosshair Changer)
 Change your crosshair to **ANY** color you want, for style and/or visiblity.
+
 ![image](https://user-images.githubusercontent.com/87055977/155284250-d01577c2-5661-43b1-8759-a6a8525e7709.png)
 
 Share your crosshair across the ValorantCC comunity!
+
 ![image](https://user-images.githubusercontent.com/87055977/155284365-c802a73e-5062-4d36-b089-4116c2d85e9a.png)
 
 ## Requirements
 - .NET 6.0
-	- If you have the latest version of Windows, this *should* be installed automatically. If not, you can download it directly from [here](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.36-windows-x64-installer).
+  - If you have the latest version of Windows, this *should* be installed automatically. If not, you can download it directly from [here](https://dotnet.microsoft.com/en-us/download/dotnet/thank-you/runtime-desktop-6.0.36-windows-x64-installer).
 
 ## Usage
 - Open the app, and then Riot Client/Valorant - it doesn't really matter in which order.
